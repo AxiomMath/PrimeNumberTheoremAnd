@@ -1,8 +1,12 @@
-import Mathlib.Algebra.Order.Ring.Star
-import Mathlib.Data.Int.Star
-import Mathlib.Tactic.NormNum.Prime
-import PrimeNumberTheoremAnd.Defs
-import PrimeNumberTheoremAnd.IEANTN.eSHP.eSHP_tables
+module
+
+public import Mathlib.Algebra.Order.Ring.Star
+public import Mathlib.Data.Int.Star
+public import Mathlib.Tactic.NormNum.Prime
+public import PrimeNumberTheoremAnd.Defs
+public import PrimeNumberTheoremAnd.IEANTN.eSHP.eSHP_tables
+
+@[expose] public section
 
 open Nat
 
@@ -70,21 +74,6 @@ theorem table_8_prime_gap_test (p g : ℕ) (h : (p, g) ∈ table_8)
     interval_cases k <;>
       simp [nth_prime_gap, nth_prime, h13, h17, h19, h23']
 
-
-@[blueprint
-  "table-8-prime-gap"
-  (title := "Table 8 prime gap records")
-  (statement := /--
-  For every pair $(p_k,g_k)$ in Table 8, $g_k$ is the prime
-  gap $p_{k+1} - p_k$, and all prime gaps preceding this gap
-  are less than $g_k$. -/)
-  (proof := /-- Verified by computer.  Unlikely to be
-  formalizable in Lean with current technology, except for
-  the small values of the table. -/)
-  (latexEnv := "proposition")]
-theorem table_8_prime_gap (p g : ℕ) (h : (p, g) ∈ table_8) : prime_gap_record p g := by
-  sorry
-
 @[blueprint
   "table-8-prime-gap-complete-test"
   (title := "Table 8 prime gap records - completeness unit test")
@@ -116,20 +105,6 @@ theorem table_8_prime_gap_complete_test (p g : ℕ) (hp : p ≤ 30)
   · have h10 := nth_eq (show Nat.Prime 31 by decide) (show count Nat.Prime 31 = 10 by decide)
     linarith [nth_monotone Nat.infinite_setOf_prime (show 10 ≤ n by omega), hn₁]
 
-@[blueprint
-  "table-8-prime-gap-complete"
-  (title := "Table 8 prime gap records - completeness")
-  (statement := /--
-  Table 8 contains ALL the prime gap records $(p_k,g_k)$
-  with $p_k \leq 4 \times 10^{18}$. -/)
-  (proof := /-- Verified by computer.  Unlikely to be
-  formalizable in Lean with current technology, except for
-  the small values of the table. -/)
-  (latexEnv := "proposition")]
-theorem table_8_prime_gap_complete (p g : ℕ) (hp : p ≤ 4 * 10 ^ 18)
-    (hrecord : prime_gap_record p g) : (p, g) ∈ table_8 := by
-  sorry
-
 lemma exists_prime_gap_record_le (n : ℕ) :
     ∃ m, nth_prime m ≤ nth_prime n ∧ nth_prime_gap n ≤ nth_prime_gap m ∧
       prime_gap_record (nth_prime m) (nth_prime_gap m) := by
@@ -145,24 +120,6 @@ lemma exists_prime_gap_record_le (n : ℕ) :
     exact monotone_nat_of_le_succ (fun n ↦ nth_monotone infinite_setOf_prime n.le_succ)
       (le_of_not_gt fun h ↦ not_lt_of_ge
         (hm_min _ ⟨by linarith [hm_mem.1], by linarith [hm_mem.2]⟩) h)
-
-@[blueprint
-  "max-prime-gap"
-  (title := "Maximum prime gap")
-  (statement := /--
-  The maximum prime gap for primes less than or equal to
-  $4 \times 10^{18}$ is $1476$. -/)
-  (proof := /-- If not, then there would be an entry in
-  Table 8 with $g > 1476$, which can be verified not to be
-  the case. -/)
-  (latexEnv := "proposition")
-  (discussion := 949)]
-theorem max_prime_gap (n : ℕ) (hp : nth_prime n ≤ 4 * 10 ^ 18) :
-    nth_prime_gap n ≤ 1476 := by
-  have h : ∀ x ∈ table_8, x.2 ≤ 1476 := by decide
-  obtain ⟨m, hm₁, hm₂, hm₃⟩ := exists_prime_gap_record_le n
-  exact hm₂.trans <| h _ <|
-    table_8_prime_gap_complete _ _ (hm₁.trans hp) hm₃
 
 @[blueprint
   "table-9-prime-gap-test"
@@ -289,20 +246,6 @@ theorem table_9_prime_gap_test (g P : ℕ) (h : (g, P) ∈ table_9) (htest : P <
     subst hg; exact hrecord4
   · have hg : g = 6 := by simpa [table_9] using h
     subst hg; exact hrecord6
-
-@[blueprint
-  "table-9-prime-gap"
-  (title := "Table 9 prime gaps")
-  (statement := /--
-  For every pair $(g,P)$ in Table 9, $P$ is the first prime
-  producing the prime gap $g$, and all smaller $g'$ (that are
-  even or $1$) have a smaller first prime. -/)
-  (proof := /-- Verified by computer.  Unlikely to be
-  formalizable in Lean with current technology, except for
-  the small values of the table. -/)
-  (latexEnv := "proposition")]
-theorem table_9_prime_gap (g P : ℕ) (h : (g, P) ∈ table_9) : first_gap_record g P := by
-  sorry
 
 /-- Values of the first `9` primes (`0`-indexed). -/
 lemma nth_prime_vals : nth_prime 0 = 2 ∧ nth_prime 1 = 3 ∧ nth_prime 2 = 5 ∧
@@ -435,45 +378,5 @@ theorem table_9_prime_gap_complete_test (g P : ℕ) (hg : g < 8) (hg' : 0 < g)
   all_goals norm_num [first_gap_1, first_gap_2, first_gap_3, first_gap_4, first_gap_5,
     first_gap_6, first_gap_7] at h ⊢
   all_goals norm_cast
-
-@[blueprint
-  "table-9-prime-gap-complete"
-  (title := "Table 9 prime gaps - completeness")
-  (statement := /--
-  Table 9 contains all first gap records $(g,P)$
-  with $g < 1346$ -/)
-  (proof := /-- Verified by computer.  Unlikely to be
-  formalizable in Lean with current technology, except for
-  the small values of the table. -/)
-  (latexEnv := "proposition")]
-theorem table_9_prime_gap_complete (g P : ℕ) (hg : g < 1346) (hg' : 0 < g)
-    (hrecord : first_gap_record g P) : (g, P) ∈ table_9 := by
-  sorry
-
-@[blueprint
-  "exists-prime-gap"
-  (title := "Existence of prime gap")
-  (statement := /--
-  Every gap $g < 1307$ that is even or one occurs as a prime
-  gap with first prime at most $3278018069102480227$. -/)
-  (proof := /-- This follows from the Table 9 row for
-  $(1306, 3278018069102480227)$, which gives the bound for
-  every smaller even gap or the gap $1$. -/)
-  (latexEnv := "proposition")
-  (discussion := 951)]
-theorem exists_prime_gap (g : ℕ) (hg : g ∈ Set.Ico 1 1307) (hg' : Even g ∨ g = 1) :
-    first_gap g ≤ 3278018069102480227 := by
-  have hrec : first_gap_record 1306 3278018069102480227 := by
-    exact table_9_prime_gap 1306 3278018069102480227 (by decide)
-  rcases hrec with ⟨hfg1306, hprev⟩
-  have hcases : g < 1306 ∨ g = 1306 := by
-    have hg_upper : g < 1307 := hg.2
-    omega
-  rcases hcases with hglt | rfl
-  · have hmem : g ∈ Finset.Ico 1 1306 := by
-      exact Finset.mem_Ico.mpr ⟨hg.1, hglt⟩
-    have hfg_mem := hprev g hmem hg'
-    exact le_of_lt hfg_mem.2
-  · rw [hfg1306]
 
 end eSHP

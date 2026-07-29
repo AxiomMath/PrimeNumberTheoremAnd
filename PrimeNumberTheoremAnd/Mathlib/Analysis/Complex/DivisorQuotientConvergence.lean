@@ -7,7 +7,6 @@ module
 
 public import PrimeNumberTheoremAnd.Mathlib.Analysis.Complex.DivisorPartialProductFactor
 
-
 /-!
 # Quotient convergence for divisor-indexed canonical products
 

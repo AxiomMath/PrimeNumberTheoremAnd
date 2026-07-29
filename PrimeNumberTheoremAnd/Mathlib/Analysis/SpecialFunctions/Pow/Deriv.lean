@@ -7,6 +7,7 @@ public import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 
 Derivative identities for functions of the form `w ↦ a * (u : ℂ) ^ (-w - 1)`.
 -/
+
 @[expose] public section
 
 namespace Complex

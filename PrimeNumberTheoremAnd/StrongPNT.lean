@@ -1,13 +1,17 @@
-import Architect
-import Mathlib.Algebra.Lie.OfAssociative
-import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
-import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Analysis.Complex.HasPrimitives
-import Mathlib.Data.Rat.Cast.OfScientific
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Analysis.Complex.BorelCaratheodory
-import PrimeNumberTheoremAnd.MediumPNT
+module
+
+public import Architect
+public import Mathlib.Algebra.Lie.OfAssociative
+public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Complex.HasPrimitives
+public import Mathlib.Data.Rat.Cast.OfScientific
+public import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Analysis.Complex.BorelCaratheodory
+public import PrimeNumberTheoremAnd.MediumPNT
+
+@[expose] public section
 
 open Nat Filter Set Function Complex Real ComplexConjugate MeasureTheory
 
@@ -24,8 +28,6 @@ local notation "ζ'" => deriv ζ
 local notation "ψ" => ChebyshevPsi
 
 --open scoped ArithmeticFunction
-
-
 
 @[blueprint "AnalyticOn.norm_le_of_norm_le_on_sphere"
   (title := "AnalyticOn.norm-le-of-norm-le-on-sphere")
@@ -53,8 +55,6 @@ lemma AnalyticOn.norm_le_of_norm_le_on_sphere {C r R : ℝ} {f : ℂ → ℂ} {w
     exact cond
   · rw [Metric.closure_closedBall]
     exact wInS
-
-
 
 @[blueprint "borelCaratheodory'"
   (title := "borelCaratheodory'")
@@ -89,13 +89,9 @@ theorem borelCaratheodory' {M r R : ℝ} {f : ℂ → ℂ} {z : ℂ}
   gcongr
   · exact mul_nonneg (mul_nonneg (zero_le_two) (le_of_lt Mpos)) (le_trans (norm_nonneg z) hyp_z)
 
-
-
 blueprint_comment /--
     This upstreamed from https://github.com/math-inc/strongpnt/tree/main
 -/
-
-
 
 @[blueprint "cauchy_formula_deriv"
   (title := "cauchy-formula-deriv")
@@ -118,8 +114,6 @@ lemma cauchy_formula_deriv {r r' R : ℝ} {f : ℂ → ℂ} {z : ℂ}
     Metric.mem_ball.mpr <| (Metric.mem_closedBall.mp hz).trans_lt r_lt_r'
   simp [← Complex.two_pi_I_inv_smul_circleIntegral_sub_sq_inv_smul_of_differentiable
       Metric.isOpen_ball (Metric.closedBall_subset_ball r'_lt_R) hf_on_ball hz_in_ball]
-
-
 
 @[blueprint "DerivativeBound"
   (title := "DerivativeBound")
@@ -174,8 +168,6 @@ lemma DerivativeBound {M r r' R : ℝ} {f : ℂ → ℂ} {z : ℂ}
     rw [norm_pow, norm_inv, one_div, inv_pow]
     gcongr
 
-
-
 @[blueprint "BorelCaratheodoryDeriv"
   (title := "BorelCaratheodoryDeriv")
   (statement := /--
@@ -206,8 +198,6 @@ theorem BorelCaratheodoryDeriv {M r R : ℝ} {f : ℂ → ℂ} {z : ℂ}
           have : 16 * M * R ^ 2 = 4 * M * (2 * R) ^ 2 := by ring_nf
           rw [this]; bound
 
-
-
 blueprint_comment /--
 \begin{definition}[TaxicabIntegral]\label{TaxicabIntegral}
   Let $0 < R$. Let $f:\overline{\mathbb{D}_R}\to\mathbb{C}$ be analytic on neighborhoods of points
@@ -215,8 +205,6 @@ blueprint_comment /--
     $$I_f(z)=z\int_0^1f(tz)\,dt.$$
 \end{definition}
 -/
-
-
 
 @[blueprint "LogOfAnalyticFunction"
   (title := "LogOfAnalyticFunction")
@@ -305,8 +293,6 @@ theorem LogOfAnalyticFunction {r R : ℝ} {B : ℂ → ℂ}
   · intro z hz
     exact (hJB.1 z (Metric.closedBall_subset_ball r_lt_R hz)).deriv
 
-
-
 @[blueprint "LogOfAnalyticFunction'"
   (title := "LogOfAnalyticFunction'")
   (statement := /--
@@ -327,8 +313,6 @@ theorem LogOfAnalyticFunction' {r' r R : ℝ} {B : ℂ → ℂ}
   have BanalyticOnNhdOfDr : AnalyticOnNhd ℂ B (Metric.closedBall (0 : ℂ) r) := BanalyticOnNhdOfDR.mono (Metric.closedBall_subset_closedBall r_lt_R.le)
   exact LogOfAnalyticFunction r'_pos r'_lt_r BanalyticOnNhdOfDr Bnonzero
 
-
-
 @[blueprint "SetOfZeros"
   (title := "SetOfZeros")
   (statement := /--
@@ -336,8 +320,6 @@ theorem LogOfAnalyticFunction' {r' r R : ℝ} {B : ℂ → ℂ}
     $\mathcal{K}_f(R)=\{\rho\in\mathbb{C}:|\rho|\leq R,\,f(\rho)=0\}$.
   -/)]
 def SetOfZeros (R : ℝ) (f : ℂ → ℂ) : Set ℂ := {ρ : ℂ | ‖ρ‖ ≤ R ∧ f ρ = 0}
-
-
 
 lemma finiteSetOfZeros_mono {r : ℝ} {f : ℂ → ℂ}
     (r_lt_one : r < 1)
@@ -349,8 +331,6 @@ lemma finiteSetOfZeros_mono {r : ℝ} {f : ℂ → ℂ}
   intro z hz
   exact ⟨by linarith, hz.2⟩
 
-
-
 blueprint_comment /--
 \begin{definition}[ZeroOrder]\label{ZeroOrder}
   Let $f:\mathbb{C}\to\mathbb{C}$.
@@ -358,8 +338,6 @@ blueprint_comment /--
 \end{definition}
   In LEAN, this corresponds exactly with analyticOrderAt/analyticOrderNatAt.
 -/
-
-
 
 open Classical
 @[blueprint "ZeroFactor"
@@ -376,8 +354,6 @@ noncomputable def ZeroFactor (f : ℂ → ℂ) (z : ℂ) : ℂ :=
       (h1.analyticOrderAt_ne_top.mp h2).choose z
     else 0
   else 0
-
-
 
 @[blueprint "ZeroFactorization"
   (title := "ZeroFactorization")
@@ -426,8 +402,6 @@ lemma ZeroFactorization {R : ℝ} {f : ℂ → ℂ} {ρ : ℂ}
   simp only [ZeroFactor, AnalyticAt_ρ, ↓reduceDIte, ne_eq, finiteOrder, not_false_eq_true,
     smul_eq_mul, g]
 
-
-
 @[blueprint "CFunction"
   (title := "CFunction")
   (statement := /--
@@ -451,8 +425,6 @@ noncomputable def Cf (r : ℝ) (f : ℂ → ℂ) (z : ℂ) : ℂ :=
       f z / ∏ ρ ∈ (finite_zeros_mono.toFinset), (z - ρ) ^ (analyticOrderNatAt f ρ)
   else 1
 
-
-
 lemma analyticAt_finset_prod_sub_pow (s : Finset ℂ) (g : ℂ → ℕ) (w : ℂ) :
     AnalyticAt ℂ (fun z => ∏ ρ ∈ s, (z - ρ) ^ g ρ) w := by
   induction s using Finset.induction with
@@ -464,8 +436,6 @@ lemma analyticAt_finset_prod_sub_pow (s : Finset ℂ) (g : ℂ → ℕ) (w : ℂ
       funext fun z => Finset.prod_insert hne
     rw [this]
     exact ((analyticAt_id.sub analyticAt_const).pow _).mul ih
-
-
 
 @[blueprint "CfAnalytic"
   (title := "CfAnalytic")
@@ -527,8 +497,6 @@ lemma CfAnalytic {r R : ℝ} {f : ℂ → ℂ}
   · simp only [finite_zeros_mono, ↓reduceDIte]
     exact analyticAt_const
 
-
-
 @[blueprint "BlaschkeB"
   (title := "BlaschkeB")
   (statement := /--
@@ -541,8 +509,6 @@ noncomputable def BlaschkeB (r R : ℝ) (f : ℂ → ℂ) (z : ℂ) : ℂ :=
   if finite_zeros_mono : (SetOfZeros r f).Finite then
     (Cf r f) z * (∏ ρ ∈ finite_zeros_mono.toFinset, (R - z * (conj ρ) / R) ^ (analyticOrderNatAt f ρ))
   else 1
-
-
 
 @[blueprint "BlaschkeAnalytic"
   (title := "BlaschkeAnalytic")
@@ -571,8 +537,6 @@ lemma BlaschkeAnalytic {r R : ℝ} {f : ℂ → ℂ}
     exact_mod_cast ne_of_gt R_pos
   · simp only [finite_zeros_mono, ↓reduceDIte]
     exact analyticOnNhd_const
-
-
 
 @[blueprint "BlaschkeOfZero"
   (title := "BlaschkeOfZero")
@@ -608,8 +572,6 @@ lemma BlaschkeOfZero {r R : ℝ} {f : ℂ → ℂ}
   refine (mul_right_inj' (norm_ne_zero_iff.mpr hf_neq_zero_at_zero)).mpr ?_
   rw[← Finset.prod_inv_distrib, ← Finset.prod_mul_distrib]
   simp only [div_eq_inv_mul, mul_pow, inv_pow]
-
-
 
 @[blueprint "norm_fOfZero_le_norm_BlaschkeOfZero"
   (title := "norm-fOfZero-le-norm-BlaschkeOfZero")
@@ -647,8 +609,6 @@ lemma norm_fOfZero_le_norm_BlaschkeOfZero {r R : ℝ} {f : ℂ → ℂ}
       by_contra h
       rw [h] at hρ
       exact hf_neq_zero_at_zero hρ.2
-
-
 
 @[blueprint "DiskBound"
   (title := "DiskBound")
@@ -708,8 +668,6 @@ lemma DiskBound {B r R : ℝ} {f : ℂ → ℂ} {z : ℂ}
       exact norm_ne_zero_iff.mpr (sub_ne_zero.mpr (fun h => hw_not_in (h ▸ hw'_in)))
   rw[Bf_eq_f_at_w]
   exact fz_bound w (le_of_eq hw)
-
-
 
 @[blueprint "BlaschkeNonZero"
   (title := "BlaschkeNonZero")
@@ -803,8 +761,6 @@ lemma BlaschkeNonzero {r R : ℝ} {f : ℂ → ℂ}
       (Finset.prod_ne_zero_iff.mpr fun ρ hρ =>
         pow_ne_zero _ (sub_ne_zero.mpr fun h => z_in_zeros (h ▸ hFin.mem_toFinset.mp hρ)))) hBProd
 
-
-
 @[blueprint "ZerosBound"
   (title := "ZerosBound")
   (statement := /--
@@ -857,8 +813,6 @@ theorem ZerosBound {B r R : ℝ} {f : ℂ → ℂ}
       exact DiskBound r_pos r_lt_R R_lt_one finiteZeros hfAnalytic
         hf0_ne_zero fz_bound (Metric.mem_closedBall_self (le_of_lt R_pos))
 
-
-
 @[blueprint "JBlaschke"
   (title := "JBlaschke")
   (statement := /--
@@ -875,8 +829,6 @@ noncomputable def JBlaschke {r' r R : ℝ} {f : ℂ → ℂ}
   (LogOfAnalyticFunction' r'_pos r'_lt_r r_lt_R
     (BlaschkeAnalytic r_pos r_lt_R R_lt_one finiteZeros hfAnalytic (hf0_eq_one ▸ one_ne_zero))
     (BlaschkeNonzero r_pos r_lt_R R_lt_one finiteZeros hfAnalytic (hf0_eq_one ▸ one_ne_zero))).choose z
-
-
 
 @[blueprint "JBlaschkeDerivBound"
   (title := "JBlaschkeDerivBound")
@@ -929,8 +881,6 @@ theorem JBlaschkeDerivBound {B r' r R : ℝ} {f : ℂ → ℂ} {z : ℂ}
   suffices h : Real.log ‖BlaschkeB r R f w‖ ≤ Real.log B by linarith
   exact Real.log_le_log (norm_pos_iff.mpr (blaschkeNonzero w hwr))
     (DiskBound r_pos r_lt_R R_lt_one finiteZeros hfAnalytic (hf0_eq_one ▸ one_ne_zero) fz_bound (Metric.closedBall_subset_closedBall r_lt_R.le hwr))
-
-
 
 @[blueprint "FinalBound"
   (title := "FinalBound")
@@ -1097,8 +1047,6 @@ theorem FinalBound {B r' r R' R : ℝ} {f : ℂ → ℂ} {z : ℂ}
     · exact (fun ρ hρ => pow_ne_zero _ (sub_ne_zero.mpr fun h => zNotInZeros (h ▸ rFiniteZeros.mem_toFinset.mp hρ)))
   simp only [BlaschkeB, Cf, rFiniteZeros, ↓reduceDIte, zNotInZeros, div_mul_eq_mul_div, mul_div_assoc, ← Finset.prod_div_distrib, div_pow]
 
-
-
 blueprint_comment /--
   API analogous to HasProd.norm, Multipliable.norm, Multipliable.norm-tprod
 -/
@@ -1115,8 +1063,6 @@ theorem Multipliable.nnnorm (hf : Multipliable f) : Multipliable (‖f ·‖₊)
 
 lemma Multipliable.nnnorm_tprod (hf : Multipliable f) : ‖∏' i, f i‖₊ = ∏' i, ‖f i‖₊ :=
   hf.hasProd.nnnorm.tprod_eq.symm
-
-
 
 @[blueprint "ZetaFixedLowerBound"
   (title := "ZetaFixedLowerBound")
@@ -1170,8 +1116,6 @@ lemma ZetaFixedLowerBound (t : ℝ) :
   · exact norm_pos_iff.mpr (hne h₂)
   · exact mul_pos (norm_pos_iff.mpr (hne h₃)) (norm_pos_iff.mpr (hne h₁))
 
-
-
 @[blueprint "riemannZeta1"
   (title := "riemannZeta1")
   (statement := /--
@@ -1181,8 +1125,6 @@ lemma ZetaFixedLowerBound (t : ℝ) :
 noncomputable def riemannZeta1 (s : ℂ) := 1 + 1 / (s - 1) - s * ∫ u in Ioi (1 : ℝ), (Int.fract u : ℝ) * (u : ℂ) ^ (-s - 1)
 
 local notation "ζ₁" => riemannZeta1
-
-
 
 @[blueprint "Zeta1AltFormula"
   (title := "Zeta1AltFormula")
@@ -1233,8 +1175,6 @@ lemma Zeta1AltFormula {s : ℂ} (hs : 0 < s.re) :
       norm_num [Complex.norm_cpow_eq_rpow_re_of_pos ( zero_lt_one.trans hx )]
       exact mul_le_of_le_one_left (Real.rpow_nonneg (by linarith [hx.out]) _) (one_half_lt_one).le
 
-
-
 @[blueprint "ZetaAltFormula"
   (title := "ZetaAltFormula")
   (statement := /--
@@ -1248,8 +1188,6 @@ lemma Zeta1AltFormula {s : ℂ} (hs : 0 < s.re) :
 lemma ZetaAltFormula {s : ℂ} (hs : 0 < s.re) (hs' : s ≠ 1) :
     ζ s = ζ₁ s:= by
   rw [Zeta1AltFormula hs, ← Zeta0EqZeta zero_lt_one hs hs']
-
-
 
 @[blueprint "GlobalBound"
   (title := "GlobalBound")
@@ -1317,8 +1255,6 @@ theorem GlobalBound
   rw [ZetaAltFormula hz.1 hz.2]
   exact (norm_sub_le_of_le leadingTerms hmul).trans (by linarith)
 
-
-
 blueprint_comment /--
 \begin{theorem}[LogDerivZetaFinalBound]\label{LogDerivZetaFinalBound}
     Let $t\in\mathbb{R}$ with $|t|\geq 2$ and $0 < r' < r < R' < R<1$. If
@@ -1349,15 +1285,11 @@ blueprint_comment /--
 \end{proof}
 -/
 
-
-
 blueprint_comment /--
 \begin{definition}[ZeroWindows]\label{ZeroWindows}
     Let $\mathcal{Z}_t=\{\rho\in\mathbb{C}:\zeta(\rho)=0,\,|\rho-(3/2+it)|\leq 3/4\}$.
 \end{definition}
 -/
-
-
 
 blueprint_comment /--
 \begin{lemma}[SumBoundI]\label{SumBoundI}
@@ -1391,8 +1323,6 @@ blueprint_comment /--
       \ll\log|t|.$$
 \end{proof}
 -/
-
-
 
 blueprint_comment /--
 \begin{lemma}[ShiftTwoBound]\label{ShiftTwoBound}
@@ -1438,8 +1368,6 @@ blueprint_comment /--
     Noting that $\log|2t|=\log(2)+\log|t|\leq2\log|t|$ completes the proof.
 \end{proof}
 -/
-
-
 
 blueprint_comment /--
 \begin{lemma}[ShiftOneBound]\label{ShiftOneBound}
@@ -1494,8 +1422,6 @@ blueprint_comment /--
 \end{proof}
 -/
 
-
-
 blueprint_comment /--
 \begin{lemma}[ShiftZeroBound]\label{ShiftZeroBound}
     For all $\delta\in(0,1)$ we have
@@ -1513,104 +1439,6 @@ blueprint_comment /--
       -\frac{\zeta'}{\zeta}(1+\delta)\right|\leq\frac{1}{\delta}+O(1).$$
 \end{proof}
 -/
-
-
-
-@[blueprint
-  (title := "ZeroInequality")
-  (statement := /--
-    There exists a constant $0 < E<1$ such that for all $\rho=\sigma+it$ with $\zeta(\rho)=0$
-    and $|t|\geq 2$, one has
-    $$\sigma\leq 1-\frac{E}{\log|t|}.$$
-  -/)
-  (proof := /--
-    From Theorem \ref{LogDerivativeDirichlet} when $\Re s>1$ we have
-    $$-\frac{\zeta'}{\zeta}(s)=\sum_{1\leq n}\frac{\Lambda(n)}{n^s}.$$
-    Thus,
-    $$-3\,\frac{\zeta'}{\zeta}(1+\delta)
-        -4\,\frac{\zeta'}{\zeta}(1+\delta+it)
-        -\frac{\zeta'}{\zeta}(1+\delta+2it)
-        =\sum_{1\leq n}\Lambda(n)\,n^{-(1+\delta)}\left(3+4n^{-it}+n^{-2it}\right).$$
-    Now applying Euler's identity
-    \begin{align*}
-        -3\,\Re \left(\frac{\zeta'}{\zeta}(1+\delta)\right)&
-            -4\,\Re \left(\frac{\zeta'}{\zeta}(1+\delta+it)\right)
-            -\Re \left(\frac{\zeta'}{\zeta}(1+\delta+2it)\right) \\
-        &\qquad\qquad\qquad=\sum_{1\leq n}\Lambda(n)\,n^{-(1+\delta)}
-            \left(3+4\cos(-it\log n)+\cos(-2it\log n)\right)
-    \end{align*}
-    By Lemma \ref{ThreeFourOneTrigIdentity} we know that the series on the right hand side
-    is bounded below by $0$, and by Lemmas \ref{ShiftTwoBound}, \ref{ShiftOneBound},
-    and \ref{ShiftZeroBound} we have an upper bound on the left hand side. So,
-    $$0\leq\frac{3}{\delta}+3A-\frac{4}{1+\delta-\sigma}+4B\log|t|+C\log|t|$$
-    where $A$, $B$, and $C$ are the implied constants coming from Lemmas
-    \ref{ShiftZeroBound}, \ref{ShiftOneBound}, and \ref{ShiftTwoBound} respectively.
-    By choosing $D\geq 3A/\log 2+4B+C$ we have
-    $$\frac{4}{1+\delta-\sigma}\leq\frac{3}{\delta}+D\log|t|$$
-    by some manipulation. Now if we choose $\delta=(2D\log|t|)^{-1}$ then we have
-    $$\frac{4}{1-\sigma+1/(2D\log|t|)}\leq7D\log|t|.$$
-    So with some manipulation we have that
-    $$\sigma\leq 1-\frac{1}{14D\log|t|}.$$
-    This is exactly the desired result with the constant $E=(14D)^{-1}$
-  -/)
-  (proofUses := ["ShiftTwoBound", "LogDerivativeDirichlet", "ShiftOneBound",
-    "ThreeFourOneTrigIdentity", "ShiftZeroBound"])
-  (latexEnv := "theorem")]
-theorem ZeroInequality : ∃ (E : ℝ) (EinIoo : E ∈ Ioo (0 : ℝ) 1),
-    ∀ (ρ : ℂ) (σ t : ℝ),
-    ζ ρ = 0 →
-        σ = ρ.re →
-            t = ρ.im →
-                |t| ≥ 2 →
-                    σ ≤ 1 - E / log |t| := by
-    sorry
-
-
-
-noncomputable def E : ℝ := ZeroInequality.choose
-lemma EinIoo : E ∈ Ioo (0 : ℝ) 1 := ZeroInequality.choose_spec.1
-theorem ZeroInequalitySpecialized : ∀ (ρ : ℂ) (σ t : ℝ),
-    ζ ρ = 0 →
-        σ = ρ.re →
-            t = ρ.im →
-                |t| ≥ 2 →
-                    σ ≤ 1 - E / log |t| := ZeroInequality.choose_spec.2
-@[blueprint
-  (title := "DeltaT")
-  (statement := /--
-    Let $\delta_t=E/\log|t|$ where $E$ is the constant coming from Theorem \ref{ZeroInequality}.
-  -/)]
-noncomputable def DeltaT (t : ℝ) : ℝ := E / log |t|
-
-
-
-@[blueprint
-  (title := "DeltaRange")
-  (statement := /--
-    For all $t\in\mathbb{R}$ with $|t|\geq 2$ we have that $$\delta_t<1/14.$$
-  -/)
-  (proof := /--
-    Note that $\delta_t=E/\log|t|$ where $E$ is the implied constant from
-    Lemma \ref{ZeroInequality}. But we know that $E=(14D)^{-1}$ where $D\geq 3A/\log 2+4B+C$
-    where $A$, $B$, and $C$ are the constants coming from
-    Lemmas \ref{ShiftZeroBound}, \ref{ShiftOneBound}, and \ref{ShiftTwoBound} respectively. Thus,
-    $$E\leq\frac{1}{14\,(3A/\log 2+4B+C)}.$$
-    But note that $A\geq 0$ and $B\geq 0$ by Lemmas \ref{ShiftZeroBound} and \ref{ShiftOneBound}
-    respectively. However, we have that
-    $$C\geq 2+\frac{2\log((13\,\zeta(3/2))/(3\,\zeta(3)))}{\log 2}$$
-    by Theorem \ref{LogDerivZetaFinalBound} with Lemmas \ref{SumBoundI} and \ref{ShiftTwoBound}.
-    So, by a very lazy estimate we have $C\geq 2$ and $E\leq 1/28$. Thus,
-    $$\delta_t=\frac{E}{\log|t|}\leq\frac{1}{28\,\log2}<\frac{1}{14}.$$
-  -/)
-  (proofUses := ["LogDerivZetaFinalBound", "SumBoundI", "ShiftTwoBound", "ZeroInequality",
-    "ShiftOneBound", "ShiftZeroBound"])
-  (latexEnv := "lemma")]
-lemma DeltaRange : ∀ (t : ℝ),
-    |t| ≥ 2 →
-        DeltaT t < (1 : ℝ) / 14 := by
-    sorry
-
-
 
 blueprint_comment /--
 \begin{lemma}[SumBoundII]\label{SumBoundII}
@@ -1645,8 +1473,6 @@ blueprint_comment /--
 \end{proof}
 -/
 
-
-
 blueprint_comment /--
 \begin{lemma}[GapSize]\label{GapSize}
    Let $t\in\mathbb{R}$ with $|t|\geq 3$ and $z=\sigma+it$ where $1-\delta_t/3\leq\sigma\leq 3/2$.
@@ -1671,76 +1497,6 @@ blueprint_comment /--
       =1-\delta_t/3-(1-\delta_{t'})\leq\sigma-\sigma'\leq|z-\rho|.$$
 \end{proof}
 -/
-
-
-
-@[blueprint
-  (title := "LogDerivZetaUniformLogSquaredBoundStrip")
-  (statement := /--
-    There exists a constant $F\in(0,1/2)$ such that
-    for all $t\in\mathbb{R}$ with $|t|\geq 3$ one has
-    $$1-\frac{F}{\log|t|}\leq\sigma\leq 3/2
-      \implies\left|\frac{\zeta'}{\zeta}(\sigma+it)\right|\ll\log^2|t|$$
-    where the implied constant is uniform in $\sigma$.
-  -/)
-  (proof := /--
-    Take $F=E/3$ where $E$ comes from Theorem \ref{ZeroInequality}.
-    Then we have that $\sigma\geq 1-\delta_t/3$. So, we apply Lemma \ref{SumBoundII},
-    which gives us that
-    $$\left|\frac{\zeta'}{\zeta}(z)
-      -\sum_{\rho\in\mathcal{Z}_t}\frac{m_\zeta(\rho)}{z-\rho}\right|\ll\log|t|.$$
-    Using the reverse triangle inequality and rearranging, we have that
-    $$\left|\frac{\zeta'}{\zeta}(z)\right|
-      \leq\sum_{\rho\in\mathcal{Z}_t}\frac{m_\zeta(\rho)}{|z-\rho|}+C\,\log|t|$$
-    where $C$ is the implied constant in Lemma \ref{SumBoundII}.
-    Now applying Lemma \ref{GapSize} we have that
-    $$\left|\frac{\zeta'}{\zeta}(z)\right|
-      \leq\frac{6}{\delta_t}\sum_{\rho\in\mathcal{Z}_t}m_\zeta(\rho)+C\,\log|t|.$$
-    Now let $f(z)=\zeta(z+3/2+it)/\zeta(3/2+it)$ with $\rho=\rho'+3/2+it$.
-    Then if $\rho\in\mathcal{Z}_t$ we have that
-    $$0=\zeta(\rho)=\zeta(\rho'+3/2+it)=f(\rho')$$
-    with the same multiplicity of zero, that is $m_\zeta(\rho)=m_f(\rho')$.
-    And also if $\rho\in\mathcal{Z}_t$ then
-    $$3/4\geq|\rho-(3/2+it)|=|\rho'|.$$
-    Thus we change variables to have that
-    $$\left|\frac{\zeta'}{\zeta}(z)\right|
-      \leq\frac{6}{\delta_t}\sum_{\rho'\in\mathcal{K}_f(3/4)}m_f(\rho')+C\,\log|t|.$$
-    Now note that $f(0)=1$ and for $|z|\leq 8/9$ we have
-    $$|f(z)|=\frac{|\zeta(z+3/2+it)|}{|\zeta(3/2+it)|}
-      \leq\frac{\zeta(3/2)}{\zeta(3)}\cdot(7+2\,|t|)\leq\frac{13\,\zeta(3/2)}{3\,\zeta(3)}\,|t|$$
-    by Theorems \ref{ZetaFixedLowerBound} and \ref{GlobalBound}.
-    Thus by Theorem \ref{ZerosBound} we have that
-    $$\sum_{\rho'\in\mathcal{K}_f(3/4)}m_f(\rho')
-      \leq\frac{\log|t|+\log(13\,\zeta(3/2)/(3\,\zeta(3)))}{\log((8/9)/(3/4))}\leq D\log|t|$$
-    where $D$ is taken to be sufficiently large.
-    Recall, by definition that, $\delta_t=E/\log|t|$ with $E$ coming from
-    Theorem \ref{ZeroInequality}. By using this fact and the above, we have that
-    $$\left|\frac{\zeta'}{\zeta}(z)\right|\ll\log^2|t|+\log|t|$$
-    where the implied constant is taken to be bigger than $\max(6D/E,C)$.
-    We know that the RHS is bounded above by $\ll\log^2|t|$; so the result follows.
-  -/)
-  (proofUses := ["ZetaFixedLowerBound", "ZerosBound", "GlobalBound", "SumBoundII", "ZeroInequality",
-    "GapSize"])
-  (latexEnv := "lemma")]
-lemma LogDerivZetaUniformLogSquaredBoundStrip : ∃ (F : ℝ) (Fequ : F = E / 3) (C : ℝ)
-    (Cnonneg : 0 ≤ C), ∀ (σ t : ℝ),
-    3 ≤ |t| →
-        σ ∈ Set.Icc (1 - F / Real.log |t|) (3 / 2) →
-            ‖ζ' (σ + t * I) / ζ (σ + t * I)‖ ≤ C * (Real.log |t|) ^ 2 := by
-    exact ⟨E / 3, rfl, sorry⟩
-
-
-
-noncomputable def F : ℝ := LogDerivZetaUniformLogSquaredBoundStrip.choose
-lemma Fequ : F = E / 3 := LogDerivZetaUniformLogSquaredBoundStrip.choose_spec.1
-lemma LogDerivZetaUniformLogSquaredBoundStripSpec : ∃ (C : ℝ) (_ : 0 ≤ C),
-    ∀ (σ t : ℝ),
-    3 ≤ |t| →
-        σ ∈ Set.Icc (1 - F / Real.log |t|) (3 / 2) →
-            ‖ζ' (σ + t * I) / ζ (σ + t * I)‖ ≤ C * (Real.log |t|) ^ 2 :=
-    by exact LogDerivZetaUniformLogSquaredBoundStrip.choose_spec.2
-lemma FLogTtoDeltaT : ∀ (t : ℝ),
-    DeltaT t / 3 = F / Real.log |t| := fun _ ↦ by simp [DeltaT, Fequ]; ring
 
 /-- The logarithmic derivative of the Riemann zeta function is bounded in the half-plane
 `Re(s) >= 3/2`. -/
@@ -1804,78 +1560,6 @@ lemma LogDerivZetaBdd_of_Re_ge_three_halves :
   simpa [neg_div, h_log_deriv_sum s hs] using (h_triangle s).trans
     (hSum.tsum_le_tsum (fun n ↦ h_norm_summand s hs n) h_sum_converges)
 
-@[blueprint
-  (title := "LogDerivZetaUniformLogSquaredBound")
-  (statement := /--
-    There exists a constant $F\in(0,1/2)$ such that for all $t\in\mathbb{R}$ with $|t|\geq 3$ one has
-    $$1-\frac{F}{\log|t|}\leq\sigma\implies\left|\frac{\zeta'}{\zeta}(\sigma+it)\right|\ll\log^2|t|$$
-    where the implied constant is uniform in $\sigma$.
-  -/)
-  (proof := /--
-    Note that
-    $$\left|\frac{\zeta'}{\zeta}(\sigma+it)\right|
-      =\sum_{1\leq n}\frac{\Lambda(n)}{|n^{\sigma+it}|}=\sum_{1\leq n}\frac{\Lambda(n)}{n^\sigma}
-      =-\frac{\zeta'}{\zeta}(\sigma)\leq\left|\frac{\zeta'}{\zeta}(\sigma)\right|.$$
-    From Theorem \ref{riemannZetaLogDerivResidue}, and applying the triangle inequality we know that
-    $$\left|\frac{\zeta'}{\zeta}(s)\right|\leq\frac{1}{|s-1|}+C.$$
-    where $C>0$ is some constant. Thus, for $\sigma\geq 3/2$ we have that
-    $$\left|\frac{\zeta'}{\zeta}(\sigma+it)\right|
-      \leq\left|\frac{\zeta'}{\zeta}(\sigma)\right|
-      \leq\frac{1}{\sigma-1}+C\leq 2+C\ll 1\ll\log^2|t|.$$
-    Putting this together with Lemma \ref{LogDerivZetaUniformLogSquaredBoundStrip}
-    completes the proof.
-  -/)
-  (proofUses := ["riemannZetaLogDerivResidue", "LogDerivZetaUniformLogSquaredBoundStrip"])
-  (latexEnv := "theorem")]
-theorem LogDerivZetaUniformLogSquaredBound : ∃ (C : ℝ) (_Cnonneg : 0 ≤ C),
-    ∀ (σ t : ℝ), 3 < |t| → σ ∈ Set.Ici (1 - F / Real.log |t|) →
-      ‖ζ' (σ + t * I) / ζ (σ + t * I)‖ ≤ C * Real.log |t| ^ 2 := by
-  obtain ⟨C1, hC1⟩ := LogDerivZetaUniformLogSquaredBoundStripSpec
-  obtain ⟨C2, hC2⟩ := LogDerivZetaBdd_of_Re_ge_three_halves
-  use max C1 C2, le_max_of_le_left hC1.1
-  intro σ t ht hσ
-  by_cases hσ' : σ ≤ 3 / 2
-  · exact (hC1.2 σ t (by grind) ⟨hσ, hσ'⟩).trans
-      (mul_le_mul_of_nonneg_right (le_max_left _ _) (sq_nonneg _))
-  · refine (hC2 _ ?_).trans ?_
-    · norm_num; linarith
-    · have hC2pos := (norm_nonneg _).trans (hC2 2 (by norm_num))
-      exact (le_max_right _ _).trans (le_mul_of_one_le_right
-        (le_max_of_le_right (by grind))
-        (one_le_pow₀ (by
-          rw [Real.le_log_iff_exp_le (by grind)]
-          exact Real.exp_one_lt_d9.le.trans (by grind))))
-
-@[blueprint
-  (title := "LogDerivZetaLogSquaredBoundSmallt")
-  (statement := /--
-    For $T>0$ and $\sigma'=1-\delta_T/3=1-F/\log T$, if $|t|\leq T$ then we have that
-    $$\left|\frac{\zeta'}{\zeta}(\sigma'+it)\right|\ll\log^2(2+T).$$
-  -/)
-  (proof := /--
-    Note that if $|t|\geq 3$ then from Theorem \ref{LogDerivZetaUniformLogSquaredBound} we have that
-    $$\left|\frac{\zeta'}{\zeta}(\sigma'+it)\right|\ll\log^2|t|\leq\log^2T\leq\log^2(2+T).$$
-    Otherwise, if $|t|\leq 3$, then from Theorem \ref{riemannZetaLogDerivResidue}
-    and applying the triangle inequality we know
-    $$\left|\frac{\zeta'}{\zeta}(\sigma'+it)\right|
-      \leq\frac{1}{|(\sigma'-1)+it|}+C\leq\frac{\log T}{F}+C$$
-    where $C\geq 0$. Thus, we have that
-    $$\left|\frac{\zeta'}{\zeta}(\sigma'+it)\right|
-      \leq\left(\frac{\log T}{F\,\log 2}+\frac{C}{\log 2}\right)\,\log(2+|t|)
-      \leq\left(\frac{\log(2+T)}{F\,\log 2}+\frac{C}{\log 2}\right)\log(2+T)
-      \ll\log^2(2+T).$$
-  -/)
-  (proofUses := ["LogDerivZetaUniformLogSquaredBound", "riemannZetaLogDerivResidue"])
-  (latexEnv := "theorem")]
-theorem LogDerivZetaLogSquaredBoundSmallt : ∃ (C : ℝ) (Cnonneg : C ≥ 0),
-    ∀ (σ t T : ℝ) (Tpos: T > 0),
-    |t| ≤ T →
-        σ = 1 - F / Real.log T →
-            ‖ζ' (σ + t * I) / ζ (σ + t * I)‖ ≤ C * Real.log (2 + T) ^ 2 := by
-    sorry
-
-
-
 blueprint_comment /--
 From here out we closely follow our previous proof of the Medium PNT and we modify it
 using our new estimate in Theorem \ref{LogDerivZetaUniformLogSquaredBound}.
@@ -1897,8 +1581,6 @@ and we pull contours  accumulating the pole at $s=1$ when we integrate along the
 \end{itemize}
 -/
 
-
-
 @[blueprint
   (title := "I1New")
   (statement := /--
@@ -1910,8 +1592,6 @@ and we pull contours  accumulating the pole at $s=1$ when we integrate along the
 noncomputable def I1New (SmoothingF : ℝ → ℝ) (ε X T : ℝ) : ℂ :=
   (1 / (2 * π * I)) * (I * (∫ t : ℝ in Iic (-T),
       SmoothedChebyshevIntegrand SmoothingF ε X ((1 + (Real.log X)⁻¹) + t * I)))
-
-
 
 @[blueprint
   (title := "I5New")
@@ -1983,229 +1663,7 @@ lemma NormXPowS {X : ℝ} (X_gt_one : 1 < X) {s : ℂ} (hs : s.re = 1 + (Real.lo
   simp [Complex.norm_cpow_eq_rpow_re_of_pos (by positivity : 0 < X), hs,
     Real.rpow_add (by positivity : 0 < X), Real.rpow_inv_log (by positivity) X_gt_one.ne']
 
-lemma LogDerivZetaBoundForI1 : ∃ C > 0, ∀ {X T : ℝ} (_Xgt3 : 3 < X) (_Tgt3 : 3 < T)
-    (t : ℝ) (_ht : t ≤ -T),
-    let σ := 1 + (Real.log X)⁻¹
-    ‖deriv riemannZeta (σ + t * I) / riemannZeta (σ + t * I)‖ ≤ C * (Real.log (-t))^2 := by
-  obtain ⟨C, hC⟩ := LogDerivZetaUniformLogSquaredBound
-  field_simp
-  use C + 1
-  refine ⟨by grind, fun {X T} hX hT t ht ↦ (hC.2 _ _ ?_ ?_).trans ?_⟩
-  · cases abs_cases t <;> grind
-  · apply Set.mem_Ici.mpr
-    have hX' : 0 ≤ 1 / Real.log X := one_div_nonneg.mpr (Real.log_nonneg (by grind))
-    have ht' : 0 ≤ F / Real.log |t| := by
-      apply div_nonneg (Fequ ▸ div_nonneg (le_of_lt EinIoo.1) zero_le_three)
-      exact Real.log_nonneg (by cases abs_cases t <;> grind)
-    grind
-  · simp only [abs_of_nonpos (by grind : t ≤ 0)]
-    nlinarith [hC.1, sq_nonneg (Real.log (-t))]
-
-lemma I1NewIntegrandBound {SmoothingF : ℝ → ℝ}
-    (suppSmoothingF : Function.support SmoothingF ⊆ Set.Icc (1 / 2) 2)
-    (ContDiffSmoothingF : ContDiff ℝ 1 SmoothingF) :
-    ∃ C > 0, ∀ {ε X T : ℝ} (_εinIoo : ε ∈ Set.Ioo 0 1) (_Xgt3 : 3 < X) (_Tgt3 : 3 < T)
-    (t : ℝ) (_ht : t ≤ -T),
-    ‖SmoothedChebyshevIntegrand SmoothingF ε X (1 + (Real.log X)⁻¹ + t * I)‖ ≤
-    C * (X / ε) * (Real.log (-t))^2 / (-t)^2 := by
-  obtain ⟨C₁, hC₁₀, hC₁⟩ := @LogDerivZetaBoundForI1
-  obtain ⟨C₂, hC₂₀, hC₂⟩ := @MellinOfSmooth1b SmoothingF ContDiffSmoothingF suppSmoothingF
-  refine ⟨C₁ * C₂ * Real.exp 1, by positivity, fun {ε X T} hε hX hT t ht ↦ ?_⟩
-  specialize hC₁ hX hT t ht
-  specialize hC₂ 1 zero_lt_one (1 + (Real.log X)⁻¹ + t * Complex.I) ?_ ?_ ε hε.1 hε.2 <;> norm_num at *
-  · exact Real.log_nonneg (by linarith)
-  · linarith [inv_le_one_of_one_le₀ (show 1 ≤ Real.log X from by
-      rw [Real.le_log_iff_exp_le (by linarith)]
-      exact Real.exp_one_lt_d9.le.trans (by grind))]
-  · refine (mul_le_mul_of_nonneg_right
-        (mul_le_mul hC₁ hC₂ (by positivity) (by positivity)) (by positivity)).trans ?_
-    rw [Complex.norm_cpow_of_ne_zero (by norm_cast; linarith)]
-    norm_num [Complex.normSq, Complex.sq_norm]
-    ring_nf
-    norm_num
-    rw [abs_of_pos (by positivity)]
-    norm_num [Complex.arg]
-    ring_nf
-    norm_num
-    rw [if_pos (by positivity)]
-    norm_num [Real.rpow_add (by positivity : 0 < X), Real.rpow_one]
-    ring_nf
-    norm_num
-    rw [show X ^ (Real.log X)⁻¹ = Real.exp 1 by
-      rw [Real.rpow_def_of_pos (by positivity)]
-      norm_num [Real.exp_ne_zero, ne_of_gt (Real.log_pos (by linarith : 1 < X))]]
-    ring_nf
-    norm_num
-    field_simp
-    gcongr
-    · exact mul_pos (sq_pos_of_neg (by linarith)) hε.1
-    · linarith
-    · exact le_add_of_nonneg_left <| add_nonneg (add_nonneg zero_le_one
-          (div_nonneg zero_le_two (Real.log_nonneg (by linarith))))
-          (div_nonneg zero_le_one (sq_nonneg _))
-
-@[blueprint
-  (title := "I1NewBound")
-  (statement := /--
-    We have that
-    $$|I_1(\nu,\varepsilon,X,T)|\ll\frac{X}{\varepsilon\sqrt{T}}.$$
-  -/)
-  (proof := /--
-    Note that $|I_1(\nu,\varepsilon,X,T)|=$
-    $$\left|\frac{1}{2\pi i}\int_{-\infty}^{-T}\left(-\frac{\zeta'}{\zeta}(\sigma+it)\right)
-      \,\mathcal{M}(\tilde{1}_\varepsilon)(\sigma+it)\,X^{\sigma+it}\,dt\right|
-      \ll\int_{-\infty}^{-T}\left|\frac{\zeta'}{\zeta}(\sigma+it)\right|
-      \cdot|\mathcal{M}(\tilde{1}_\varepsilon)(\sigma+it)|\cdot X^\sigma\,dt.$$
-    Applying Theorem \ref{LogDerivZetaUniformLogSquaredBound} and Lemma \ref{MellinOfSmooth1b},
-    we have that
-    $$|I_1(\nu,\varepsilon,X,T)|
-      \ll\int_{-\infty}^{-T}\log^2|t|\cdot\frac{X^\sigma}{\varepsilon\,|\sigma+it|^2}\,dt
-      \ll\frac{X}{\varepsilon}\int_T^\infty\frac{\sqrt{t}\,dt}{t^2}
-      \ll\frac{X}{\varepsilon\sqrt{T}}.$$
-    Here we are using the fact that $\log^2 t$ grows slower than $\sqrt{t}$,
-    $|\sigma+it|^2\geq t^2$, and $X^\sigma=X\cdot X^{1/\log X}=eX$.
-  -/)
-  (proofUses := ["LogDerivZetaUniformLogSquaredBound", "MellinOfSmooth1b"])
-  (latexEnv := "lemma")]
-lemma I1NewBound {SmoothingF : ℝ → ℝ}
-    (suppSmoothingF : Function.support SmoothingF ⊆ Icc (1 / 2) 2)
-    (ContDiffSmoothingF : ContDiff ℝ 1 SmoothingF) : ∃ (C : ℝ) (_Cnonneg : 0 ≤ C),
-    ∀ {ε X T : ℝ} (_εinIoo : ε ∈ Ioo 0 1) (_Xgt3 : 3 < X) (_Tgt3 : 3 < T),
-    ‖I1New SmoothingF ε X T‖ ≤ C * (X / (ε * Real.sqrt T)) := by
-    have h_I1New_bound : ∃ C > 0, ∀ {ε X T : ℝ} (εinIoo : ε ∈ Set.Ioo 0 1) (Xgt3 : 3 < X)
-        (Tgt3 : 3 < T),
-        ‖∫ t in Set.Iic (-T),
-          SmoothedChebyshevIntegrand SmoothingF ε X (1 + (Real.log X)⁻¹ + t * I)‖ ≤
-          C * (X / ε) * (1 / Real.sqrt T) := by
-            obtain ⟨C₁, hC₁_pos, hC₁⟩ : ∃ C₁ > 0, ∀ {ε X T : ℝ} (εinIoo : ε ∈ Set.Ioo 0 1)
-                (Xgt3 : 3 < X) (Tgt3 : 3 < T)
-                (t : ℝ) (ht : t ≤ -T),
-                ‖SmoothedChebyshevIntegrand SmoothingF ε X (1 + (Real.log X)⁻¹ + t * I)‖ ≤
-                C₁ * (X / ε) * (Real.log (-t))^2 / (-t)^2 :=
-              I1NewIntegrandBound suppSmoothingF ContDiffSmoothingF
-            obtain ⟨C₂, hC₂_pos, hC₂⟩ : ∃ C₂ > 0, ∀ {T : ℝ} (Tgt3 : 3 < T),
-                ∫ t in Set.Ici T, (Real.log t)^2 / t^2 ≤ C₂ / Real.sqrt T :=
-                  IntegralLogSqOverTSqBound
-            refine ⟨C₁ * C₂, mul_pos hC₁_pos hC₂_pos,
-              fun {ε X T} εinIoo Xgt3 Tgt3 ↦
-                (MeasureTheory.norm_integral_le_integral_norm _).trans ?_⟩
-            refine (MeasureTheory.integral_mono_of_nonneg
-              (g := fun t ↦ C₁ * (X / ε) * Real.log (-t) ^ 2 / (-t) ^ 2) ?_ ?_ ?_).trans ?_
-            · exact Filter.Eventually.of_forall fun x ↦ norm_nonneg _
-            · have h_integrable :
-                  MeasureTheory.IntegrableOn (fun t ↦ (Real.log t)^2 / t^2) (Set.Ici T) := by
-                have h_integrable :
-                    MeasureTheory.IntegrableOn
-                      (fun t ↦ (Real.log t)^2 / t^2) (Set.Ioi T) := by
-                  have h_bound : ∀ t, t > T → (Real.log t)^2 / t^2 ≤ 4 / t^(3/2 : ℝ) := by
-                    intro t ht
-                    have h_log_bound : Real.log t ≤ 2 * t^(1/4 : ℝ) := by
-                      have := Real.log_le_sub_one_of_pos (show 0 < t ^ (1 / 4 : ℝ) / 2 by
-                        exact div_pos (Real.rpow_pos_of_pos (by linarith) _) zero_lt_two)
-                      rw [Real.log_div (by exact ne_of_gt (Real.rpow_pos_of_pos (by linarith) _))
-                        (by norm_num), Real.log_rpow (by linarith)] at this
-                      have := Real.log_two_lt_d9; norm_num at *; linarith
-                    rw [div_le_div_iff₀ (by nlinarith)
-                      (Real.rpow_pos_of_pos (by linarith) (3 / 2))]
-                    refine (mul_le_mul_of_nonneg_right (pow_le_pow_left₀
-                      (Real.log_nonneg (by linarith)) h_log_bound 2)
-                      (by exact Real.rpow_nonneg (by linarith) _)).trans ?_
-                    ring_nf
-                    norm_num
-                    rw [← Real.rpow_natCast, ← Real.rpow_mul (by linarith),
-                      ← Real.rpow_add (by linarith)]
-                    norm_num
-                  have h_integrable :
-                      MeasureTheory.IntegrableOn (fun t ↦ 4 / t^(3/2 : ℝ)) (Set.Ioi T) := by
-                    have h_integrable :
-                        MeasureTheory.IntegrableOn (fun t ↦ t ^ (-3 / 2 : ℝ)) (Set.Ioi T) :=
-                      integrableOn_Ioi_rpow_of_lt (by norm_num) (by linarith)
-                    norm_num [div_eq_mul_inv] at *
-                    exact MeasureTheory.Integrable.const_mul (h_integrable.congr_fun
-                      (fun x hx ↦ by simp only []; rw [Real.rpow_neg (by linarith [hx.out])])
-                      measurableSet_Ioi) _
-                  refine h_integrable.mono' ?_ ?_
-                  · refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_Ioi
-                    have hne : ∀ t ∈ Set.Ioi T, t ≠ 0 := fun t ht ↦ by linarith [ht.out]
-                    have hsq : ∀ t ∈ Set.Ioi T, t ^ 2 ≠ 0 := fun t ht ↦ pow_ne_zero 2 (hne t ht)
-                    fun_prop (discharger := assumption)
-                  · filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Ioi]
-                      with t ht using by
-                        rw [Real.norm_of_nonneg (by positivity)]
-                        exact h_bound t ht
-                rw [MeasureTheory.IntegrableOn, MeasureTheory.Measure.restrict_congr_set
-                  MeasureTheory.Ioi_ae_eq_Ici] at *
-                simp_all only [one_div, mem_Ioo, ofReal_inv, Complex.norm_mul, Complex.norm_div,
-                  norm_neg, log_neg_eq_log, even_two, Even.neg_pow]
-              have h_integrable : MeasureTheory.IntegrableOn (fun t ↦
-                  (Real.log (-t))^2 / (-t)^2) (Set.Iic (-T)) := by
-                convert h_integrable.comp_neg using 1; norm_num [Set.indicator]
-              simpa only [mul_div_assoc] using h_integrable.const_mul _
-            · filter_upwards [MeasureTheory.ae_restrict_mem measurableSet_Iic] with t ht
-                using hC₁ εinIoo Xgt3 Tgt3 t ht
-            · convert mul_le_mul_of_nonneg_left (hC₂ Tgt3) (show 0 ≤ C₁ * (X / ε) by
-                exact mul_nonneg hC₁_pos.le
-                  (div_nonneg (by positivity) (by linarith [εinIoo.1]))) using 1 <;> ring_nf
-              rw [← MeasureTheory.integral_const_mul, MeasureTheory.integral_Ici_eq_integral_Ioi,
-                ← neg_neg T, ← integral_comp_neg_Iic]
-              norm_num
-              ring_nf
-    obtain ⟨C, hC₀, hC⟩ := h_I1New_bound; use C / (2 * Real.pi)
-    refine ⟨by positivity, fun {ε X T} hε hX hT ↦ ?_⟩
-    simp_all [div_eq_mul_inv, mul_assoc, mul_comm, mul_left_comm]
-    ring_nf at *
-    convert! mul_le_mul_of_nonneg_right (hC hε.1 hε.2 hX hT)
-      (show (0 : ℝ) ≤ Real.pi⁻¹ * (1 / 2) by positivity) using 1
-    · simp only [I1New, SmoothedChebyshevIntegrand, norm_mul, norm_inv, Complex.norm_I,
-        Complex.norm_two, mul_one, one_mul, one_div]
-      rw [show ∀ a b : ℝ, (2 * a)⁻¹ * b = b * (a⁻¹ * 2⁻¹) by intro _ _; ring]
-      congr 1
-      · apply congr_arg
-        apply MeasureTheory.setIntegral_congr_fun measurableSet_Iic fun t _ ↦ by
-          rw [show (↑t : ℂ) * I = I * ↑t by ring, div_eq_mul_inv, neg_mul,
-              show (↑(Real.log X)⁻¹ : ℂ) = (↑(Real.log X))⁻¹ from Complex.ofReal_inv _]
-          ring
-      · rw [show ‖(↑π : ℂ)‖ = π from (RCLike.norm_ofReal π).trans (abs_of_pos Real.pi_pos)]
-    · ring
-
 set_option backward.isDefEq.respectTransparency false in
-@[blueprint
-  (title := "I5NewBound")
-  (statement := /--
-    We have that
-    $$|I_5(\nu,\varepsilon,X,T)|\ll\frac{X}{\varepsilon\sqrt{T}}.$$
-  -/)
-  (proof := /--
-    By symmetry, note that
-    $$|I_1(\nu,\varepsilon,X,T)|=|\overline{I_5(\nu,\varepsilon,X,T)}|=|I_5(\nu,\varepsilon,X,T)|.$$
-    Applying Lemma \ref{I1NewBound} completes the proof.
-  -/)
-  (latexEnv := "lemma")]
-lemma I5NewBound {SmoothingF : ℝ → ℝ}
-    (suppSmoothingF : Function.support SmoothingF ⊆ Icc (1 / 2) 2)
-    (ContDiffSmoothingF : ContDiff ℝ 1 SmoothingF) :
-    ∃ (C : ℝ) (_ : 0 ≤ C),
-      ∀ {ε X T : ℝ} (_ : ε ∈ Ioo 0 1) (_ : 3 < X) (_ : 3 < T),
-        ‖I5New SmoothingF ε X T‖ ≤ C * (X / (ε * Real.sqrt T)) := by
-    obtain ⟨C, Cnonneg, hI1NewBound⟩ := I1NewBound suppSmoothingF ContDiffSmoothingF
-    use C, Cnonneg
-    intro ε X T εinIoo Xgt3 Tgt3
-    have I1NewI5New : I5New SmoothingF ε X T = conj (I1New SmoothingF ε X T) := by
-        unfold I1New I5New
-        simp only [map_mul, map_div₀, conj_I, conj_ofReal, conj_ofNat, map_one]
-        rw [neg_mul, mul_neg, ← neg_mul]
-        congr
-        · ring
-        · rw [← integral_conj, ← integral_comp_neg_Ioi, integral_Ici_eq_integral_Ioi]
-          apply setIntegral_congr_fun <| measurableSet_Ioi
-          intro x hx; simp only []
-          rw [← smoothedChebyshevIntegrand_conj (by linarith)]
-          simp [ofReal_inv, ofReal_neg, neg_mul, map_add, map_one, map_inv₀, conj_ofReal,
-            map_neg, map_mul, conj_I, mul_neg, neg_neg]
-    rw [I1NewI5New, RCLike.norm_conj]
-    exact hI1NewBound εinIoo Xgt3 Tgt3
-
-
 
 @[blueprint
   (title := "I2New")
@@ -2219,8 +1677,6 @@ noncomputable def I2New (SmoothingF : ℝ → ℝ) (ε T X σ' : ℝ) : ℂ :=
   (1 / (2 * π * I)) * ((∫ σ₀ in σ'..(1 + (Real.log X)⁻¹),
     SmoothedChebyshevIntegrand SmoothingF ε X (σ₀ - T * I)))
 
-
-
 @[blueprint
   (title := "I4New")
   (statement := /--
@@ -2233,81 +1689,6 @@ noncomputable def I4New (SmoothingF : ℝ → ℝ) (ε T X σ' : ℝ) : ℂ :=
   (1 / (2 * π * I)) * ((∫ σ₀ in σ'..(1 + (Real.log X)⁻¹),
     SmoothedChebyshevIntegrand SmoothingF ε X (σ₀ + T * I)))
 
-
-
-@[blueprint
-  (title := "I2NewBound")
-  (statement := /--
-    We have that
-    $$|I_2(\nu,\varepsilon,X,T)|\ll\frac{X}{\varepsilon\sqrt{T}}.$$
-  -/)
-  (proof := /--
-    Note that $|I_2(\nu,\varepsilon,X,T)|=$
-    $$\left|\frac{1}{2\pi i}\int_{\sigma'}^\sigma\left(-\frac{\zeta'}{\zeta}(\sigma_0-iT)\right)
-      \,\mathcal{M}(\tilde{1}_\varepsilon)(\sigma_0-iT)\,X^{\sigma_0-iT}\,d\sigma_0\right|
-      \ll\int_{\sigma'}^\sigma\left|\frac{\zeta'}{\zeta}(\sigma_0-iT)\right|
-      \cdot|\mathcal{M}(\tilde{1}_\varepsilon)(\sigma_0-iT)|\cdot X^{\sigma_0}\,d\sigma_0.$$
-    Applying Theorem \ref{LogDerivZetaUniformLogSquaredBound} and Lemma \ref{MellinOfSmooth1b},
-    we have that
-    $$|I_2(\nu,\varepsilon,X,T)|\ll\int_{\sigma'}^\sigma\log^2 T
-      \cdot\frac{X^{\sigma_0}}{\varepsilon\,|\sigma_0-iT|^2}\,d\sigma_0
-      \ll\frac{X\,\log^2T}{\varepsilon\,T^2}\int_{\sigma'}^\sigma d\,\sigma_0
-      =\frac{X\,\log^2T}{\varepsilon\,T^2}\,(\sigma-\sigma').$$
-    Here we are using the fact that $X^{\sigma_0}\leq X^\sigma=X\cdot X^{1/\log X}=eX$
-    and $|\sigma_0-iT|^2\geq T^2$. Now note that
-    $$|I_2(\nu,\varepsilon,X,T)|\ll\frac{X\,\log^2T}{\varepsilon\,T^2}\,(\sigma-\sigma')
-      =\frac{X\,\log^2T}{\varepsilon\,T^2\,\log X}+\frac{FX\,\log T}{\varepsilon\,T^2}
-      \ll\frac{X}{\varepsilon\sqrt{T}}.$$
-    Here we are using the fact that $\log T\ll T^{3/2}$, $\log^2T\ll T^{3/2}$, and $X/\log X\ll X$.
-  -/)
-  (proofUses := ["LogDerivZetaUniformLogSquaredBound", "MellinOfSmooth1b"])
-  (latexEnv := "lemma")]
-lemma I2NewBound {SmoothingF : ℝ → ℝ}
-    (suppSmoothingF : Function.support SmoothingF ⊆ Icc (1 / 2) 2)
-    (ContDiffSmoothingF : ContDiff ℝ 1 SmoothingF) : ∃ (C : ℝ) (Cnonneg : 0 ≤ C),
-    ∀ {ε X T : ℝ} (εinIoo : ε ∈ Ioo 0 1) (Xgt3 : 3 < X) (Tgt3 : 3 < T),
-    let σ' := 1 - F / Real.log T
-    ‖I2New SmoothingF ε X T σ'‖ ≤ C * (X / (ε * Real.sqrt T)) := by
-    sorry
-
-
-
-@[blueprint
-  (title := "I4NewBound")
-  (statement := /--
-    We have that
-    $$|I_4(\nu,\varepsilon,X,T)|\ll\frac{X}{\varepsilon\sqrt{T}}.$$
-  -/)
-  (proof := /--
-    By symmetry, note that
-    $$|I_2(\nu,\varepsilon,X,T)|=|\overline{I_4(\nu,\varepsilon,X,T)}|=|I_4(\nu,\varepsilon,X,T)|.$$
-    Applying Lemma \ref{I2NewBound} completes the proof.
-  -/)
-  (latexEnv := "lemma")]
-lemma I4NewBound {SmoothingF : ℝ → ℝ}
-    (suppSmoothingF : Function.support SmoothingF ⊆ Icc (1 / 2) 2)
-    (ContDiffSmoothingF : ContDiff ℝ 1 SmoothingF) :
-    ∃ (C : ℝ) (_ : 0 ≤ C),
-      ∀ {ε X T : ℝ} (_ : ε ∈ Ioo 0 1) (_ : 3 < X) (_ : 3 < T),
-        let σ' := 1 - F / Real.log T
-        ‖I4New SmoothingF ε X T σ'‖ ≤ C * (X / (ε * Real.sqrt T)) := by
-    obtain ⟨C, Cnonneg, hI2NewBound⟩ := I2NewBound suppSmoothingF ContDiffSmoothingF
-    use C, Cnonneg
-    intro ε X T εinIoo Xgt3 Tgt3 σ'
-    have I2NewI4New : I4New SmoothingF ε X T σ' = -conj (I2New SmoothingF ε X T σ') := by
-        unfold I2New I4New
-        simp only [map_mul, map_div₀, conj_I, conj_ofReal, conj_ofNat, map_one]
-        rw [mul_neg, div_neg, neg_mul_comm, ← mul_neg]
-        congr
-        rw [← intervalIntegral_conj, neg_neg]
-        exact intervalIntegral.integral_congr fun x hx ↦ by
-          rw [← smoothedChebyshevIntegrand_conj (by linarith)]
-          simp [map_sub, map_mul, conj_I, mul_neg, sub_neg_eq_add]
-    rw [I2NewI4New, norm_neg, RCLike.norm_conj]
-    exact hI2NewBound εinIoo Xgt3 Tgt3
-
-
-
 @[blueprint
   (title := "I3New")
   (statement := /--
@@ -2319,48 +1700,6 @@ lemma I4NewBound {SmoothingF : ℝ → ℝ}
 noncomputable def I3New (SmoothingF : ℝ → ℝ) (ε T X σ' : ℝ) : ℂ :=
   (1 / (2 * π * I)) * (I * (∫ t in (-T)..T,
     SmoothedChebyshevIntegrand SmoothingF ε X (σ' + t * I)))
-
-
-
-@[blueprint
-  (title := "I3NewBound")
-  (statement := /--
-    We have that
-    $$|I_3(\nu,\varepsilon,X,T)|\ll\frac{X^{1-F/\log T}\sqrt{T}}{\varepsilon}.$$
-  -/)
-  (proof := /--
-    Note that $|I_3(\nu,\varepsilon,X,T)|=$
-    $$\left|\frac{1}{2\pi i}\int_{-T}^T\left(-\frac{\zeta'}{\zeta}(\sigma'+it)\right)
-      \,\mathcal{M}(\tilde{1}_\varepsilon)(\sigma'+it)\,X^{\sigma'+it}\,dt\right|
-      \ll\int_{-T}^T\left|\frac{\zeta'}{\zeta}(\sigma'+it)\right|
-      \cdot|\mathcal{M}(\tilde{1}_\varepsilon)(\sigma'+it)|\cdot X^{\sigma'}\,dt.$$
-    Applying Theorem \ref{LogDerivZetaLogSquaredBoundSmallt} and Lemma \ref{MellinOfSmooth1b},
-    we have that
-    $$|I_3(\nu,\varepsilon,X,T)|\ll\int_{-T}^T\log^2(2+T)
-      \cdot\frac{X^{\sigma'}}{\varepsilon\,|\sigma'+it|^2}\,dt
-      \ll\frac{X^{1-F/\log T}\,\sqrt{T}}{\varepsilon}\int_0^T\frac{dt}{|\sigma'+it|^2}.$$
-    Here we are using the fact that this integrand is symmetric in $t$ about $0$
-    and that $\log^2(2+T)\ll\sqrt{T}$ for sufficiently large $T$. Now note that,
-    by Lemma \ref{DeltaRange}, we have
-    $$\frac{1}{|\sigma'+it|^2}=\frac{1}{(1-\delta_T/3)^2+t^2}<\frac{1}{(41/42)^2+t^2}.$$
-    Thus,
-    $$|I_3(\nu,\varepsilon,X,T)|
-      \ll\frac{X^{1-F/\log T}\sqrt{T}}{\varepsilon}\int_0^T\frac{dt}{|\sigma'+it|^2}
-      \leq\frac{X^{1-F/\log T}\sqrt{T}}{\varepsilon}\int_0^\infty\frac{dt}{(41/42)^2+t^2}.$$
-    The integral on the right hand side evaluates to $21\pi/41$, which is just a constant,
-    so the desired result follows.
-  -/)
-  (proofUses := ["MellinOfSmooth1b", "DeltaRange", "LogDerivZetaLogSquaredBoundSmallt"])
-  (latexEnv := "lemma")]
-lemma I3NewBound {SmoothingF : ℝ → ℝ}
-    (suppSmoothingF : Function.support SmoothingF ⊆ Icc (1 / 2) 2)
-    (ContDiffSmoothingF : ContDiff ℝ 1 SmoothingF) : ∃ (C : ℝ) (Cnonneg : 0 ≤ C),
-    ∀ {ε X T : ℝ} (εinIoo : ε ∈ Ioo 0 1) (Xgt3 : 3 < X) (Tgt3 : 3 < T),
-    let σ' := 1 - F / Real.log T
-    ‖I3New SmoothingF ε X T σ'‖ ≤ C * (X ^ (1 - F / Real.log T) * Real.sqrt T) / ε := by
-    sorry
-
-
 
 @[blueprint
   (title := "SmoothedChebyshevPull3")
@@ -2500,8 +1839,6 @@ theorem SmoothedChebyshevPull3 {SmoothingF : ℝ → ℝ} {ε : ℝ} (ε_pos : 0
                 simp only [one_mul, f]; exact riemannZetaLogDerivResidueBigO
             convert ResidueMult g_holc pInRectangleInterior f_near_p using 1
             ext; simp [f, g]; ring
-
-
 
 blueprint_comment /--
 \begin{theorem}[StrongPNT]\label{StrongPNT}

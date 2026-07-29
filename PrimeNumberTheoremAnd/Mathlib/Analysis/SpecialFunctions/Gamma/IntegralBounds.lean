@@ -26,9 +26,10 @@ completed zeta functions. These follow from the Euler integral representation an
 * [DLMF], §5.2.1 for the Euler integral representation
 -/
 
+@[expose] public section
+
 open Real Complex Set MeasureTheory
 
-@[expose] public section
 
 noncomputable section
 

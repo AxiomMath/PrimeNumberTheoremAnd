@@ -1,15 +1,19 @@
-import Architect
-import Mathlib.Analysis.Fourier.RiemannLebesgueLemma
-import Mathlib.Analysis.Normed.Group.Tannery
-import Mathlib.Analysis.SumIntegralComparisons
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.LSeries.PrimesInAP
-import Mathlib.NumberTheory.MulChar.Lemmas
-import Mathlib.Topology.EMetricSpace.BoundedVariation
-import PrimeNumberTheoremAnd.Mathlib.Analysis.Asymptotics.Asymptotics
-import PrimeNumberTheoremAnd.Fourier
-import PrimeNumberTheoremAnd.SmoothExistence
-import Mathlib.Analysis.Convolution
+module
+
+public import Architect
+public import Mathlib.Analysis.Fourier.RiemannLebesgueLemma
+public import Mathlib.Analysis.Normed.Group.Tannery
+public import Mathlib.Analysis.SumIntegralComparisons
+public import Mathlib.NumberTheory.Chebyshev
+public import Mathlib.NumberTheory.LSeries.PrimesInAP
+public import Mathlib.NumberTheory.MulChar.Lemmas
+public import Mathlib.Topology.EMetricSpace.BoundedVariation
+public import PrimeNumberTheoremAnd.Mathlib.Analysis.Asymptotics.Asymptotics
+public import PrimeNumberTheoremAnd.Fourier
+public import PrimeNumberTheoremAnd.SmoothExistence
+public import Mathlib.Analysis.Convolution
+
+@[expose] public section
 
 set_option lang.lemmaCmd true
 set_option linter.style.header false
@@ -162,8 +166,6 @@ lemma first_fourier (hf : ∀ (σ' : ℝ), 1 < σ' → Summable (nterm f σ'))
         rw [norm_term_eq_nterm_re]
         simp
 
-
-
 @[continuity]
 lemma continuous_multiplicative_ofAdd : Continuous (⇑Multiplicative.ofAdd : ℝ → ℝ) := ⟨fun _ ↦ id⟩
 
@@ -308,80 +310,8 @@ lemma one_add_sq_pos (u : ℝ) : 0 < 1 + u ^ 2 := zero_lt_one.trans_le (by simpa
 theorem prelim_decay (ψ : ℝ → ℂ) (u : ℝ) : ‖𝓕 (ψ : ℝ → ℂ) u‖ ≤ ∫ t, ‖ψ t‖ :=
   VectorFourier.norm_fourierIntegral_le_integral_norm ..
 
-@[blueprint "prelim-decay-2"
-  (title := "Preliminary decay bound II")
-  (statement := /--
-If $\psi:\R \to \C$ is absolutely integrable and of bounded variation, then
-$$ |\hat \psi(u)| \leq \| \psi \|_{TV} / 2\pi |u| $$
-for all non-zero $u \in \R$.
-  -/)
-  (proof := /-- By Lebesgue--Stiejtes integration by parts we have
-$$ 2\pi i u \hat \psi(u) = \int _\R e(-tu) d\psi(t)$$
-and the claim then follows from the triangle inequality. -/)
-  (latexEnv := "lemma")
-  (discussion := 562)]
-theorem prelim_decay_2 (ψ : ℝ → ℂ) (hψ : Integrable ψ) (hvar : BoundedVariationOn ψ Set.univ)
-    (u : ℝ) (hu : u ≠ 0) :
-    ‖𝓕 (ψ : ℝ → ℂ) u‖ ≤ (eVariationOn ψ Set.univ).toReal / (2 * π * ‖u‖) := by sorry
-
 noncomputable def AbsolutelyContinuous (f : ℝ → ℂ) : Prop := (∀ᵐ x, DifferentiableAt ℝ f x) ∧
   ∀ a b : ℝ, f b - f a = ∫ t in a..b, deriv f t
-
-@[blueprint "prelim-decay-3"
-  (title := "Preliminary decay bound III")
-  (statement := /--
-If $\psi:\R \to \C$ is absolutely integrable, absolutely continuous, and $\psi'$ is of bounded
-variation, then
-$$ |\hat \psi(u)| \leq \| \psi' \|_{TV} / (2\pi |u|)^2$$
-for all non-zero $u \in \R$.
-  -/)
-  (proof := /-- Should follow from previous lemma. -/)
-  (proofUses := ["prelim-decay-2"])
-  (latexEnv := "lemma")
-  (discussion := 563)]
-theorem prelim_decay_3 (ψ : ℝ → ℂ) (hψ : Integrable ψ)
-    (habscont : AbsolutelyContinuous ψ)
-    (hvar : BoundedVariationOn (deriv ψ) Set.univ) (u : ℝ) (hu : u ≠ 0) :
-    ‖𝓕 (ψ : ℝ → ℂ) u‖ ≤ (eVariationOn (deriv ψ) Set.univ).toReal / (2 * π * ‖u‖) ^ 2 := by sorry
-
-@[blueprint "decay-alt"
-  (title := "Decay bound, alternate form")
-  (statement := /--
-If $\psi:\R \to \C$ is absolutely
-integrable, absolutely continuous, and $\psi'$ is of bounded variation, then
-$$ |\hat \psi(u)| \leq ( \|\psi\|_1 + \| \psi' \|_{TV} / (2\pi)^2) / (1+|u|^2)$$
-for all $u \in \R$.  -/)
-  (proof := /-- Should follow from previous lemmas. -/)
-  (proofUses := ["prelim-decay", "prelim-decay-3", "decay"])
-  (latexEnv := "lemma")
-  (discussion := 564)]
-theorem decay_alt (ψ : ℝ → ℂ) (hψ : Integrable ψ) (habscont : AbsolutelyContinuous ψ)
-    (hvar : BoundedVariationOn (deriv ψ) Set.univ) (u : ℝ) :
-    ‖𝓕 (ψ : ℝ → ℂ) u‖ ≤
-      ((∫ t, ‖ψ t‖) + (eVariationOn (deriv ψ) Set.univ).toReal / (2 * π) ^ 2) /
-        (1 + ‖u‖ ^ 2) := by
-  rw [le_div_iff₀' <| one_add_sq_pos ‖u‖]
-  by_cases hu : u = 0
-  · subst hu
-    simp only [norm_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, add_zero,
-      one_mul]
-    calc ‖𝓕 ψ 0‖ ≤ ∫ t, ‖ψ t‖ := prelim_decay ψ 0
-      _ ≤ (∫ t, ‖ψ t‖) + (eVariationOn (deriv ψ) Set.univ).toReal / (2 * π) ^ 2 := by
-          have : 0 ≤ (eVariationOn (deriv ψ) Set.univ).toReal / (2 * π) ^ 2 := by positivity
-          linarith
-  · have bound1 : ‖𝓕 ψ u‖ ≤ ∫ t, ‖ψ t‖ := prelim_decay ψ u
-    have bound2 : ‖𝓕 ψ u‖ ≤ (eVariationOn (deriv ψ) Set.univ).toReal / (2 * π * ‖u‖) ^ 2 :=
-      prelim_decay_3 ψ hψ habscont hvar u hu
-    have : (2 * π * ‖u‖) ^ 2 = (2 * π) ^ 2 * ‖u‖ ^ 2 := by ring
-    calc (1 + ‖u‖ ^ 2) * ‖𝓕 ψ u‖
-        = ‖𝓕 ψ u‖ * 1 + ‖𝓕 ψ u‖ * ‖u‖ ^ 2 := by ring
-      _ ≤ (∫ t, ‖ψ t‖) * 1 +
-            (eVariationOn (deriv ψ) Set.univ).toReal / (2 * π * ‖u‖) ^ 2 * ‖u‖ ^ 2 := by
-          gcongr
-      _ = (∫ t, ‖ψ t‖) + (eVariationOn (deriv ψ) Set.univ).toReal / (2 * π) ^ 2 := by
-          rw [mul_one, this, div_mul_eq_div_div]
-          congr 1
-          rw [div_mul_eq_mul_div, div_eq_iff (pow_ne_zero 2 <| norm_ne_zero_iff.mpr hu)]
 
 lemma decay_bounds_key (f : W21) (u : ℝ) : ‖𝓕 (f : ℝ → ℂ) u‖ ≤ ‖f‖ * (1 + u ^ 2)⁻¹ := by
   have l1 : 0 < 1 + u ^ 2 := one_add_sq_pos _
@@ -468,10 +398,6 @@ lemma W21.integrable_fourier (ψ : W21) (hc : c ≠ 0) :
   obtain ⟨C, h⟩ := decay_bounds_cor ψ
   apply @Integrable.mono' ℝ ℂ _ volume _ _ (fun u => C / (1 + (u / c) ^ 2)) (l1 C) l2 ?_
   apply Eventually.of_forall (fun x => h _)
-
-
-
-
 
 lemma continuous_LSeries_aux (hf : Summable (nterm f σ')) :
     Continuous fun x : ℝ => LSeries f (σ' + x * I) := by
@@ -1139,9 +1065,6 @@ lemma limiting_fourier (hcheby : cheby f)
   apply tendsto_nhds_unique_of_eventuallyEq (l1.sub l2) l3
   simpa [eventuallyEq_nhdsWithin_iff] using! Eventually.of_forall (limiting_fourier_aux hG' hf ψ hx)
 
-
-
-
 set_option backward.isDefEq.respectTransparency false in
 lemma limiting_cor_aux {f : ℝ → ℂ} : Tendsto (fun x : ℝ ↦ ∫ t, f t * x ^ (t * I)) atTop (𝓝 0) := by
 
@@ -1188,10 +1111,6 @@ lemma limiting_cor (ψ : CS 2 ℂ) (hf : ∀ (σ' : ℝ), 1 < σ' → Summable (
   filter_upwards [eventually_ge_atTop 1] with x hx using
     limiting_fourier hcheby hG hG' hf ψ hx |>.symm
 
-
-
-
-
 @[blueprint
   "smooth-ury"
   (title := "Smooth Urysohn lemma")
@@ -1211,8 +1130,6 @@ lemma smooth_urysohn (a b c d : ℝ) (h1 : a < b) (h3 : c < d) : ∃ Ψ : ℝ �
 
   obtain ⟨ψ, l1, l2, l3, l4, -⟩ := smooth_urysohn_support_Ioo h1 h3
   refine ⟨ψ, l1, l2, l3, l4⟩
-
-
 
 noncomputable def exists_trunc : trunc := by
   choose ψ h1 h2 h3 h4 using smooth_urysohn (-2) (-1) (1) (2) (by linarith) (by linarith)
@@ -1713,7 +1630,6 @@ lemma bound_main {C : ℝ} (A : ℂ) (x : ℝ) (hx : 1 ≤ x) (ψ : W21)
   apply norm_sub_le _ _ |>.trans ; rw [norm_mul]
   convert _root_.add_le_add l1 l2 using 1 ; ring
 
-
 set_option backward.isDefEq.respectTransparency false in
 lemma limiting_cor_W21 (ψ : W21) (hf : ∀ (σ' : ℝ), 1 < σ' → Summable (nterm f σ'))
     (hcheby : cheby f) (hG : ContinuousOn G {s | 1 ≤ s.re})
@@ -1814,10 +1730,6 @@ lemma limiting_cor_schwartz (ψ : 𝓢(ℝ, ℂ)) (hf : ∀ (σ' : ℝ), 1 < σ'
       A * ∫ u in Set.Ici (-log x), 𝓕 (ψ : ℝ → ℂ) (u / (2 * π))) atTop (𝓝 0) :=
   limiting_cor_W21 ψ hf hcheby hG hG'
 
-
-
-
-
 -- just the surjectivity is stated here, as this is all that is needed for the current
 -- application, but perhaps one should state and prove bijectivity instead
 
@@ -1840,9 +1752,6 @@ lemma limiting_cor_schwartz (ψ : 𝓢(ℝ, ℂ)) (hf : ∀ (σ' : ℝ), 1 < σ'
 lemma fourier_surjection_on_schwartz (f : 𝓢(ℝ, ℂ)) : ∃ g : 𝓢(ℝ, ℂ), 𝓕 g = f := by
   refine ⟨𝓕⁻ f, ?_⟩
   exact FourierTransform.fourier_fourierInv_eq f
-
-
-
 
 noncomputable def toSchwartz (f : ℝ → ℂ) (h1 : ContDiff ℝ ∞ f)
     (h2 : HasCompactSupport f) : 𝓢(ℝ, ℂ) where
@@ -1939,8 +1848,6 @@ theorem wiener_ikehara_smooth_sub (h1 : Integrable Ψ)
     rw [abs_le] ; constructor <;> linarith
   simp [ht]
 
-
-
 @[blueprint
   "WienerIkeharaSmooth"
   (title := "Smoothed Wiener-Ikehara")
@@ -2012,8 +1919,6 @@ lemma wiener_ikehara_smooth (hf : ∀ (σ' : ℝ), 1 < σ' → Summable (nterm f
     exact wiener_ikehara_smooth_sub (hsmooth.continuous.integrable_of_hasCompactSupport hsupp) hplus
 
   simpa [tsum_div_const] using (key.congr' <| EventuallyEq.sub l2 l3) |>.add l4
-
-
 
 lemma wiener_ikehara_smooth' (hf : ∀ (σ' : ℝ), 1 < σ' → Summable (nterm f σ')) (hcheby : cheby f)
     (hG : ContinuousOn G {s | 1 ≤ s.re})
@@ -2298,8 +2203,6 @@ lemma WienerIkeharaInterval {f : ℕ → ℝ} (hpos : 0 ≤ f) (hf : ∀ (σ' : 
   have : liminf (S Iab) atTop ≤ limsup (S Iab) atTop := liminf_le_limsup Iab2 Iab3
   refine tendsto_of_liminf_eq_limsup ?_ ?_ Iab2 Iab3 <;> linarith
 
-
-
 lemma le_floor_mul_iff (hb : 0 ≤ b) (hx : 0 < x) : n ≤ ⌊b * x⌋₊ ↔ n / x ≤ b := by
   rw [div_le_iff₀ hx, Nat.le_floor_iff] ; positivity
 
@@ -2336,8 +2239,6 @@ lemma WienerIkeharaInterval_discrete' {f : ℕ → ℝ} (hpos : 0 ≤ f) (hf : �
   WienerIkeharaInterval_discrete hpos hf hcheby hG hG' ha hb |>.comp tendsto_natCast_atTop_atTop
 
 -- TODO with `Ico`
-
-
 
 /-- A version of the *Wiener-Ikehara Tauberian Theorem*: If `f` is a nonnegative arithmetic
 function whose L-series has a simple pole at `s = 1` with residue `A` and otherwise extends
@@ -2697,7 +2598,6 @@ lemma limiting_fourier_variant_lim1_aux
       _ ≤ base n * C := mul_le_mul_of_nonneg_left (hW_le_C n) hbase_nonneg
       _ = C * base n := mul_comm _ _
 
-
 theorem limiting_fourier_variant_lim1
     {f : ℕ → ℝ} {x : ℝ} {ψ : CS 2 ℂ}
     (hpos : 0 ≤ f)
@@ -2986,9 +2886,6 @@ theorem limiting_fourier_variant_lim1
 
   simpa [hsource, htarget, y] using hToReal
 
-
-
-
 blueprint_comment /--
 \section{Removing the Chebyshev hypothesis}
 
@@ -3031,7 +2928,6 @@ lemma limiting_fourier_variant
           𝓕 (W21.ofCS2 ψ).toFun (u / (2 * π))
   let RHS : ℝ → ℂ := fun σ' =>
     ∫ t : ℝ, G (σ' + t * I) * ψ.toFun t * (x : ℂ) ^ (t * I)
-
 
   have haux :
     (fun σ' ↦
@@ -3155,7 +3051,6 @@ lemma limiting_fourier_variant
     tendsto_nhds_unique_of_eventuallyEq (l1S.sub l2) l3 haux_sub
 
   simpa [Pole₁, RHS₁] using! hlim
-
 
 lemma norm_mul_integral_Ici_le_integral_norm
     (A : ℂ) (F : ℝ → ℂ) (a : ℝ)
@@ -3325,7 +3220,6 @@ lemma norm_integrand_le_K_mul_norm_psi
       exact ht (by simpa [Function.support] using hψ0)
     simp [hψ0, mul_comm]
 
-
 lemma norm_error_integral_le
     (ψ : ℝ → ℂ) (x K : ℝ)
     (hGline_meas : Measurable (fun t : ℝ => G (1 + t * I)))
@@ -3383,8 +3277,6 @@ lemma norm_error_integral_le
         ≤ ∫ t : ℝ, ‖(G (1 + t * Complex.I)) * (ψ t) * ((x : ℂ) ^ (t * Complex.I))‖ := h1
     _   ≤ ∫ t : ℝ, K * ‖ψ t‖ := h2
     _   = K * (∫ t : ℝ, ‖ψ t‖) := h3
-
-
 
 @[blueprint "crude-upper-bound"
   (title := "crude-upper-bound")
@@ -3624,7 +3516,6 @@ lemma auto_cheby_exists_smooth_nonneg_fourier_kernel :
     rw [Real.fourierIntegral_convolution hφInt hφRevInt, Pi.mul_apply,
       Real.fourierIntegral_conj_neg 0, mul_comm, ← Complex.normSq_eq_conj_mul_self]
     exact Complex.normSq_pos.2 (fun h ↦ (ne_of_gt hFφ0_re) (by simp [h]))
-
 
 /-- The series `∑ f(n)/n · 𝓕ψ(log(n/x)/(2π))` is summable for `x ≥ 1`. -/
 lemma auto_cheby_fourier_summable (hpos : 0 ≤ f) (hf : ∀ σ', 1 < σ' → Summable (nterm f σ'))
@@ -3947,7 +3838,6 @@ theorem WeakPNT_character
     rw [starRingEnd_apply, MulChar.star_apply', MulChar.inv_apply_eq_inv',
       ← ZMod.coe_unitOfCoprime a ha, ZMod.inv_coe_unit, map_units_inv]
 
-
 @[blueprint "WeakPNT-AP-prelim"
   (title := "WeakPNT-AP-prelim")
   (statement := /--
@@ -4045,7 +3935,6 @@ theorem WeakPNT_AP {q : ℕ} {a : ℕ} (hq : q ≥ 1) (ha : a.Coprime q) (ha' : 
   · convert hG₂ using 3
     · exact tsum_congr fun n ↦ by cases n <;> aesop
     · norm_num [div_eq_mul_inv, mul_assoc, mul_comm, mul_left_comm]
-
 
 blueprint_comment /--
 \section{The Chebotarev density theorem: the case of cyclotomic extensions}

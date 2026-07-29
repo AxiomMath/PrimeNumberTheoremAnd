@@ -11,7 +11,6 @@ public import Mathlib.Analysis.Meromorphic.Divisor
 public import Mathlib.Analysis.Meromorphic.Order
 public import Mathlib.Analysis.Analytic.Order
 
-
 /-!
 # Fibers of the divisor index type
 

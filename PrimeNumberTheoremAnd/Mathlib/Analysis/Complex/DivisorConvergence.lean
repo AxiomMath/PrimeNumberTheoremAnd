@@ -10,7 +10,6 @@ public import PrimeNumberTheoremAnd.Mathlib.Analysis.Complex.LocallyUniformLimit
 public import Mathlib.Analysis.Calculus.LogDerivUniformlyOn
 public import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn
 
-
 /-!
 # Convergence and holomorphy of divisor-indexed canonical products
 

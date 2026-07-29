@@ -1,6 +1,11 @@
-import Mathlib.Analysis.Meromorphic.NormalForm
-import PrimeNumberTheoremAnd.IEANTN.CH2.CH2_part1
-import PrimeNumberTheoremAnd.ZetaConj
+module
+
+public import Mathlib.Analysis.Meromorphic.NormalForm
+public import PrimeNumberTheoremAnd.IEANTN.CH2.CH2_part1
+public import PrimeNumberTheoremAnd.ZetaConj
+
+@[expose] public section
+
 open Real MeasureTheory FourierTransform Chebyshev Asymptotics
 open ArithmeticFunction hiding log
 open Complex hiding log
@@ -100,7 +105,6 @@ def LadderParams.admissible_contour (l : LadderParams) : Set ℂ :=
 
 /-- Describes the property that a function is bounded with no poles on a given set -/
 def IsBoundedNoPolesOn (f : ℂ → ℂ) (s : Set ℂ) : Prop := ∃ M, ∀ z ∈ s, ‖f z‖ ≤ M ∧ 0 ≤ meromorphicOrderAt f z
-
 
 /-- The main rectangle the ladder and contour lie in -/
 def LadderParams.R (l : LadderParams) : Set ℂ := { z | z.re ≤ 1 ∧ |z.im| ≤ l.T }
@@ -480,7 +484,6 @@ many poles: points of analyticity contribute `0`, and when only finitely many po
 region the sum collapses to the finite sum of their residues. Summability — i.e. finiteness of the
 pole set in the region — is the implicit hypothesis to supply when formalizing Lemma 5.1. -/
 
-
 /-- The improper sum of residues of `f` over `S`, in the sense of the ladder `l`: sum the residues
 in the truncation `S ∩ {z | σ n < ℜ z}` and let `n → ∞` (so `σ n → -∞` exhausts `S` from the
 right). This is the convention of \cite{CH2} for regions with infinitely many poles --- e.g. the
@@ -503,7 +506,6 @@ section ContourShifting
 `G = G◦ + sgn(ℑ·) G⋆`, and the reals `x₀ ≤ x`. The structural (`Prop`) hypotheses stay explicit
 on each lemma. -/
 variable {l : LadderParams} {G G_circ G_star : ℂ → ℂ} {x₀ x : ℝ}
-
 
 private lemma ae_eq_of_codiscreteWithin_along_path
     {f g : ℂ → ℂ} {R : Set ℂ}
@@ -539,9 +541,6 @@ private lemma horizontalPath_not_eventuallyConst (h : ℝ) (x : ℝ) :
   have := hc.deriv.eq_of_nhds
   simp at this
 
-
-
-
 lemma analyticAt_rpow {x : ℝ} (hx : 0 < x) (s : ℂ) : AnalyticAt ℂ (fun t : ℂ ↦ (x : ℂ) ^ t) s := by
   rw [show (fun t : ℂ ↦ (x : ℂ) ^ t) = fun t : ℂ ↦ Complex.exp (Complex.log (x : ℂ) * t) by
     funext t
@@ -555,7 +554,6 @@ lemma meromorphicOrderAt_rpow {x : ℝ} (hx : 0 < x) (s : ℂ) : meromorphicOrde
   rw [← tendsto_ne_zero_iff_meromorphicOrderAt_eq_zero (meromorphicAt_rpow hx s)]
   refine ⟨_, ?_, (analyticAt_rpow hx s).continuousAt.continuousWithinAt⟩
   exact (Complex.cpow_ne_zero_iff).2 (Or.inl (Complex.ofReal_ne_zero.mpr hx.ne'))
-
 
 private lemma meromorphicOrderAt_nonneg_of_isBoundedNoPolesOn {z : ℂ} {F H : ℂ → ℂ} {S : Set ℂ}
     (hF_mero : MeromorphicAt F z) (hH_mero : MeromorphicAt H z) (hH_order : meromorphicOrderAt H z = 0)
@@ -785,7 +783,6 @@ lemma upperRectangle_meromorphicOn (n : ℕ)
   refine MeromorphicAt.congr ?_ h_eq.symm
   have hx_pos : 0 < x := by linarith
   exact ((hG_circ_mero s hs_R).add (hG_star_mero s hs_R)).mul (meromorphicAt_rpow hx_pos s)
-
 
 private lemma sumResiduesIn_eq_of_inter_poles_eq_and_subset {F : ℂ → ℂ} {Rn S2 : Set ℂ}
     (hRn_mero : MeromorphicOn F Rn)
@@ -1685,7 +1682,6 @@ lemma sumResiduesIn_lowerRectangle_eq_sumResiduesIn_RposBar (l : LadderParams) (
     exact ⟨by simpa using le_of_lt hs_S2'.2, by simpa using hs_S2'.1.1,
       by simpa using hs_S2'.1.2.1, by simpa using hs_S2'.1.2.2⟩
   exact sumResiduesIn_eq_of_inter_poles_eq_and_subset hRn_mero h_set_eq hS2_subset
-
 
 private lemma lower_Rboundary_no_poles (l : LadderParams)
     (hG : ∀ s, G s = G_circ s + (Real.sign s.im : ℂ) * G_star s)
@@ -4304,60 +4300,5 @@ blueprint_comment /--
 
 TODO: incorporate material from \cite[Section 7]{CH2} onwards.
 -/
-
-
-
-@[blueprint
-  "CH2-cor-1-2-a"
-  (title := "Corollary 1.2, part a")
-  (statement := /--
-  Assume the Riemann hypothesis holds up to height $T \geq 10^7$. For $x > \max(T,10^9)$,
-$$|\psi(x) - x \cdot \frac{\pi}{T} \coth(\frac{\pi}{T})| \leq \frac{\pi}{T-1} \cdot x + \left(\frac{1}{2\pi} \log^2(T/(2\pi)) - \frac{1}{6\pi} \log(T/(2\pi))\right) \sqrt{x},$$
-  -/)
-  (proof := /-- TBD. -/)
-  (latexEnv := "corollary")]
-theorem cor_1_2_a {T x : ℝ} (hT : 1e7 ≤ T) (RH : riemannZeta.RH_up_to T) (hx : max T 1e9 < x) :
-    |ψ x - x * π * T⁻¹ * (coth (π * T⁻¹)).re| ≤
-      π / (T - 1) * x + ((1 / (2 * π)) * log (T / (2 * π)) ^ 2 - (1 / (6 * π)) * log (T / (2 * π))) * Real.sqrt x := by sorry
-
-@[blueprint
-  "CH2-cor-1-2-b"
-  (title := "Corollary 1.2, part b")
-  (statement := /--
-  Assume the Riemann hypothesis holds up to height $T \geq 10^7$. For $x > \max(T,10^9)$,
-$$\left|\sum_{n \leq x} \frac{\Lambda(n)}{n} - (\log x - \gamma)\right| \leq \frac{\pi}{T-1} + \left(\frac{1}{2\pi} \log^2(T/(2\pi)) - \frac{1}{6\pi} \log(T/(2\pi))\right) \frac{1}{\sqrt{x}},$$
-where $\gamma = 0.577215...$ is Euler’s constant.
-  -/)
-  (proof := /-- TBD. -/)
-  (latexEnv := "corollary")]
-theorem cor_1_2_b {T x : ℝ} (hT : 1e7 ≤ T) (RH : riemannZeta.RH_up_to T) (hx : max T 1e9 < x) :
-    |∑ n ∈ Finset.Iic (⌊x⌋₊), Λ n / n - (log x - eulerMascheroniConstant)| ≤
-      π / (T - 1) + ((1 / (2 * π)) * log (T / (2 * π)) ^ 2 - (1 / (6 * π)) * log (T / (2 * π))) / Real.sqrt x := by sorry
-
-@[blueprint
-  "CH2-cor-1-3-a"
-  (title := "Corollary 1.3, part a")
-  (statement := /--
-For $x \geq 1$,
-$$|\psi(x) - x| \leq \pi \cdot 3 \cdot 10^{-12} \cdot x + 113.67 \sqrt{x},$$
-where $\psi(x)$ is the Chebyshev function.
-  -/)
-  (proof := /-- TBD. -/)
-  (latexEnv := "corollary")]
-theorem cor_1_3_a (x : ℝ) (hx : 1 ≤ x) :
-    |ψ x - x| ≤ π * 3 * 10 ^ (-12 : ℝ) * x + 113.67 * Real.sqrt x := by sorry
-
-@[blueprint
-  "CH2-cor-1-3-b"
-  (title := "Corollary 1.3, part b")
-  (statement := /--
-For $x \geq 1$,
-$$ \sum_{n \leq x} \frac{\Lambda(n)}{n} = \log x - \gamma + O^*(\pi \cdot \sqrt{3} \cdot 10^{-12} + 113.67 / \sqrt{x}).$$
-  -/)
-  (proof := /-- TBD. -/)
-  (latexEnv := "corollary")]
-theorem cor_1_3_b (x : ℝ) (hx : 1 ≤ x) : ∃ E,
-    ∑ n ∈ Finset.Iic (⌊x⌋₊), Λ n / n =
-      log x - eulerMascheroniConstant + E ∧ |E| ≤ π * Real.sqrt 3 * 10 ^ (-12 : ℝ) + 113.67 / Real.sqrt x := by sorry
 
 end CH2

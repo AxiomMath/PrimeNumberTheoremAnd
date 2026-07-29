@@ -1,4 +1,8 @@
-import PrimeNumberTheoremAnd.ZetaBounds
+module
+
+public import PrimeNumberTheoremAnd.ZetaBounds
+
+@[expose] public section
 
 open Complex Filter Set
 local notation (name := riemannzeta2) "ζ" => riemannZeta
@@ -39,7 +43,7 @@ lemma LogDerivZetaBndAlt :
       refine ⟨-4, fun b hb ↦ ?_⟩
       rw [_root_.abs_of_nonpos (by linarith)]
       linarith
-    · simp only [mem_atTop_sets, ge_iff_le, mem_setOf_eq]
+    · simp only [mem_atTop_sets, mem_setOf_eq]
       refine ⟨4, fun b hb ↦ ?_⟩
       rwa [_root_.abs_of_nonneg (by linarith)]
   simp only [mem_setOf_eq] at ht

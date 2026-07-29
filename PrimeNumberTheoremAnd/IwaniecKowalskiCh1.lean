@@ -1,6 +1,10 @@
-import Architect
-import Mathlib.NumberTheory.LSeries.Dirichlet
-import Mathlib.NumberTheory.LSeries.Nonvanishing
+module
+
+public import Architect
+public import Mathlib.NumberTheory.LSeries.Dirichlet
+public import Mathlib.NumberTheory.LSeries.Nonvanishing
+
+@[expose] public section
 
 open ArithmeticFunction hiding log
 
@@ -59,90 +63,6 @@ lemma IsCompletelyAdditive.isAdditive [AddZeroClass R] {f : ArithmeticFunction R
   fun hm hn _ ↦ hf hm hn
 
 -- **Think about more API for additive/completely additive functions, e.g. `f (p^k) = k * f p` for prime p, etc.**
-
-@[blueprint
-  "unique_divisor_decomposition"
-  (title := "unique divisor decomposition")
-  (statement := /-- If $a$ and $b$ are coprime, then any divisor $d$ of $ab$ can be uniquely expressed as a product of a divisor of $a$ and a divisor of $b$.
-    \begin{verbatim}
-  This has been upstreamed #36495.
-  \end{verbatim}
--/)
-  (proof := /--
-  Let $a$ and $b$ be coprime natural numbers, and let $d$ be a divisor of $ab$. Since $a$ and $b$ are coprime, we can use the fact that the divisors of $ab$ correspond to pairs of divisors of $a$ and $b$. Specifically, we can express $d$ as $d = d_a \cdot d_b$, where $d_a$ divides $a$ and $d_b$ divides $b$. The uniqueness of this decomposition follows from the coprimality of $a$ and $b$, which ensures that the divisors of $a$ and $b$ do not share any common factors. Therefore, there is a one-to-one correspondence between the divisors of $ab$ and the pairs of divisors of $a$ and $b$, which guarantees the uniqueness of the decomposition.
-  -/)]
-lemma unique_divisor_decomposition {a b d : ℕ} (hab : Coprime a b) (hd : d ∣ a * b) :
-    ∃! p : ℕ × ℕ, p.1 ∣ a ∧ p.2 ∣ b ∧ p.1 * p.2 = d := by
-  sorry -- UPSTREAMED TO MATHLIB #36495
-
-/-- If `f` is a multiplicative arithmetic function, then for coprime `a` and `b`, we have $\sum_{d | ab} f(d) = (\sum_{d | a} f(d)) \cdot (\sum_{d | b} f(d))$. -/
-@[blueprint
-  "sum_divisors_mul_of_coprime"
-  (title := "sum divisors mul of coprime")
-  (statement := /-- If $f$ is a multiplicative arithmetic function, then for coprime, nonzero $a$ and $b$, we have that
-  $\sum_{d | ab} f(d) = (\sum_{d | a} f(d)) \cdot (\sum_{d | b} f(d))$.
-  \begin{verbatim}
-  This has been upstreamed #36495.
-  \end{verbatim}
-  -/)
-  (proof := /--
-  Since $f$ is multiplicative, we can express the sum over divisors of $ab$ in terms of the sums over divisors of $a$ and $b$. The key idea is to use the fact that the divisors of $ab$ can be expressed as products of divisors of $a$ and divisors of $b$, due to the coprimality condition. Specifically, each divisor $d$ of $ab$ can be uniquely written as $d = d_a * d_b$, where $d_a$ divides $a$ and $d_b$ divides $b$. Therefore, we can rewrite the sum as a double sum over the divisors of $a$ and $b$, which factorizes into the product of the two separate sums.
-  -/)]
-theorem sum_divisors_mul_of_coprime {R : Type*} [CommRing R]
-    {f : ArithmeticFunction R} (hf : f.IsMultiplicative)
-    {a b : ℕ} (hab : Coprime a b) (ha : a ≠ 0) (hb : b ≠ 0) :
-    ∑ d ∈ (a * b).divisors, f d = (∑ d ∈ a.divisors, f d) * (∑ d ∈ b.divisors, f d) := by
-  sorry -- UPSTREAMED TO MATHLIB #36495
-
-/-- If `g` is a multiplicative arithmetic function, then for any $n \neq 0$,
-    $\sum_{d | n} \mu(d) \cdot g(d) = \prod_{p | n} (1 - g(p))$. -/
-@[blueprint
-  "sum_moebius_pmul_eq_prod_one_sub"
-  (title := "sum moebius pmul eq prod one sub")
-  (statement := /-- If $g$ is a multiplicative arithmetic function, then for any $n \neq 0$,
-    $\sum_{d | n} \mu(d) \cdot g(d) = \prod_{p | n} (1 - g(p))$.
-      \begin{verbatim}
-  Upstream issue has been created #1240.
-  \end{verbatim}
-
-    -/)
-  (proof := /--
-  Multiply out and collect terms.
-  -/)]
-theorem sum_moebius_pmul_eq_prod_one_sub {R : Type*} [CommRing R]
-    {g : ArithmeticFunction R} (hg : g.IsMultiplicative) (n : ℕ) : n ≠ 0 →
-    ∑ d ∈ n.divisors, (moebius d : R) * g d = ∏ p ∈ n.primeFactors, (1 - g p) := by
-  induction n using Nat.recOnPosPrimePosCoprime with
-  | zero => intro h; exact absurd rfl h
-  | one => exact fun _ ↦ by simp [hg.map_one]
-  | prime_pow p k hp hk =>
-    refine fun _ ↦ ?_
-    rw [Nat.primeFactors_prime_pow hk.ne' hp, Finset.prod_singleton, sum_divisors_prime_pow hp,
-      Finset.sum_range_succ']
-    simp only [pow_zero, moebius_apply_one, Int.cast_one, hg.map_one, mul_one]
-    rw [Finset.sum_eq_single_of_mem 0 (Finset.mem_range.mpr hk)]
-    · simp only [zero_add, pow_one, moebius_apply_prime hp, Int.reduceNeg, Int.cast_neg,
-        Int.cast_one, neg_mul, one_mul]; ring
-    · intro i _ hi
-      have hnsq : ¬Squarefree (p ^ (i + 1)) := by
-        rw [Nat.squarefree_pow_iff hp.ne_one (by omega : i + 1 ≠ 0)]
-        omega
-      rw [moebius_eq_zero_of_not_squarefree hnsq]
-      simp
-  | coprime a b ha hb hab iha ihb =>
-    intro hn
-    rw [hab.primeFactors_mul, Finset.prod_union hab.disjoint_primeFactors,
-        ← iha (by omega), ← ihb (by omega)]
-    let h : ArithmeticFunction R := ⟨fun n ↦ ↑(moebius n) * g n, by simp⟩
-    have h_mul : h.IsMultiplicative := by
-      refine ⟨?_, ?_⟩
-      · simp [h, ArithmeticFunction.coe_mk, hg.left]
-      · intro m n hmn
-        simp only [h, ArithmeticFunction.coe_mk]
-        rw [ArithmeticFunction.isMultiplicative_moebius.right hmn, hg.right hmn]
-        push_cast
-        ring
-    exact sum_divisors_mul_of_coprime h_mul hab (by omega) (by omega)
 
 /-- The Dirichlet convolution of $\zeta$ with itself is $\tau$ (the divisor count function). -/
 @[blueprint
@@ -278,7 +198,6 @@ theorem LSeries_d_eq_riemannZeta_pow (k : ℕ) {s : ℂ} (hs : 1 < s.re) :
     congr 1
     exact LSeries_zeta_eq_riemannZeta hs
 
-
 /-- `d k` is multiplicative for all `k`. -/
 @[blueprint
   "d_isMultiplicative"
@@ -295,9 +214,6 @@ theorem d_isMultiplicative (k : ℕ) : (d k).IsMultiplicative := by
       exact ih.mul isMultiplicative_zeta
 
 /- MOVE HELPER LEMMA ESLEWHERE?? Not used in this file, but seems potentially useful? -/
-theorem Nat.sum_divisorsAntidiagonal_prime_pow {α : Type u_1} [AddCommMonoid α] [HMul α α α] {k p : ℕ} {f : ℕ × ℕ → α} (h : Nat.Prime p) :
-∑ x ∈ (p ^ k).divisorsAntidiagonal, f x = ∑ n ∈ Finset.range (k + 1), f (p ^ n, p ^ (k - n)) := by
-  sorry
 
 /-- Explicit formula: `d k (p^a) = (a + k - 1).choose (k - 1) for prime p` for `k ≥ 1`. -/
 @[blueprint
@@ -621,106 +537,6 @@ theorem LSeries_sigma_eq_riemannZeta_mul (ν : ℂ) {s : ℂ} (hs : 1 < s.re) (h
     rw[Complex.sub_re] at hsν
     exact_mod_cast (by linarith)
 
-/--
-Ramanujan formula:
-`ζ(s)ζ(s-α)ζ(s-β)ζ(s-α-β)=ζ(2s-α-β) ∑ σ_α(n)σ_β(n)n^(-s)`. -/
-@[blueprint
-  "zeta_mul_zeta_mul_zeta_mul_zeta_eq"
-  (title := "zeta mul zeta mul zeta mul zeta eq")
-  (statement := /-- Ramanujan formula: $\zeta(s)\zeta(s-\alpha)\zeta(s-\beta)\zeta(s-\alpha-\beta)=\zeta(2s-\alpha-\beta) \sum_{n=1}^{\infty} \sigma_\alpha(n)\sigma_\beta(n)n^{-s}$ for $\Re(s) > 1$, $\Re(s-\alpha) > 1$, $\Re(s-\beta) > 1$, and $\Re(s-\alpha-\beta) > 1$.
-  \begin{verbatim}
-  This is IK (1.28).
-  \end{verbatim}
-   -/)
-  (proof := /--
-  This is a direct consequence of the multiplicative properties of the functions involved and the definition of the L-series. The left-hand side can be expressed as a product of L-series corresponding to the functions $\zeta$, $n \mapsto n^{-\alpha}$, and $n \mapsto n^{-\beta}$. The right-hand side involves the L-series of the convolution of $\sigma_\alpha$ and $\sigma_\beta$, which can be expressed in terms of the L-series of $\zeta$ and the power functions. By carefully applying the properties of Dirichlet convolutions and the definitions of the L-series, we can derive the stated formula.
-  -/)]
-theorem zeta_mul_zeta_mul_zeta_mul_zeta_eq (α β s : ℂ) (h1 : 1 < s.re) (h2 : 1 < (s - α).re)
-    (h3 : 1 < (s - β).re) (h4 : 1 < (s - α - β).re) :
-    riemannZeta s * riemannZeta (s - α) * riemannZeta (s - β) * riemannZeta (s - α - β) =
-      riemannZeta (2 * s - α - β) *
-      LSeries (fun n ↦ σᴿ α n * σᴿ β n) s := by
-  sorry
-
-/-- Corollary:  `ζ(s)^4=ζ(2s) ∑ τ(n)^2 n^(-s)` -/
-@[blueprint
-  "zeta_pow_four_eq"
-  (title := "zeta pow four eq")
-  (statement := /-- Corollary: $\zeta(s)^4 = \zeta(2s) \sum_{n=1}^{\infty} \tau(n)^2 n^{-s}$ for $\Re(s) > 1$.
-  \begin{verbatim}
-  This is IK (1.29).
-  \end{verbatim}
-  -/)
-  (proof := /--
-  This is a special case of the previous theorem where we set $\alpha = \beta = 0$.
-  -/)]
-theorem zeta_pow_four_eq (s : ℂ) (hs : 1 < s.re) :
-    riemannZeta s ^ 4 = riemannZeta (2 * s) * LSeries (fun n ↦ (τ n) ^ 2) s := by
-  convert (zeta_mul_zeta_mul_zeta_mul_zeta_eq 0 0 s hs (by simpa using hs) (by simpa using hs)
-      (by simpa using hs)) using 1
-  · ring_nf
-  · congr
-    · ring_nf
-    · simp [tau, sigma, sigmaR, pow_two]
-
-/--
-Baby Rankin-Selberg:
-`ζ(s)∑τ(n^2)n^-s = ∑τ(n)^2 n^-s`. -/
-@[blueprint
-  "zeta_mul_tau_square_eq"
-  (title := "zeta mul tau square eq")
-  (statement := /-- Baby Rankin-Selberg: $\zeta(s)\sum_{n=1}^{\infty}\tau(n^2)n^{-s} = \sum_{n=1}^{\infty}\tau(n)^2 n^{-s}$ for $\Re(s) > 1$.
-  \begin{verbatim}
-  Precursor to IK (1.30).
-  \end{verbatim}
-  -/)
-  (proof := /--
-  This follows from the multiplicative properties of the divisor function $\tau$ and the definition of the L-series. The left-hand side can be expressed as a product of L-series corresponding to $\zeta$ and the function $n \mapsto \tau(n^2)$. The right-hand side is the L-series of the function $n \mapsto \tau(n)^2$. By analyzing the Euler products and using the fact that $\tau(n)$ counts divisors, we can derive the stated equality.
-  -/)]
-lemma zeta_mul_tau_square_eq (s : ℂ) (hs : 1 < s.re) :
-    riemannZeta s * LSeries (fun n ↦ τ (n ^ 2)) s = LSeries (fun n ↦ (τ n) ^ 2) s := by
-  sorry
-
-/--
-Zeta cubed:
-`ζ(s)^3 = ζ(2s) ∑ τ(n^2) n^(-s)`. -/
-@[blueprint
-  "zeta_pow_three_eq"
-  (title := "zeta pow three eq")
-  (statement := /-- Zeta cubed: $\zeta(s)^3 = \zeta(2s) \sum_{n=1}^{\infty}\tau(n^2) n^{-s}$ for $\Re(s) > 1$.
-  \begin{verbatim}
-  This is IK (1.30).
-  \end{verbatim}
-  -/)
-  (proof := /--
-  This follows from the previous two theorems. From the corollary of Ramanujan's formula, we have $\zeta(s)^4 = \zeta(2s) \sum_{n=1}^{\infty} \tau(n)^2 n^{-s}$. From the Baby Rankin-Selberg result, we have $\zeta(s) \sum_{n=1}^{\infty} \tau(n^2) n^{-s} = \sum_{n=1}^{\infty} \tau(n)^2 n^{-s}$. Combining these two results, we can express $\zeta(s)^4$ in terms of $\zeta(s)$ and $\sum_{n=1}^{\infty} \tau(n^    2) n^{-s}$, which leads to the conclusion that $\zeta(s)^3 = \zeta(2s) \sum_{n=1}^{\infty} \tau(n^2) n^{-s}$.
-  -/)]
-lemma zeta_pow_three_eq (s : ℂ) (hs : 1 < s.re) :
-    riemannZeta s ^ 3 = riemannZeta (2 * s) * LSeries (fun n ↦ τ (n ^ 2)) s := by
-  apply mul_left_cancel₀ (riemannZeta_ne_zero_of_one_lt_re hs)
-  linear_combination (zeta_pow_four_eq s hs) - riemannZeta (2 * s) * (zeta_mul_tau_square_eq s hs)
-
-/--
-Zeta cubed alt:
-`ζ(s)^3 =  ∑_n (∑ d^2 m = n, τ (m^2)) n^(-s)`. -/
-@[blueprint
-  "zeta_pow_three_eq_alt"
-  (title := "zeta pow three eq alt")
-  (statement := /-- symmetric square $L$-function for $\zeta^2$:
-  $$\zeta(s)^3 = \sum_{n=1}^{\infty} \left( \sum_{d^2 m = n} \tau(m^2) \right) n^{-s}$$ for $\Re(s) > 1$.
-  \begin{verbatim}
-  Alternative expression for `ζ^3`, in IK between (1.30) and (1.31).
-  \end{verbatim}
-  -/)
-  (proof := /--
-  This is an alternative expression for $\zeta(s)^3$ that can be derived from the previous results. By expressing $\zeta(s)^3$ in terms of the L-series of $\tau(n^2)$ and using the properties of Dirichlet convolutions, we can rewrite the sum in a way that involves summing over divisors $d$ and corresponding $m$ such that $d^2 m = n$. This rearrangement of the series allows us to express $\zeta(s)^3$ in the desired form.
-  -/)]
-lemma zeta_pow_three_eq_alt (s : ℂ) (hs : 1 < s.re) :
-    riemannZeta s ^ 3 =
-    LSeries (fun n ↦
-      ∑ dm ∈ n.divisors ×ˢ n.divisors with dm.1 ^ 2 * dm.2 = n, τ (dm.2 ^ 2)) s := by
-  sorry
-
 @[blueprint
   "two_pow_omega_le_sigma_zero"
   (title := "two-pow-omega-le-sigma-zero")
@@ -984,9 +800,9 @@ lemma two_pow_omega_LSeries_eulerProduct_hasProd (s : ℂ) (hs : 1 < s.re) :
   · convert! (LSeriesSummable_two_pow_omega hs).norm using 1
 
 /--
-  Zeta squared:
-  `ζ(s)^2 = ζ(2*s) * ∑_n (2^omega(n)) n^(-s)`,
-  where omega is the number of distinct prime factors.
+Zeta squared:
+`ζ(s)^2 = ζ(2*s) * ∑_n (2^omega(n)) n^(-s)`,
+where omega is the number of distinct prime factors.
 -/
 @[blueprint
   "zeta_pow_two"
@@ -1240,44 +1056,6 @@ lemma pow_divisors_mul {m n k : ℕ} (hmn : Nat.Coprime m n) :
     exact ⟨⟨Nat.mul_dvd_mul hab.1.1.1.1 hab.1.2.1.1, Nat.mul_ne_zero_iff.mpr ⟨hab.1.1.1.2, hab.1.2.1.2⟩⟩, mul_dvd_mul hab.1.1.2 hab.1.2.2⟩
 
 @[blueprint
-  "divisors_mul_injective"
-  (title := "divisors-mul-injective")
-  (statement := /--
-    Let $m$ and $n$ be coprime natural numbers. The function $(a,b) \mapsto ab$ is injective on the
-    product of the divisors of $m$ and $n$.
-    \begin{verbatim}
-    Upstreamed to mathlib via PR #36495.
-    \end{verbatim}
-  -/)
-  (proof := /--
-    Since $m$ and $n$ are coprime, any element in the product of their divisors can be uniquely
-    expressed as a product of an element from each set. The injectivity follows from the uniqueness
-    of this decomposition.
-  -/)]
-lemma divisors_mul_injective {m n : ℕ} (hmn : m.Coprime n) :
-    Set.InjOn (fun p : ℕ × ℕ => p.1 * p.2) (m.divisors ×ˢ n.divisors) := by
-  /-- comes from mathlib PR #36495 -/
-  sorry
-
-@[blueprint
-  "pow_divisors_mul_injective"
-  (title := "pow-divisors-mul-injective")
-  (statement := /--
-    Let $m$ and $n$ be coprime natural numbers and let $k$ be fixed. The map $(a,b) \mapsto ab$ is
-    injective on the product of $\{a \mid m : a^k \mid m\}$ and $\{b \mid n : b^k \mid n\}$.
-  -/)
-  (proof := /--
-    This is the restriction of Lemma \ref{divisors-mul-injective} to a subset of the divisor
-    product, so injectivity is preserved.
-  -/)]
-lemma pow_divisors_mul_injective {m n k : ℕ} (hmn : Nat.Coprime m n) :
-    Set.InjOn (fun (p : ℕ × ℕ) => p.1 * p.2) (m.divisors.filter (fun x => x ^ k ∣ m) ×ˢ n.divisors.filter (fun x => x ^ k ∣ n)) := by
-  apply Set.InjOn.mono _ (divisors_mul_injective hmn)
-  intro ⟨_, _⟩ hab
-  simp only [Finset.coe_filter, Set.mem_prod, Set.mem_setOf_eq, Finset.mem_coe] at hab ⊢
-  exact ⟨hab.1.1, hab.2.1⟩
-
-@[blueprint
   "sum_moebius_sq_divisors"
   (title := "sum-moebius-sq-divisors")
   (statement := /-- The function $n \mapsto \sum_{d^2|n} \mu(d)$. -/)]
@@ -1291,36 +1069,6 @@ noncomputable def sum_moebius_sq_divisors : ArithmeticFunction ℤ where
   (statement := /-- A simple helper lemma for the above definition. -/)]
 lemma sum_moebius_sq_divisors_apply (n : ℕ) :
   sum_moebius_sq_divisors n = ∑ d ∈ n.divisors.filter (fun x => x ^ 2 ∣ n), μ d := by rfl
-
-@[blueprint
-  "sum_moebius_sq_divisors_IsMultiplicative"
-  (title := "sum-moebius-sq-divisors-is-multiplicative")
-  (statement := /-- The function $n \mapsto \sum_{d^2|n} \mu(d)$ is multiplicative. -/)
-  (proof := /--
-    We will show that for coprime $m$ and $n$, we have
-    $\sum_{d^2|mn} \mu(d) = \sum_{d^2|m} \mu(d) \cdot \sum_{d^2|n} \mu(d)$. This follows from
-    Lemma \ref{pow-divisors-mul}: the divisors $d$ of $mn$ with $d^2 \mid mn$ factor uniquely as
-    $d=ab$ with $a^2 \mid m$ and $b^2 \mid n$. Multiplicativity of $\mu$ then factors the sum.
-  -/)]
-lemma sum_moebius_sq_divisors_IsMultiplicative : sum_moebius_sq_divisors.IsMultiplicative := by
-  unfold sum_moebius_sq_divisors
-  refine ⟨by simp only [sum_filter, coe_mk, divisors_one, dvd_one, pow_eq_one_iff,
-    OfNat.ofNat_ne_zero, or_false, sum_ite_eq', mem_singleton, ↓reduceIte, isUnit_iff_eq_one,
-    IsUnit.squarefree, moebius_apply_of_squarefree, Int.reduceNeg, cardFactors_one, pow_zero], ?_⟩
-  intro m n mCn
-  simp only [coe_mk, pow_divisors_mul mCn, Finset.sum_product,
-    Finset.sum_image (fun x hx y hy => pow_divisors_mul_injective (k := 2) mCn
-      (Finset.coe_product _ _ ▸ Finset.mem_coe.mpr hx)
-      (Finset.coe_product _ _ ▸ Finset.mem_coe.mpr hy))]
-  trans (∑ i ∈ m.divisors.filter (fun x => x ^ 2 ∣ m), ∑ j ∈ n.divisors.filter (fun x => x ^ 2 ∣ n), μ i * μ j)
-  · apply Finset.sum_congr rfl
-    intro _ hi
-    apply Finset.sum_congr rfl
-    intro _ hj
-    exact isMultiplicative_moebius.map_mul_of_coprime
-      (mCn.coprime_dvd_left (Nat.dvd_of_mem_divisors (Finset.filter_subset _ _ hi))
-        |>.coprime_dvd_right (Nat.dvd_of_mem_divisors (Finset.filter_subset _ _ hj)))
-  · rw [← Finset.sum_mul_sum]
 
 @[blueprint
   "sum_moebius_sq_divisors_apply_prime_pow"
@@ -1360,22 +1108,6 @@ lemma sum_moebius_sq_divisors_apply_prime_pow {p k : ℕ} (hp : Nat.Prime p) :
     · simp [hp.squarefree] at ⊢ h
     · simp_all +decide [ArithmeticFunction.moebius_apply_prime_pow]
 
-/-- I-K (1.33): `μ^2(n) = ∑ d^2|n μ(d)`. -/
-@[blueprint
-  "moebius_sq_eq"
-  (title := "moebius-sq-eq")
-  (statement := /-- I-K (1.33): $\mu^2(n) = \sum_{d^2|n} \mu(d)$. -/)
-  (proof := /-- Apply the previous two lemmas. -/)]
-lemma moebius_sq_eq (n : ℕ) : (μ n) ^ 2 = ∑ d ∈ n.divisors.filter (fun x => x ^ 2 ∣ n), μ d := by
-  by_cases n_zero : n = 0
-  · simp [n_zero]
-  · rw[← sum_moebius_sq_divisors_apply, IsMultiplicative.multiplicative_factorization sum_moebius_sq_divisors sum_moebius_sq_divisors_IsMultiplicative n_zero]
-    have hpf : ∀ p ∈ n.factorization.support, Nat.Prime p :=
-      fun p hp => Nat.prime_of_mem_primeFactors (Nat.support_factorization n ▸ hp)
-    simp only [Finset.prod_pow, Finsupp.prod, Nat.support_factorization, Finset.prod_congr rfl (fun x hx =>
-      sum_moebius_sq_divisors_apply_prime_pow ((Nat.support_factorization n ▸ hpf) x hx))]
-    congr; exact IsMultiplicative.multiplicative_factorization μ isMultiplicative_moebius n_zero
-
 /--
 Liouville function:
 `λ(n) = (-1)^Ω(n)`. -/
@@ -1411,64 +1143,5 @@ def IsCompletelyMultiplicative (f : ArithmeticFunction ℝ) : Prop :=
   -/)]
 lemma IsCompletelyMultiplicative.isMultiplicative {f : ArithmeticFunction ℝ} (hf : IsCompletelyMultiplicative f) : f.IsMultiplicative := by
   exact ⟨hf.1, fun {m n} _ => hf.2 m n⟩
-
-/--
-The Liouville function is completely multiplicative. -/
-@[blueprint
-  "isCompletelyMultiplicative_liouville"
-  (title := "isCompletelyMultiplicative liouville")
-  (statement := /-- The Liouville function is completely multiplicative. -/)
-  (proof := /--
-  The Liouville function $\lambda(n)$ is defined as $(-1)^{\Omega(n)}$, where $\Omega(n)$ counts the total number of prime factors of $n$ with multiplicity. To show that $\lambda$ is completely multiplicative, we need to verify that $\lambda(1) = 1$ and that $\lambda(ab) = \lambda(a)\lambda(b)$ for all natural numbers $a$ and $b$.
-  -/)]
-lemma isCompletelyMultiplicative_liouville : IsCompletelyMultiplicative (liouville : ArithmeticFunction ℝ) := by
-  sorry
-
-/--
-The Dirichlet series of the Liouville function is `ζ(2s)/ζ(s)`. -/
-@[blueprint
-  "LSeries_liouville_eq"
-  (title := "LSeries liouville eq")
-  (statement := /-- The Dirichlet series of the Liouville function is $\zeta(2s)/\zeta(s)$. -/)
-  (proof := /--
-  The Liouville function $\lambda(n)$ is multiplicative, and its value at prime powers is given by $\lambda(p^k) = (-1)^k$. The Dirichlet series of $\lambda$ can be expressed as an Euler product over primes:
-\[
-L(\lambda, s) = \prod_{p} \left(1 + \lambda(p)p^{-s} + \lambda(p^2)p^{-2s} + \ldots\right) = \prod_{p} \left(1 - p^{-s}\right) \left(1 - p^{-2s}\right)^{-1} = \frac{\zeta(2s)}{\zeta(s)}.
-\]
-  -/)]
-lemma LSeries_liouville_eq {s : ℂ} (hs : 1 < s.re) :
-    LSeries ↗liouville s = riemannZeta (2 * s) / riemannZeta s := by
-  sorry
-
-/-- `liouville` agrees with `moebius` on square-free numbers -/
-@[blueprint
-  "liouville_eq_moebius_on_squarefree"
-  (title := "liouville eq moebius on squarefree")
-  (statement := /-- The Liouville function agrees with the Möbius function on square-free numbers. -/)
-  (proof := /--
-  The Liouville function $\lambda(n)$ is defined as $(-1)^{\Omega(n)}$, where $\Omega(n)$ counts the total number of prime factors of $n$ with multiplicity. The Möbius function $\mu(n)$ is defined as $0$ if $n$ has a squared prime factor, and otherwise it is $(-1)^{\omega(n)}$, where $\omega(n)$ counts the number of distinct prime factors of $n$. For square-free numbers, we have $\Omega(n) = \omega(n)$, since there are no repeated prime factors. Therefore, for square-free numbers, we have $\lambda(n) = (-1)^{\omega(n)} = \mu(n)$, which shows that the Liouville function agrees with the Möbius function on square-free numbers.
-  -/)]
-lemma liouville_eq_moebius_on_squarefree (n : ℕ) (hn : Squarefree n) : liouville n = μ n := by
-  sorry
-
-/-- Euler totient series: `∑ φ(n) n^-s = ζ(s-1)/ζ(s)`. -/
-@[blueprint
-  "LSeries_totient_eq"
-  (title := "LSeries totient eq")
-  (statement := /-- Euler totient series: $\sum_{n=1}^{\infty} \varphi(n) n^{-s} = \zeta(s-1)/\zeta(s)$ for $\Re(s) > 2$.
-  \begin{verbatim}
-  This is IK (1.35).
-  \end{verbatim}
-   -/)
-  (proof := /--
-  The Euler totient function $\varphi(n)$ counts the positive integers up to $n$ that are relatively prime to $n$. It is a multiplicative function, and its value at prime powers is given by $\varphi(p^k) = p^k - p^{k-1}$. The Dirichlet series of $\varphi$ can be expressed as an Euler product over primes:
-\[
-L(\varphi, s) = \prod_{p} \left(1 + \varphi(p)p^{-s} + \varphi(p^2)p^{-2s} + \ldots\right) = \prod_{p} \left(1 - p^{-s  +1}\right)^{-1} \left(1 - p^{-s}\right) = \frac{\zeta(s-1)}{\zeta(s)}.
-\]
-  -/)]
-lemma LSeries_totient_eq {s : ℂ} (hs : 2 < s.re) :
-    LSeries (↗totient) s = riemannZeta (s - 1) / riemannZeta s := by
-  sorry
-
 
 end ArithmeticFunction

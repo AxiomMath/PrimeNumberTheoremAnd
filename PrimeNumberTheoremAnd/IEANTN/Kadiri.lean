@@ -1,18 +1,22 @@
-import Architect
-import PrimeNumberTheoremAnd.Defs
-import PrimeNumberTheoremAnd.IEANTN.ZetaDefinitions
-import PrimeNumberTheoremAnd.IEANTN.KadiriZeroCounting
-import PrimeNumberTheoremAnd.IEANTN.KadiriEq12Helpers
-import PrimeNumberTheoremAnd.IEANTN.HadamardLogDerivative
-import PrimeNumberTheoremAnd.Mathlib.NumberTheory.LSeries.RiemannZetaHadamard
-import PrimeNumberTheoremAnd.Mathlib.Analysis.SpecialFunctions.Gamma.DigammaSeries
-import PrimeNumberTheoremAnd.LaplaceInversion
-import PrimeNumberTheoremAnd.IEANTN.KadiriEq13
-import PrimeNumberTheoremAnd.IEANTN.KadiriEq11Reduction
-import PrimeNumberTheoremAnd.IEANTN.KadiriEq14
-import PrimeNumberTheoremAnd.IEANTN.KadiriSupport
-import Mathlib.Analysis.SpecialFunctions.Gamma.Digamma
-import Mathlib.NumberTheory.LSeries.RiemannZeta
+module
+
+public import Architect
+public import PrimeNumberTheoremAnd.Defs
+public import PrimeNumberTheoremAnd.IEANTN.ZetaDefinitions
+public import PrimeNumberTheoremAnd.IEANTN.KadiriZeroCounting
+public import PrimeNumberTheoremAnd.IEANTN.KadiriEq12Helpers
+public import PrimeNumberTheoremAnd.IEANTN.HadamardLogDerivative
+public import PrimeNumberTheoremAnd.Mathlib.NumberTheory.LSeries.RiemannZetaHadamard
+public import PrimeNumberTheoremAnd.Mathlib.Analysis.SpecialFunctions.Gamma.DigammaSeries
+public import PrimeNumberTheoremAnd.LaplaceInversion
+public import PrimeNumberTheoremAnd.IEANTN.KadiriEq13
+public import PrimeNumberTheoremAnd.IEANTN.KadiriEq11Reduction
+public import PrimeNumberTheoremAnd.IEANTN.KadiriEq14
+public import PrimeNumberTheoremAnd.IEANTN.KadiriSupport
+public import Mathlib.Analysis.SpecialFunctions.Gamma.Digamma
+public import Mathlib.NumberTheory.LSeries.RiemannZeta
+
+@[expose] public section
 
 blueprint_comment /--
 \section{An explicit zero-free region for \texorpdfstring{$\zeta$}{zeta}}\label{kadiri-sec}
@@ -117,75 +121,12 @@ theorem hadamardB_spec :
       hadamardB = Polynomial.eval 0 P.derivative :=
   Classical.choose_spec existsUnique_riemannXi_hadamard_polynomial_derivative_eval_zero.exists
 
-@[blueprint
-  "kadiri-hadamard-identity"
-  (title := "Hadamard expansion of $-\\zeta'/\\zeta$ (after equation (16))")
-  (statement := /-- For every $s \in \mathbb{C}$ that is neither $1$ nor a non-trivial zero
-  of $\zeta$,
-  $$ -\frac{\zeta'}{\zeta}(s) = -B - \tfrac{1}{2} \log \pi + \frac{1}{s - 1}
-       + \tfrac{1}{2} \frac{\Gamma'}{\Gamma}\!\left(\tfrac{s}{2} + 1\right)
-       - \sum_{\rho \in Z(\zeta)} \left(\frac{1}{\rho} + \frac{1}{s - \rho}\right), $$
-  where $B$ is the Hadamard constant (\ref{kadiri-hadamard-B}). This is the logarithmic
-  derivative of the Hadamard factorisation of $\zeta$
-  (\cite[Chapter 12]{Davenport2000}). -/)
-  (proof := /-- Differentiate the Hadamard product (\ref{kadiri-hadamard-B}) logarithmically;
-  the linear-in-$s$ term in the exponential collapses to the constant $B$. The
-  $\tfrac{1}{s-1}$ term comes from the $(s-1)\zeta(s)$ prefactor and the
-  $\tfrac{1}{2} \Gamma'/\Gamma$ term from the gamma factor. To be formalised. -/)
-  (latexEnv := "lemma")
-  (discussion := 1474)]
-theorem hadamard_identity (s : ℂ) (hs1 : s ≠ 1)
-    (hsZ : s ∉ riemannZeta.zeroes_rect (.Ioo 0 1) (.univ : Set ℝ)) :
-    -deriv riemannZeta s / riemannZeta s =
-      -hadamardB - (1 / 2 : ℂ) * Real.log Real.pi + 1 / (s - 1) +
-      (1 / 2 : ℂ) * digamma (s / 2 + 1) -
-      ∑' ρ : riemannZeta.zeroes_rect (.Ioo 0 1) (.univ : Set ℝ),
-        (1 / (ρ.val : ℂ) + 1 / (s - ρ.val)) := by
-  sorry
-
 /-! ## Sublemmas for the proof of Theorem 3.1
 
 The proof of \ref{kadiri-thm-3-1-q1} (Kadiri 2005, \S 3.1, pp.~11--13) decomposes into
 several explicit steps. We state each as its own blueprinted sublemma below, with `sorry`
 proofs to be filled in. The displayed equation before \cite[(11)]{Kadiri2005} is the
 underlying Laplace-inversion identity; equations (11)--(15) are the explicit steps. -/
-
-@[blueprint
-  "kadiri-thm-3-1-q1-laplace-inversion"
-  (title := "Laplace inversion of $\\varphi$ at $y = \\log n$ for $n \\geq 1$")
-  (statement := /-- For $\varphi$ satisfying hypotheses (A) and (B) of
-  \ref{kadiri-thm-3-1-q1}, and any real $a$ with $0 < a < b$ and $a < 1$: for every
-  positive integer $n \geq 1$,
-  $$ \varphi(\log n)
-     = \frac{1}{2\pi i}
-       \int_{-(1 + a) - i\infty}^{-(1 + a) + i\infty}
-       \Phi(s)\, n^{s}\, ds, $$
-  where $\Phi(s) := \int_0^{\infty} \varphi(y)\, e^{-sy}\, dy$ is the Laplace transform of
-  $\varphi$. The contour $\sigma = -(1 + a)$ lies inside the strip of holomorphy of
-  $\Phi$ given by (B). This is the displayed equation just before
-  \cite[(11)]{Kadiri2005}. -/)
-  (proof := /-- Standard inverse-Laplace theorem (e.g.\ Widder, \emph{The Laplace
-  Transform}, Ch.~III, Theorem~7.3). Hypotheses (A) (regularity / mean-value condition at
-  jumps) and (B) (the $O(1/|t|)$ decay of $\Phi$ on the strip) provide exactly what is
-  needed for the inversion integral to converge absolutely and recover $\varphi$ at
-  $y = \log n \geq 0$. To be formalised. -/)
-  (latexEnv := "sublemma")
-  (discussion := 1535)]
-theorem kadiri_thm_3_1_q1_laplace_inversion {φ : ℝ → ℂ} (_hφ : ContDiff ℝ 1 φ)
-    {b : ℝ} (_hb : 0 < b)
-    (_hφ_decay : (fun x : ℝ ↦ φ x * exp ((x : ℂ) / 2))
-        =O[Filter.cocompact ℝ] fun x : ℝ ↦ Real.exp (-(1/2 + b) * |x|))
-    (_hφ'_decay : (fun x : ℝ ↦ deriv φ x * exp ((x : ℂ) / 2))
-        =O[Filter.cocompact ℝ] fun x : ℝ ↦ Real.exp (-(1/2 + b) * |x|))
-    {a : ℝ} (_ha : 0 < a) (_hab : a < b) (_ha1 : a < 1)
-    {n : ℕ} (_hn : 1 ≤ n) :
-    let Φ : ℂ → ℂ := fun s ↦ ∫ y, φ y * exp (-s * (y : ℂ)) ∂volume
-    (φ (Real.log n) : ℂ) =
-      (1 / (2 * (Real.pi : ℂ))) *
-        ∫ t : ℝ,
-          Φ ((-(1 + a : ℝ) : ℂ) + (t : ℂ) * I) *
-            ((n : ℂ) ^ ((-(1 + a : ℝ) : ℂ) + (t : ℂ) * I)) := by
-  sorry
 
 @[blueprint
   "kadiri-thm-3-1-q1-eq-11"
@@ -416,73 +357,6 @@ theorem kadiri_thm_3_1_q1_eq_12 {φ : ℝ → ℂ} (_hφ : ContDiff ℝ 1 φ)
   rw [hkadiri]
   simp only [hf] at key ⊢
   linear_combination key
-
-@[blueprint
-  "kadiri-thm-3-1-q1-top-horizontal-vanishes"
-  (title := "Top horizontal integral in eq.~(12) of \\cite{Kadiri2005} vanishes as $T \\to \\infty$")
-  (statement := /-- Under the hypotheses of \ref{kadiri-thm-3-1-q1-eq-11}:
-  $$ \lim_{T \to \infty}
-       \frac{1}{2\pi i} \int_{-a + iT}^{1 + a + iT}
-         \!\!\!\! \left(-\frac{\zeta'}{\zeta}\right)\!(s)\, \Phi(-s)\, ds \;=\; 0. $$
-  This is one of the two assertions on \cite[p.~12]{Kadiri2005} that "les deux
-  dernières intégrales tendent vers $0$ lorsque $T$ tend vers $\infty$." -/)
-  (proof := /-- The integrand has $|\Phi(-s)| = O(1/|t|) = O(1/T)$ on the horizontal arc
-  (by (B), uniformly on the closed strip $-a \leq \sigma \leq 1 + a$), and
-  $-\zeta'/\zeta(s)$ grows at most polynomially in $\log|\Im s| = \log T$ on this strip.
-  The horizontal arc has fixed length $1 + 2a$, so the integral is bounded by
-  $O((\log T)^k / T) \to 0$ as $T \to \infty$. To be formalised. -/)
-  (latexEnv := "sublemma")
-  (discussion := 1538)]
-theorem kadiri_thm_3_1_q1_top_horizontal_vanishes
-    {φ : ℝ → ℂ} (_hφ : ContDiff ℝ 1 φ)
-    {b : ℝ} (_hb : 0 < b)
-    (_hφ_decay : (fun x : ℝ ↦ φ x * exp ((x : ℂ) / 2))
-        =O[Filter.cocompact ℝ] fun x : ℝ ↦ Real.exp (-(1/2 + b) * |x|))
-    (_hφ'_decay : (fun x : ℝ ↦ deriv φ x * exp ((x : ℂ) / 2))
-        =O[Filter.cocompact ℝ] fun x : ℝ ↦ Real.exp (-(1/2 + b) * |x|))
-    {a : ℝ} (_ha : 0 < a) (_hab : a < b) (_ha1 : a < 1) :
-    let Φ : ℂ → ℂ := fun s ↦ ∫ y, φ y * exp (-s * (y : ℂ)) ∂volume
-    Filter.Tendsto
-      (fun T : ℝ ↦
-        (1 / (2 * (Real.pi : ℂ) * I)) *
-          ∫ σ in Set.Ioo (-a) (1 + a),
-            (-deriv riemannZeta ((σ : ℂ) + (T : ℂ) * I) /
-                riemannZeta ((σ : ℂ) + (T : ℂ) * I)) *
-              Φ (-((σ : ℂ) + (T : ℂ) * I)))
-      Filter.atTop (nhds 0) := by
-  sorry
-
-@[blueprint
-  "kadiri-thm-3-1-q1-bot-horizontal-vanishes"
-  (title := "Bottom horizontal integral in eq.~(12) of \\cite{Kadiri2005} vanishes as $T \\to \\infty$")
-  (statement := /-- Under the hypotheses of \ref{kadiri-thm-3-1-q1-eq-11}:
-  $$ \lim_{T \to \infty}
-       \frac{1}{2\pi i} \int_{-a - iT}^{1 + a - iT}
-         \!\!\!\! \left(-\frac{\zeta'}{\zeta}\right)\!(s)\, \Phi(-s)\, ds \;=\; 0. $$
-  Companion to \ref{kadiri-thm-3-1-q1-top-horizontal-vanishes}. -/)
-  (proof := /-- Identical argument to \ref{kadiri-thm-3-1-q1-top-horizontal-vanishes},
-  with $T$ replaced by $-T$ (the decay bound on $\Phi$ is symmetric in $t$, and the
-  growth bound on $-\zeta'/\zeta$ depends only on $|t|$). To be formalised. -/)
-  (latexEnv := "sublemma")
-  (discussion := 1539)]
-theorem kadiri_thm_3_1_q1_bot_horizontal_vanishes
-    {φ : ℝ → ℂ} (_hφ : ContDiff ℝ 1 φ)
-    {b : ℝ} (_hb : 0 < b)
-    (_hφ_decay : (fun x : ℝ ↦ φ x * exp ((x : ℂ) / 2))
-        =O[Filter.cocompact ℝ] fun x : ℝ ↦ Real.exp (-(1/2 + b) * |x|))
-    (_hφ'_decay : (fun x : ℝ ↦ deriv φ x * exp ((x : ℂ) / 2))
-        =O[Filter.cocompact ℝ] fun x : ℝ ↦ Real.exp (-(1/2 + b) * |x|))
-    {a : ℝ} (_ha : 0 < a) (_hab : a < b) (_ha1 : a < 1) :
-    let Φ : ℂ → ℂ := fun s ↦ ∫ y, φ y * exp (-s * (y : ℂ)) ∂volume
-    Filter.Tendsto
-      (fun T : ℝ ↦
-        (1 / (2 * (Real.pi : ℂ) * I)) *
-          ∫ σ in Set.Ioo (-a) (1 + a),
-            (-deriv riemannZeta ((σ : ℂ) + ((-T : ℝ) : ℂ) * I) /
-                riemannZeta ((σ : ℂ) + ((-T : ℝ) : ℂ) * I)) *
-              Φ (-((σ : ℂ) + ((-T : ℝ) : ℂ) * I)))
-      Filter.atTop (nhds 0) := by
-  sorry
 
 private lemma zetaPiFactor_eq_cpow (s : ℂ) :
     zetaPiFactor s = (Real.pi : ℂ) ^ (-(s / 2)) := by
@@ -1322,209 +1196,9 @@ theorem kadiri_thm_3_1_q1_gamma_symmetrization {s : ℂ} (_hs : s.re = 1 / 2) :
   push_cast
   ring
 
-@[blueprint
-  "kadiri-thm-3-1-q1-eq-15"
-  (title := "Equation (15) of \\cite{Kadiri2005}: limit of $I_3(T)$")
-  (statement := /-- Under the hypotheses of \ref{kadiri-thm-3-1-q1-eq-11}:
-  $$ \lim_{T \to \infty} I_3(T) \;=\;
-       \Phi(0)
-       \;+\; \frac{1}{2 \pi i}
-              \int_{1/2 - i\infty}^{1/2 + i\infty}
-                \Re\!\left[\frac{\Gamma'}{\Gamma}\!\Big(\frac{s}{2}\Big)\right]
-                  \Phi(-s)\, ds. $$
-  Specialization of equation~(15) of \cite{Kadiri2005}, page~13, to $q = 1$
-  ($\mathfrak{a} = 0$, so $(1 - \mathfrak{a})\Phi(0) = \Phi(0)$ in Kadiri's
-  $\mathfrak{a}$-dependent form). -/)
-  (proof := /-- Shift the contour of $I_3(T)$ from $\sigma = -a$ to $\sigma = 1/2$.
-  The integrand $\tfrac{1}{2}\{\Gamma'/\Gamma(s/2) + \Gamma'/\Gamma((1-s)/2)\}\, \Phi(-s)$
-  has a simple pole at $s = 0$ from $\Gamma'/\Gamma(s/2) \sim -2/s$ near $s = 0$, with
-  residue $+\Phi(0)$ contributed by the leftward shift; no other poles lie in
-  $-a < \Re s < 1/2$. The horizontal arcs vanish as $T \to \infty$ by (B). On
-  $\Re s = 1/2$, apply \ref{kadiri-thm-3-1-q1-gamma-symmetrization} to identify the
-  integrand as $\Re[\Gamma'/\Gamma(s/2)]\, \Phi(-s)$. The Bochner integral in the limit
-  value is well-defined precisely under the explicit integrability hypothesis on the
-  $\Gamma$-contour integrand (otherwise the integral evaluates to $0$ by Mathlib's
-  convention and the statement is vacuous); this same hypothesis is carried by
-  \ref{kadiri-thm-3-1-q1}. To be formalised. -/)
-  (latexEnv := "sublemma")
-  (discussion := 1545)]
-theorem kadiri_thm_3_1_q1_eq_15
-    {φ : ℝ → ℂ} (_hφ : ContDiff ℝ 1 φ)
-    {b : ℝ} (_hb : 0 < b)
-    (_hφ_decay : (fun x : ℝ ↦ φ x * exp ((x : ℂ) / 2))
-        =O[Filter.cocompact ℝ] fun x : ℝ ↦ Real.exp (-(1/2 + b) * |x|))
-    (_hφ'_decay : (fun x : ℝ ↦ deriv φ x * exp ((x : ℂ) / 2))
-        =O[Filter.cocompact ℝ] fun x : ℝ ↦ Real.exp (-(1/2 + b) * |x|))
-    {a : ℝ} (_ha : 0 < a) (_hab : a < b) (_ha1 : a < 1)
-    (_hΓ_int : MeasureTheory.Integrable (fun t : ℝ ↦
-      ((digamma ((1 / 2 + (t : ℂ) * I) / 2)).re : ℂ) *
-        ∫ y, φ y * exp ((1 / 2 + (t : ℂ) * I) * (y : ℂ)) ∂volume)) :
-    let Φ : ℂ → ℂ := fun s ↦ ∫ y, φ y * exp (-s * (y : ℂ)) ∂volume
-    Filter.Tendsto (fun T : ℝ ↦ kadiri_thm_3_1_q1_I_3 φ a T)
-      Filter.atTop
-      (nhds (Φ 0
-        + (1 / (2 * (Real.pi : ℂ))) *
-            ∫ t : ℝ,
-              ((digamma ((1 / 2 + (t : ℂ) * I) / 2)).re : ℂ) *
-                Φ (-(1 / 2 + (t : ℂ) * I)))) := by
-  sorry
-
 /-! ## Theorem 3.1 of \cite{Kadiri2005}, specialized to $q = 1$, $\chi$ trivial
 
 Composition of the eleven sublemmas above. -/
-
-@[blueprint
-  "kadiri-thm-3-1-q1"
-  (title := "Theorem 3.1 of \\cite{Kadiri2005}, case $q = 1$, $\\chi$ trivial")
-  (statement := /-- Let $\varphi \colon \mathbb{R} \to \mathbb{C}$ be $C^1$ and suppose there
-  exists $b > 0$ such that both $\varphi(x) e^{x/2}$ and $\varphi'(x) e^{x/2}$ are
-  $O(e^{-(1/2 + b)|x|})$ as $|x| \to \infty$. Define the Laplace transform
-  $\Phi(z) := \int_0^{\infty} \varphi(y) e^{-zy}\, dy$. Then
-  $$ \sum_{n \geq 1} \Lambda(n)\, \varphi(\log n)
-     = \Phi(-1) + \Phi(0) - \sum_{\rho \in Z(\zeta)} \Phi(-\rho)
-       - \varphi(0)\, \log \pi
-       - \sum_{n \geq 1} \tfrac{\Lambda(n)}{n}\, \varphi(-\log n)
-       + \tfrac{1}{2 \pi i} \int_{1/2 - i\infty}^{1/2 + i\infty}
-           \Re \tfrac{\Gamma'}{\Gamma}\!\left( \tfrac{z}{2} \right) \Phi(-z)\, dz, $$
-  where the $\rho$-sum runs over the non-trivial zeros of $\zeta$.
-
-  This is the $q = 1$, $\chi$ trivial case of the Weil-type explicit formula of
-  \cite[Theorem 3.1]{Kadiri2005}. The $\Phi(-1)$ term comes from the simple pole of $\zeta$
-  at $z = 1$ (and is absent for non-trivial $\chi$); the $\varphi(0)\log\pi$ term and the
-  $\Gamma$-integral come from the gamma factor in the functional equation of $\zeta$; the
-  $-\sum_n \tfrac{\Lambda(n)}{n}\varphi(-\log n)$ term is the contribution from the
-  reflected ($z \leftrightarrow 1 - z$) Dirichlet series.
-
-  \emph{Typo correction:} \cite[Theorem 3.1, p.~11]{Kadiri2005} states this identity with
-  $+\sum_n \tfrac{\Lambda(n)}{n}\varphi(-\log n)$ (positive sign), but this is a downstream
-  consequence of the sign typo in the paper's functional equation on \cite[p.~12]{Kadiri2005}
-  (see \ref{kadiri-thm-3-1-q1-functional-eq}). Numerical verification (e.g.\ at $s = 2$)
-  confirms the sign here is negative. The paper's downstream applications, including
-  equation (16) and the chapter's main zero-free-region argument, are unaffected by this
-  typo because they specialize to a test function for which $\varphi(-\log n) = 0$ for all
-  $n \geq 1$. -/)
-  (proof := /-- Composition of the eleven preceding sublemmas. Pick any
-  $0 < a < \min(b, 1)$ and any $T > 0$.
-
-  By \ref{kadiri-thm-3-1-q1-eq-11} the LHS equals
-  $\tfrac{1}{2\pi i} \int_{(1+a)} (-\zeta'/\zeta)(s)\, \Phi(-s)\, ds$, which is the
-  $T \to \infty$ limit of \ref{kadiri-thm-3-1-q1-I}'s $I(T)$ by dominated convergence on
-  the $O(1/|t|)$ decay of $\Phi$.
-
-  By \ref{kadiri-thm-3-1-q1-eq-12} this $I(T)$ equals the sum of the $\sigma = -a$
-  integral, the two horizontal arcs, $\Phi(-1)$, and the truncated $\rho$-sum
-  $\sum_{|\Im\rho| < T} \Phi(-\rho)$. The two horizontals vanish in the limit by
-  \ref{kadiri-thm-3-1-q1-top-horizontal-vanishes} and
-  \ref{kadiri-thm-3-1-q1-bot-horizontal-vanishes}, while the truncated $\rho$-sum
-  extends to the full $\sum_{\rho \in Z(\zeta)} \Phi(-\rho)$ as $T \to \infty$
-  (using summability of the complex sum).
-
-  The $\sigma = -a$ integral equals $I_1(T) + I_2(T) + I_3(T)$ by
-  \ref{kadiri-thm-3-1-q1-shifted-eq-I123}, with $T \to \infty$ limits given by
-  \ref{kadiri-thm-3-1-q1-eq-13} ($\to -\varphi(0) \log\pi$),
-  \ref{kadiri-thm-3-1-q1-eq-14} ($\to -\sum_n \tfrac{\Lambda(n)}{n}\varphi(-\log n)$),
-  and \ref{kadiri-thm-3-1-q1-eq-15} ($\to \Phi(0) +
-  \tfrac{1}{2\pi i} \int_{(1/2)} \Re[\Gamma'/\Gamma(s/2)]\, \Phi(-s)\, ds$).
-
-  Combining yields the stated identity. The residual `sorry` covers the remaining
-  technical limit-management steps (interchange of $T \to \infty$ with the integrals
-  and the $\rho$-sum); the sublemma signatures already type-check the composition. -/)
-  (latexEnv := "theorem")
-  (discussion := 1546)]
-theorem kadiri_thm_3_1_q1 {φ : ℝ → ℂ} (hφ : ContDiff ℝ 1 φ)
-    {b : ℝ} (hb : 0 < b)
-    (hφ_decay : (fun x : ℝ ↦ φ x * exp ((x : ℂ) / 2))
-        =O[Filter.cocompact ℝ] fun x : ℝ ↦ Real.exp (-(1/2 + b) * |x|))
-    (hφ'_decay : (fun x : ℝ ↦ deriv φ x * exp ((x : ℂ) / 2))
-        =O[Filter.cocompact ℝ] fun x : ℝ ↦ Real.exp (-(1/2 + b) * |x|))
-    (hΦ_sum : Summable (fun ρ : riemannZeta.zeroes_rect (.Ioo 0 1) (.univ : Set ℝ) ↦
-      (∫ y, φ y * exp (ρ.val * (y : ℂ)) ∂volume) *
-        (riemannZeta.order ρ.val : ℂ)))
-    (hΓ_int : MeasureTheory.Integrable (fun t : ℝ ↦
-      ((digamma ((1 / 2 + (t : ℂ) * I) / 2)).re : ℂ) *
-        ∫ y, φ y * exp ((1 / 2 + (t : ℂ) * I) * (y : ℂ)) ∂volume)) :
-    let Φ : ℂ → ℂ := fun z ↦ ∫ y, φ y * exp (-z * (y : ℂ)) ∂volume
-    (∑' n : ℕ, (Λ n : ℂ) * φ (Real.log n)) =
-      Φ (-1) + Φ 0
-        - riemannZeta.zeroes_sum (.Ioo 0 1) (.univ : Set ℝ) (fun ρ ↦ Φ (-ρ))
-        - φ 0 * ((Real.log Real.pi : ℝ) : ℂ)
-        - ∑' n : ℕ, ((Λ n : ℂ) / (n : ℂ)) * φ (-Real.log n)
-        + (1 / (2 * (Real.pi : ℂ))) *
-            ∫ t : ℝ,
-              ((digamma ((1 / 2 + (t : ℂ) * I) / 2)).re : ℂ) *
-                Φ (-(1 / 2 + (t : ℂ) * I)) := by
-  intro Φ
-  -- Pick `a := (min b 1) / 2` so that `0 < a < min(b, 1)`.
-  have hbmin1 : 0 < min b 1 := lt_min hb one_pos
-  set a : ℝ := min b 1 / 2 with ha_def
-  have ha_pos : 0 < a := by rw [ha_def]; linarith
-  have ha_lt_b : a < b := by
-    rw [ha_def]
-    have h : min b 1 ≤ b := min_le_left b 1
-    linarith
-  have ha_lt_1 : a < 1 := by
-    rw [ha_def]
-    have h : min b 1 ≤ 1 := min_le_right b 1
-    linarith
-  -- Each sublemma's conclusion, ready for assembly:
-  -- · `heq11`: LHS as Mellin contour integral on σ = 1 + a (kadiri-thm-3-1-q1-eq-11).
-  have heq11 :=
-    kadiri_thm_3_1_q1_eq_11 hφ hb hφ_decay hφ'_decay ha_pos ha_lt_b ha_lt_1
-  -- · `htop`, `hbot`: horizontal integrals → 0 as T → ∞.
-  have htop :=
-    kadiri_thm_3_1_q1_top_horizontal_vanishes
-      hφ hb hφ_decay hφ'_decay ha_pos ha_lt_b ha_lt_1
-  have hbot :=
-    kadiri_thm_3_1_q1_bot_horizontal_vanishes
-      hφ hb hφ_decay hφ'_decay ha_pos ha_lt_b ha_lt_1
-  -- · `h13`, `h14`, `h15`: limits of I₁(T), I₂(T), I₃(T) as T → ∞.
-  have h13 :=
-    kadiri_thm_3_1_q1_eq_13 hφ hb hφ_decay hφ'_decay ha_pos ha_lt_b ha_lt_1
-  have h14 :=
-    kadiri_thm_3_1_q1_eq_14 hφ hb hφ_decay hφ'_decay ha_pos ha_lt_b ha_lt_1
-  have h15 :=
-    kadiri_thm_3_1_q1_eq_15 hφ hb hφ_decay hφ'_decay ha_pos ha_lt_b ha_lt_1 hΓ_int
-  -- The two intermediate limit facts; both are technical limit-management steps left as
-  -- `sorry` for now (dominated convergence + summability across the $T \to \infty$ limit).
-
-  -- (i) `lim_{T → ∞} I(T) = ∑' Λ(n) φ(log n)`. The truncated integral defining `I(T)`
-  -- approaches the un-truncated integral on $\sigma = 1 + a$ by dominated convergence on
-  -- the $O(1/|t|)$ decay of $\Phi$ from (B); the latter integral equals the LHS by `heq11`.
-  have lim_I_from_eq11 :
-      Filter.Tendsto (fun T : ℝ ↦ kadiri_thm_3_1_q1_I φ a T) Filter.atTop
-        (nhds (∑' n : ℕ, (Λ n : ℂ) * φ (Real.log n))) := by
-    sorry
-
-  -- (ii) `lim_{T → ∞} I(T) = (the assembled RHS pieces)`. By `heq12` (the rectangle
-  -- decomposition), `I(T)` splits into the $\sigma = -a$ integral + the two horizontals
-  -- + $\Phi(-1)$ + the truncated $\rho$-sum. The two horizontals vanish in the limit
-  -- (`htop`, `hbot`), the $\sigma = -a$ piece splits as $I_1 + I_2 + I_3$
-  -- (`kadiri_thm_3_1_q1_shifted_eq_I123`) whose limits are given by `h13, h14, h15`,
-  -- and the truncated $\rho$-sum extends to the full sum (by summability).
-  have lim_I_from_pieces :
-      Filter.Tendsto (fun T : ℝ ↦ kadiri_thm_3_1_q1_I φ a T) Filter.atTop
-        (nhds
-          (φ 0 * ((-Real.log Real.pi : ℝ) : ℂ)
-          + (-∑' n : ℕ, ((Λ n : ℂ) / (n : ℂ)) * φ (-Real.log n))
-          + (Φ 0
-            + (1 / (2 * (Real.pi : ℂ))) *
-                ∫ t : ℝ,
-                  ((digamma ((1 / 2 + (t : ℂ) * I) / 2)).re : ℂ) *
-                    Φ (-(1 / 2 + (t : ℂ) * I)))
-          + Φ (-1)
-          - riemannZeta.zeroes_sum (.Ioo 0 1) (.univ : Set ℝ) (fun ρ ↦ Φ (-ρ)))) := by
-    sorry
-
-  -- The two limits agree (both are `lim I(T)`), giving the desired equation.
-  have heq := tendsto_nhds_unique lim_I_from_eq11 lim_I_from_pieces
-  rw [heq]
-  push_cast
-  -- `ring_nf` normalizes the outer arithmetic, but cannot reach inside the opaque
-  -- `Φ(...)` and `(digamma _).re` applications. The remaining difference is purely
-  -- `mul_comm` on `(t : ℂ) * I` vs `I * (t : ℂ)` inside the integrand; unify by an
-  -- explicit `simp_rw` before normalization.
-  simp_rw [show ∀ (t : ℝ), (t : ℂ) * I = I * (t : ℂ) from fun _ => mul_comm _ _]
-  ring
 
 /-! ## Machinery for deriving (16) from Theorem 3.1
 
@@ -1765,7 +1439,6 @@ theorem laplaceTransform_ibp {d : ℝ} (hd : 0 < d) {f : ℝ → ℝ}
           (∫ t in (0 : ℝ)..d, K t * ((deriv (deriv f) t : ℝ) : ℂ)) / w ^ 2 := by
       rw [hd2f_interval_eq]
       field_simp [hw]
-
 
 @[blueprint
   "kadiri-test-fn"
@@ -2485,155 +2158,6 @@ theorem kadiriTestFn_log (f : ℝ → ℝ) (s : ℂ) {n : ℕ} (hn : 1 ≤ n) :
     Complex.cpow_def_of_ne_zero hn0, division_def, mul_eq_mul_left_iff, inv_inj]
   left; ring_nf
 
-
-/-- Weighted complex form of equation (16), derived from the explicit formula
-`kadiri_thm_3_1_q1` at the Kadiri test function. The zero sum carries the
-multiplicities that the residue calculus produces; the set-sum form of
-`identity_16_complex` follows when every zero in the strip is simple. The two
-hypotheses are the explicit formula's convergence inputs, instantiated at the
-test function (dischargeable through the `F₂(s-z)/(s-z)²` representation). -/
-theorem identity_16_complex_weighted {d : ℝ} (hd : 0 < d) {f : ℝ → ℝ}
-    (hf_C2 : ContDiffOn ℝ 2 f (.Icc 0 d))
-    (hf_supp : tsupport f ⊆ .Ico 0 d)
-    (hf_d : f d = 0)
-    (hf_deriv_0 : derivWithin f (Set.Icc 0 d) 0 = 0)
-    (hf_deriv_d : derivWithin f (Set.Icc 0 d) d = 0)
-    {s : ℂ} (hs : 1 < s.re)
-    (hΦ_sum : Summable (fun ρ : riemannZeta.zeroes_rect (.Ioo 0 1) (.univ : Set ℝ) ↦
-      (∫ y, kadiriTestFn f s y * exp (ρ.val * (y : ℂ)) ∂volume) *
-        (riemannZeta.order ρ.val : ℂ)))
-    (hΓ_int : MeasureTheory.Integrable (fun t : ℝ ↦
-      ((digamma ((1 / 2 + (t : ℂ) * I) / 2)).re : ℂ) *
-        ∫ y, kadiriTestFn f s y *
-          exp ((1 / 2 + (t : ℂ) * I) * (y : ℂ)) ∂volume)) :
-    (∑' n : ℕ, (Λ n : ℂ) / (n : ℂ) ^ s * ((f (Real.log n) : ℝ) : ℂ)) =
-      (f 0 : ℂ) * ((∑' n : ℕ, (Λ n : ℂ) / (n : ℂ) ^ s) - 1 / (s - 1))
-      + riemannZeta.zeroes_sum (.Ioo 0 1) (.univ : Set ℝ)
-          (fun ρ ↦ (f 0 : ℂ) / (s - ρ) - laplaceTransform f (s - ρ))
-      + laplaceTransform f (s - 1)
-      + ((1 / (2 * (Real.pi : ℂ))) *
-          (∫ t : ℝ,
-            ((digamma ((1 / 2 + (t : ℂ) * I) / 2)).re : ℂ) *
-              laplaceTransform (fun u ↦ deriv (deriv f) u) (s - (1 / 2 + (t : ℂ) * I))
-              / (s - (1 / 2 + (t : ℂ) * I)) ^ 2)
-          + laplaceTransform (fun u ↦ deriv (deriv f) u) s / s ^ 2) := by
-  have hs0 : s ≠ 0 := by
-    intro h
-    rw [h] at hs
-    norm_num at hs
-  -- the explicit formula at the test function
-  obtain ⟨b, hb, hdecay, hdecay'⟩ := kadiriTestFn_decay hf_supp hs
-  have hform := kadiri_thm_3_1_q1
-    (kadiriTestFn_contDiff hd hf_C2 hf_supp hf_d hf_deriv_0 hf_deriv_d s)
-    hb hdecay hdecay' hΦ_sum hΓ_int
-  dsimp only at hform
-  -- the pole value
-  have hΦ1 : (∫ y, kadiriTestFn f s y *
-      exp (-(-1 : ℂ) * (y : ℂ)) ∂volume) =
-      (f 0 : ℂ) / (s - 1) - laplaceTransform f (s - 1) := by
-    have hre : (0 : ℝ) < (s + (-1 : ℂ)).re := by
-      simp only [Complex.add_re, Complex.neg_re, Complex.one_re]
-      linarith
-    rw [kadiriTestFn_laplaceTransform hd hf_C2 hf_supp s (-1) hre,
-      show s + (-1 : ℂ) = s - 1 by ring]
-  -- the value at zero, collapsed by integration by parts
-  have hΦ0 : (∫ y, kadiriTestFn f s y *
-      exp (-(0 : ℂ) * (y : ℂ)) ∂volume) =
-      -(laplaceTransform (fun u ↦ deriv (deriv f) u) s / s ^ 2) := by
-    have hre : (0 : ℝ) < (s + (0 : ℂ)).re := by
-      simp only [Complex.add_re, Complex.zero_re]
-      linarith
-    rw [kadiriTestFn_laplaceTransform hd hf_C2 hf_supp s 0 hre,
-      show s + (0 : ℂ) = s by ring,
-      laplaceTransform_ibp hd hf_C2 hf_supp hf_d hf_deriv_0 hf_deriv_d hs0]
-    ring
-  -- the zero packet values
-  have hzero : riemannZeta.zeroes_sum (.Ioo 0 1) (.univ : Set ℝ)
-      (fun ρ ↦ ∫ y, kadiriTestFn f s y *
-        exp (-(-ρ) * (y : ℂ)) ∂volume) =
-      riemannZeta.zeroes_sum (.Ioo 0 1) (.univ : Set ℝ)
-        (fun ρ ↦ (f 0 : ℂ) / (s - ρ) - laplaceTransform f (s - ρ)) := by
-    unfold riemannZeta.zeroes_sum
-    refine tsum_congr fun ρ ↦ ?_
-    change (∫ y, kadiriTestFn f s y *
-        exp (-(-ρ.val) * (y : ℂ)) ∂volume) * (riemannZeta.order ρ.val : ℂ) =
-      ((f 0 : ℂ) / (s - ρ.val) - laplaceTransform f (s - ρ.val)) *
-        (riemannZeta.order ρ.val : ℂ)
-    congr 1
-    have hlt : (ρ.val : ℂ).re < 1 := ρ.property.1.2
-    have hre : (0 : ℝ) < (s + -ρ.val).re := by
-      simp only [Complex.add_re, Complex.neg_re]
-      linarith
-    rw [kadiriTestFn_laplaceTransform hd hf_C2 hf_supp s (-ρ.val) hre,
-      show s + -ρ.val = s - ρ.val by ring]
-  -- the test function vanishes at zero
-  have hφ0 : kadiriTestFn f s 0 = 0 := by
-    simp [kadiriTestFn]
-  -- the reflected sum vanishes
-  have hrefl : (∑' n : ℕ, ((Λ n : ℂ) / (n : ℂ)) * kadiriTestFn f s (-Real.log n)) = 0 := by
-    have hterm : ∀ n : ℕ, ((Λ n : ℂ) / (n : ℂ)) * kadiriTestFn f s (-Real.log n) = 0 := by
-      intro n
-      match n with
-      | 0 => simp
-      | 1 => simp [Nat.cast_one, Real.log_one, neg_zero, hφ0]
-      | (k + 2) =>
-        have hlog : (0 : ℝ) < Real.log ((k : ℝ) + 2) := by
-          apply Real.log_pos
-          have hk : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
-          linarith
-        have hle : ¬ Real.log ((k : ℝ) + 2) ≤ 0 := not_le.mpr hlog
-        simp [kadiriTestFn, hle]
-    rw [tsum_congr hterm, tsum_zero]
-  -- the contour integrand, collapsed by integration by parts
-  have hcont : (∫ t : ℝ, ((digamma ((1 / 2 + (t : ℂ) * I) / 2)).re : ℂ) *
-        ∫ y, kadiriTestFn f s y *
-          exp (-(-(1 / 2 + (t : ℂ) * I)) * (y : ℂ)) ∂volume) =
-      -(∫ t : ℝ, ((digamma ((1 / 2 + (t : ℂ) * I) / 2)).re : ℂ) *
-          laplaceTransform (fun u ↦ deriv (deriv f) u) (s - (1 / 2 + (t : ℂ) * I)) /
-            (s - (1 / 2 + (t : ℂ) * I)) ^ 2) := by
-    rw [← MeasureTheory.integral_neg]
-    refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun t ↦ ?_)
-    change ((digamma ((1 / 2 + (t : ℂ) * I) / 2)).re : ℂ) *
-        (∫ y, kadiriTestFn f s y *
-          exp (-(-(1 / 2 + (t : ℂ) * I)) * (y : ℂ)) ∂volume) =
-      -(((digamma ((1 / 2 + (t : ℂ) * I) / 2)).re : ℂ) *
-          laplaceTransform (fun u ↦ deriv (deriv f) u) (s - (1 / 2 + (t : ℂ) * I)) /
-            (s - (1 / 2 + (t : ℂ) * I)) ^ 2)
-    have h12 : ((1 : ℂ) / 2 + (t : ℂ) * I).re = 1 / 2 := by
-      simp [Complex.add_re, Complex.mul_re]
-    have hre : (0 : ℝ) < (s + -(1 / 2 + (t : ℂ) * I)).re := by
-      simp only [Complex.add_re, Complex.neg_re, h12]
-      linarith
-    have hwne : s - (1 / 2 + (t : ℂ) * I) ≠ 0 := by
-      intro h
-      have : (s - (1 / 2 + (t : ℂ) * I)).re = 0 := by rw [h]; rfl
-      rw [Complex.sub_re, h12] at this
-      linarith
-    rw [kadiriTestFn_laplaceTransform hd hf_C2 hf_supp s (-(1 / 2 + (t : ℂ) * I)) hre,
-      show s + -(1 / 2 + (t : ℂ) * I) = s - (1 / 2 + (t : ℂ) * I) by ring,
-      laplaceTransform_ibp hd hf_C2 hf_supp hf_d hf_deriv_0 hf_deriv_d hwne]
-    ring
-  rw [hΦ1, hΦ0, hzero, hφ0, hrefl, hcont] at hform
-  -- the Dirichlet-side split
-  have hS1 : Summable (fun n : ℕ ↦ (Λ n : ℂ) / (n : ℂ) ^ s) := by
-    refine (ArithmeticFunction.LSeriesSummable_vonMangoldt hs).congr fun n ↦ ?_
-    rcases eq_or_ne n 0 with rfl | hn
-    · simp
-    · rw [LSeries.term_of_ne_zero hn]
-  have hS2 := summable_f_log hf_supp (fun n : ℕ ↦ (Λ n : ℂ) / (n : ℂ) ^ s)
-  have hLHS : (∑' n : ℕ, (Λ n : ℂ) * kadiriTestFn f s (Real.log n)) =
-      (f 0 : ℂ) * (∑' n : ℕ, (Λ n : ℂ) / (n : ℂ) ^ s) -
-        ∑' n : ℕ, (Λ n : ℂ) / (n : ℂ) ^ s * ((f (Real.log n) : ℝ) : ℂ) := by
-    rw [← tsum_mul_left, ← Summable.tsum_sub (hS1.mul_left _) hS2]
-    refine tsum_congr fun n ↦ ?_
-    rcases Nat.eq_zero_or_pos n with rfl | hn
-    · simp
-    · rw [kadiriTestFn_log f s hn]
-      have hn0 : ((n : ℕ) : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hn.ne'
-      field_simp
-  rw [hLHS] at hform
-  linear_combination -hform
-
 /-! ## Auxiliaries glueing the three precursors to Proposition 2.1
 
 Two facts not in the three precursors above are needed: \ref{kadiri-re-hadamardB-eq} (the
@@ -2648,47 +2172,6 @@ two further inputs, also stated below: Backlund's explicit Riemann--von Mangoldt
 (\ref{kadiri-backlund-bound}), giving $N(T) \ll T \log T$, and the $1/y^2$ decay of $\Re F$
 on vertical strips (\ref{kadiri-laplace-re-decay}), giving the per-term bound
 $|\Re F(s - \rho)| \ll 1/\gamma^2$. -/
-
-@[blueprint
-  "kadiri-re-hadamardB-eq"
-  (title := "Real part of the Hadamard constant")
-  (statement := /-- $\Re B = -\sum_{\rho \in Z(\zeta)} \Re \tfrac{1}{\rho}$, where $B$ is the
-  Hadamard constant (\ref{kadiri-hadamard-B}). -/)
-  (proof := /-- Subtract $\tfrac{1}{s-1}$ from \ref{kadiri-hadamard-identity}, take $s \to 1$
-  using the Laurent expansion $-\zeta'/\zeta(s) = \tfrac{1}{s-1} - \gamma + O(s - 1)$ near $s = 1$
-  and the value $\Gamma'/\Gamma(3/2)$, then symmetrise the resulting sum
-  $\sum_\rho (1/\rho + 1/(1-\rho))$ using $\rho \leftrightarrow 1 - \bar\rho$ to relate
-  $\sum_\rho 1/\rho$ to $\Re B$. To be formalised. -/)
-  (latexEnv := "lemma")
-  (discussion := 1476)]
-theorem re_hadamardB_eq :
-    hadamardB.re =
-    -∑' ρ : riemannZeta.zeroes_rect (.Ioo 0 1) (.univ : Set ℝ),
-        (1 / (ρ.val : ℂ)).re := by
-  sorry
-
-@[blueprint
-  "kadiri-backlund-bound"
-  (title := "Backlund's explicit Riemann--von Mangoldt bound")
-  (statement := /-- Backlund's explicit zero-counting bound (\cite{Backlund1918}, cited in
-  \cite[page 24]{Kadiri2005}): the constants $(b_1, b_2, b_3) = (0.137, 0.443, 6.1)$ satisfy
-  the project's \ref{Riemann-von-Mangoldt-estimate}, i.e.\ for every $T \geq 2$,
-  $$ \bigl| N(T) - \bigl( \tfrac{T}{2\pi} \log \tfrac{T}{2\pi} - \tfrac{T}{2\pi}
-                          + \tfrac{7}{8} \bigr) \bigr|
-     \leq 0.137 \log T + 0.443 \log \log T + 6.1. $$
-  Backlund's original (\cite[page 24]{Kadiri2005}) bounds the difference from the simpler
-  main term $\tfrac{T}{2\pi} \log \tfrac{T}{2\pi e}$ by
-  $0.137 \log T + 0.443 \log \log T + 5.225$; absorbing the $\tfrac{7}{8}$ offset between the
-  two main-term conventions gives the project-form constant $5.225 + \tfrac{7}{8} = 6.1$.
-  For $T \in [2, t_1)$ (below the first non-trivial zero $t_1 \approx 14.1347$) the LHS reduces
-  to the main-term absolute value, which is well within the (loose) RHS bound. -/)
-  (proof := /-- Classical Backlund 1918 (\cite{Backlund1918}). The
-  \cite[Theorem of Backlund]{Backlund1918} variant is the form cited at
-  \cite[page 24]{Kadiri2005} as the starting point for the explicit estimates
-  $N_1(u), N_2(u)$ of (34)-(35) there. To be formalised. -/)
-  (latexEnv := "lemma")]
-theorem backlund_bound : riemannZeta.Riemann_vonMangoldt_bound 0.137 0.443 6.1 := by
-  sorry
 
 @[blueprint
   "kadiri-laplace-re-decay"
@@ -2995,7 +2478,6 @@ theorem summable_re_one_div_at_zeros (s : ℂ) :
     _ = (|s.re| + 1) * (|(s - (ρ : ℂ)).im|⁻¹ ^ (2 : ℕ)) := by
         rw [inv_pow, sq_abs, div_eq_mul_inv]
 
-
 /-- Summability of the genus-one zero packets `1/ρ + 1/(s - ρ)`: away from finitely
 many zeros the packet equals `s/(ρ(s - ρ))`, of norm at most
 `‖s‖/2 · (1/(Im ρ)² + 1/(Im (s - ρ))²)` by AM-GM, and both square tails are summable
@@ -3104,7 +2586,6 @@ theorem re_shifted_sum_eq_paired_sub_re_inv (s : ℂ) :
   rw [re_tsum_paired_eq_re_inv_add_re_shifted s]
   ring
 
-
 /-- The explicit formula's weighted zero-sum hypothesis holds at the Kadiri test
 function: each integral is the pole-subtracted packet `f 0/(s-ρ) - F(s-ρ)`, of
 norm `O(1/(Im (s-ρ))²)`, and the order weight is carried by the unconditional
@@ -3172,34 +2653,6 @@ theorem summable_kadiriTestFn_weighted_at_zeros {d : ℝ} (hd : 0 < d) {f : ℝ 
           ring
   exact hmain.congr fun ρ ↦ by rw [hpt ρ]
 
-/-- The weighted complex form of equation (16) with the zero-sum hypothesis
-discharged: only the contour integrability and `kadiri_thm_3_1_q1` itself remain. -/
-theorem identity_16_complex_weighted_of_integrable {d : ℝ} (hd : 0 < d) {f : ℝ → ℝ}
-    (hf_C2 : ContDiffOn ℝ 2 f (.Icc 0 d))
-    (hf_supp : tsupport f ⊆ .Ico 0 d)
-    (hf_d : f d = 0)
-    (hf_deriv_0 : derivWithin f (Set.Icc 0 d) 0 = 0)
-    (hf_deriv_d : derivWithin f (Set.Icc 0 d) d = 0)
-    {s : ℂ} (hs : 1 < s.re)
-    (hΓ_int : MeasureTheory.Integrable (fun t : ℝ ↦
-      ((digamma ((1 / 2 + (t : ℂ) * I) / 2)).re : ℂ) *
-        ∫ y, kadiriTestFn f s y *
-          exp ((1 / 2 + (t : ℂ) * I) * (y : ℂ)) ∂volume)) :
-    (∑' n : ℕ, (Λ n : ℂ) / (n : ℂ) ^ s * ((f (Real.log n) : ℝ) : ℂ)) =
-      (f 0 : ℂ) * ((∑' n : ℕ, (Λ n : ℂ) / (n : ℂ) ^ s) - 1 / (s - 1))
-      + riemannZeta.zeroes_sum (.Ioo 0 1) (.univ : Set ℝ)
-          (fun ρ ↦ (f 0 : ℂ) / (s - ρ) - laplaceTransform f (s - ρ))
-      + laplaceTransform f (s - 1)
-      + ((1 / (2 * (Real.pi : ℂ))) *
-          (∫ t : ℝ,
-            ((digamma ((1 / 2 + (t : ℂ) * I) / 2)).re : ℂ) *
-              laplaceTransform (fun u ↦ deriv (deriv f) u) (s - (1 / 2 + (t : ℂ) * I))
-              / (s - (1 / 2 + (t : ℂ) * I)) ^ 2)
-          + laplaceTransform (fun u ↦ deriv (deriv f) u) s / s ^ 2) :=
-  identity_16_complex_weighted hd hf_C2 hf_supp hf_d hf_deriv_0 hf_deriv_d hs
-    (summable_kadiriTestFn_weighted_at_zeros hd hf_C2 hf_supp hf_d hf_deriv_0
-      hf_deriv_d hs) hΓ_int
-
 @[blueprint
   "kadiri-summable-lap-at-zeros"
   (title := "Summability of $\\sum_\\rho \\Re F(s - \\rho)$")
@@ -3256,263 +2709,10 @@ theorem summable_lap_re_at_zeros {d : ℝ} (hd : 0 < d) {f : ℝ → ℝ}
     _ = C * (|(s - (ρ : ℂ)).im|⁻¹ ^ (2 : ℕ)) := by
         rw [inv_pow, sq_abs, div_eq_mul_inv]
 
-@[blueprint
-  "kadiri-identity-16-complex"
-  (title := "Complex form of equation (16)")
-  (statement := /-- Under the hypotheses of \ref{kadiri-prop-2-1}: for every
-  $s \in \mathbb{C}$ with $\Re s > 1$,
-  $$ \sum_{n \geq 1} \frac{\Lambda(n)}{n^s} f(\log n)
-   = f(0) \Bigl( \sum_{n \geq 1} \frac{\Lambda(n)}{n^s} - \frac{1}{s - 1} \Bigr)
-   + \sum_{\rho \in Z(\zeta)} \Bigl( \frac{f(0)}{s - \rho} - F(s - \rho) \Bigr)
-   + F(s - 1)
-   + \Bigl( \frac{1}{2\pi i} \int_{1/2 - i\infty}^{1/2 + i\infty}
-       \Re \tfrac{\Gamma'}{\Gamma}\!\left(\tfrac{z}{2}\right) \frac{F_2(s - z)}{(s - z)^2}\, dz
-       + \frac{F_2(s)}{s^2} \Bigr). $$
-  The zero sum is grouped: each summand is $\Phi(-\rho)$, the Laplace transform of the
-  test function $\varphi(y) = (f(0) - f(y)) e^{-y s}$ at $-\rho$, equal to
-  $-F_2(s-\rho)/(s-\rho)^2$ and hence of size $O(1/|\Im \rho|^2)$; the split sums
-  $\sum_\rho 1/(s-\rho)$ and $\sum_\rho F(s-\rho)$ are individually divergent.
--/)
-  (proof := /-- Apply \ref{kadiri-thm-3-1-q1} to the Kadiri test function
-  $\varphi$; its hypotheses
-  are discharged by \ref{kadiri-test-fn-contDiff} ($\varphi$ is $C^1$) and
-  \ref{kadiri-test-fn-decay} (decay (B) with any $0 < b < \Re s - 1$, requiring
-  $\Re s > 1$). The Laplace transform of $\varphi$ is computed by
-  \ref{kadiri-test-fn-laplace}: $\Phi(z;\, s) = f(0)/(s+z) - F(s+z)$. In particular
-  $\Phi(-1) = f(0)/(s-1) - F(s-1)$, $\Phi(-\rho) = f(0)/(s-\rho) - F(s-\rho)$,
-  $\Phi(0) = f(0)/s - F(s)$, and $\Phi(-z) = f(0)/(s-z) - F(s-z)$ at $z = 1/2 + it$.
-  Rewriting $F(s) = f(0)/s + F_2(s)/s^2$ via \ref{kadiri-laplace-ibp} (and likewise at
-  $w = s - z$) collapses $\Phi(0) = -F_2(s)/s^2$ and $\Phi(-z) = -F_2(s-z)/(s-z)^2$ used
-  inside the contour integral. Three terms of \ref{kadiri-thm-3-1-q1}'s conclusion vanish
-  for this $\varphi$: $\varphi(0;\, s) = 0$ kills the
-  $\varphi(0) \log \pi$ term, and $\varphi(-\log n;\, s) = 0$ for every $n \geq 1$
-   kills the reflected discrete sum. Unfolding
-  $\varphi(\log n;\, s) = (f(0) - f(\log n))/n^s$ gives
-  $\sum_n \Lambda(n) \varphi(\log n;\, s) = f(0) \sum_n \Lambda(n)/n^s
-   - \sum_n \Lambda(n) f(\log n)/n^s$; solving for $\sum_n \Lambda(n) f(\log n)/n^s$ and
-  substituting the $\Phi$ values yields the right-hand side.  -/)
-  (latexEnv := "sublemma")
-  (discussion := 1494)]
-theorem identity_16_complex {d : ℝ} (hd : 0 < d) {f : ℝ → ℝ}
-    (hf_C2 : ContDiffOn ℝ 2 f (.Icc 0 d))
-    (hf_supp : tsupport f ⊆ .Ico 0 d)
-    (hf_d : f d = 0)
-    (hf_deriv_0 : derivWithin f (Set.Icc 0 d) 0 = 0)
-    (hf_deriv_d : derivWithin f (Set.Icc 0 d) d = 0)
-    (hf_deriv2_d : derivWithin (fun x => derivWithin f (Set.Icc 0 d) x) (Set.Icc 0 d) d = 0)
-    {s : ℂ} (hs : 1 < s.re) :
-    (∑' n : ℕ, (Λ n : ℂ) / (n : ℂ) ^ s * ((f (Real.log n) : ℝ) : ℂ)) =
-      (f 0 : ℂ) * ((∑' n : ℕ, (Λ n : ℂ) / (n : ℂ) ^ s) - 1 / (s - 1))
-      + ∑' ρ : riemannZeta.zeroes_rect (.Ioo 0 1) (.univ : Set ℝ),
-          ((f 0 : ℂ) / (s - ρ.val) - laplaceTransform f (s - ρ.val))
-      + laplaceTransform f (s - 1)
-      + ((1 / (2 * (Real.pi : ℂ))) *
-          (∫ t : ℝ,
-            ((digamma ((1 / 2 + (t : ℂ) * I) / 2)).re : ℂ) *
-              laplaceTransform (fun u ↦ deriv (deriv f) u) (s - (1 / 2 + (t : ℂ) * I))
-              / (s - (1 / 2 + (t : ℂ) * I)) ^ 2)
-          + laplaceTransform (fun u ↦ deriv (deriv f) u) s / s ^ 2) := by
-  sorry
-
-@[blueprint
-  "kadiri-identity-16"
-  (title := "Equation (16) of \\cite{Kadiri2005}: intermediate identity")
-  (statement := /-- Under the hypotheses of \ref{kadiri-prop-2-1}: for every
-  $s \in \mathbb{C}$ with $\Re s > 1$,
-  $$ \Re \sum_{n \geq 1} \frac{\Lambda(n)}{n^s} f(\log n)
-   = f(0) \Bigl( \Re \Bigl( \sum_{n \geq 1} \frac{\Lambda(n)}{n^s} - \frac{1}{s - 1}
-                  + \sum_{\rho \in Z(\zeta)} \Bigl( \frac{1}{\rho} + \frac{1}{s - \rho} \Bigr) \Bigr)
-                  - \sum_{\rho \in Z(\zeta)} \Re \frac{1}{\rho} \Bigr)
-   + \Re F(s - 1) - \sum_{\rho \in Z(\zeta)} \Re F(s - \rho)
-   + \Re \Bigl( \frac{1}{2\pi i} \int_{1/2 - i\infty}^{1/2 + i\infty}
-       \Re \tfrac{\Gamma'}{\Gamma}\!\left(\tfrac{z}{2}\right) \frac{F_2(s - z)}{(s - z)^2}\, dz
-       + \frac{F_2(s)}{s^2} \Bigr). $$
-  This is the real-part form of \ref{kadiri-identity-16-complex}; the substantive
-  derivation from \ref{kadiri-thm-3-1-q1} via the Kadiri test function
-  $\varphi(y) = (f(0) - f(y)) e^{-y s} \mathbf{1}_{y \geq 0}$ lives in that sublemma.
-  The zero contribution in the $f(0)$-coefficient uses the absolutely convergent
-  Hadamard-paired block $\sum_\rho (1/\rho + 1/(s - \rho))$ together with the absolutely
-  convergent real correction $\sum_\rho \Re(1/\rho)$, matching
-  \ref{kadiri-hadamard-identity}; the standalone $\sum_\rho 1/(s - \rho)$ does not
-  converge unconditionally. The restriction $\Re s > 1$ is where the Dirichlet series for
-  $-\zeta'/\zeta(s)$ converges absolutely; this is also the range used in Kadiri's
-  downstream zero-free region argument, so we do not extend further. -/)
-  (proof := /-- Apply \ref{kadiri-identity-16-complex} to obtain the $\mathbb{C}$-valued
-  equation, then take real parts of both sides. The grouped zero sum is absolutely
-  summable (each summand is $-F_2(s-\rho)/(s-\rho)^2$ by \ref{kadiri-laplace-ibp}), so
-  $\Re$ passes through it; each term splits as $f(0) \Re(1/(s-\rho)) - \Re F(s-\rho)$,
-  and both real families are absolutely summable. Regrouping
-  $\sum_\rho \Re(1/(s-\rho))$ into the paired block minus the $\Re(1/\rho)$ correction
-  is legitimate by the paired-family summability. -/)
-  (latexEnv := "lemma")
-  (discussion := 1488)]
-theorem identity_16 {d : ℝ} (hd : 0 < d) {f : ℝ → ℝ}
-    (hf_nonneg : ∀ t, 0 ≤ f t)
-    (hf_C2 : ContDiffOn ℝ 2 f (.Icc 0 d))
-    (hf_supp : tsupport f ⊆ .Ico 0 d)
-    (hf_d : f d = 0)
-    (hf_deriv_0 : derivWithin f (Set.Icc 0 d) 0 = 0)
-    (hf_deriv_d : derivWithin f (Set.Icc 0 d) d = 0)
-    (hf_deriv2_d : derivWithin (fun x => derivWithin f (Set.Icc 0 d) x) (Set.Icc 0 d) d = 0)
-    {s : ℂ} (hs : 1 < s.re) :
-    (∑' n : ℕ, (Λ n : ℂ) / (n : ℂ) ^ s * ((f (Real.log n) : ℝ) : ℂ)).re =
-      f 0 * (((∑' n : ℕ, (Λ n : ℂ) / (n : ℂ) ^ s) - 1 / (s - 1) +
-                ∑' ρ : riemannZeta.zeroes_rect (.Ioo 0 1) (.univ : Set ℝ),
-                  (1 / (ρ.val : ℂ) + 1 / (s - ρ.val))).re -
-              ∑' ρ : riemannZeta.zeroes_rect (.Ioo 0 1) (.univ : Set ℝ),
-                (1 / (ρ.val : ℂ)).re)
-        + (laplaceTransform f (s - 1)).re
-        - ∑' ρ : riemannZeta.zeroes_rect (.Ioo 0 1) .univ,
-            (laplaceTransform f (s - ρ.val)).re
-        + ((1 / (2 * (Real.pi : ℂ))) *
-            (∫ t : ℝ,
-              ((digamma ((1 / 2 + (t : ℂ) * I) / 2)).re : ℂ) *
-                laplaceTransform (fun u ↦ deriv (deriv f) u)
-                  (s - (1 / 2 + (t : ℂ) * I))
-                / (s - (1 / 2 + (t : ℂ) * I)) ^ 2)
-            + laplaceTransform (fun u ↦ deriv (deriv f) u) s / s ^ 2).re := by
-  have hcomplex := identity_16_complex hd hf_C2 hf_supp hf_d hf_deriv_0 hf_deriv_d
-    hf_deriv2_d hs
-  have hsub := summable_lap_sub_pole_at_zeros hd hf_C2 hf_supp hf_d hf_deriv_0
-    hf_deriv_d s
-  have hre1 := summable_re_one_div_at_zeros s
-  have hreF := summable_lap_re_at_zeros hd hf_nonneg hf_C2 hf_supp hf_d hf_deriv_0
-    hf_deriv_d hf_deriv2_d s
-  -- `Re` commutes with the grouped zero sum, which is genuinely summable
-  have htsum_re :
-      (∑' ρ : riemannZeta.zeroes_rect (.Ioo 0 1) (.univ : Set ℝ),
-          ((f 0 : ℂ) / (s - ρ.val) - laplaceTransform f (s - ρ.val))).re =
-      ∑' ρ : riemannZeta.zeroes_rect (.Ioo 0 1) (.univ : Set ℝ),
-          ((f 0 : ℂ) / (s - ρ.val) - laplaceTransform f (s - ρ.val)).re := by
-    simpa using ContinuousLinearMap.map_tsum Complex.reCLM hsub
-  -- pointwise real part of the grouped summand
-  have hpt : ∀ ρ : riemannZeta.zeroes_rect (.Ioo 0 1) (.univ : Set ℝ),
-      ((f 0 : ℂ) / (s - ρ.val) - laplaceTransform f (s - ρ.val)).re =
-        f 0 * (1 / (s - ρ.val)).re - (laplaceTransform f (s - ρ.val)).re := by
-    intro ρ
-    have hmul : ((f 0 : ℝ) : ℂ) / (s - ρ.val) =
-        ((f 0 : ℝ) : ℂ) * (1 / (s - ρ.val)) := div_eq_mul_one_div _ _
-    rw [Complex.sub_re, hmul, Complex.re_ofReal_mul]
-  -- split the real tsum of differences
-  have hsplit :
-      (∑' ρ : riemannZeta.zeroes_rect (.Ioo 0 1) (.univ : Set ℝ),
-          (f 0 * (1 / (s - ρ.val)).re - (laplaceTransform f (s - ρ.val)).re)) =
-      f 0 * (∑' ρ : riemannZeta.zeroes_rect (.Ioo 0 1) (.univ : Set ℝ),
-          (1 / (s - ρ.val)).re) -
-        ∑' ρ : riemannZeta.zeroes_rect (.Ioo 0 1) (.univ : Set ℝ),
-          (laplaceTransform f (s - ρ.val)).re := by
-    rw [Summable.tsum_sub (hre1.mul_left (f 0)) hreF, tsum_mul_left]
-  rw [hcomplex]
-  simp only [Complex.add_re, Complex.sub_re]
-  rw [htsum_re, tsum_congr hpt, hsplit, Complex.re_ofReal_mul, Complex.sub_re,
-    re_shifted_sum_eq_paired_sub_re_inv s]
-  ring
-
-@[blueprint
-  "kadiri-re-inner-eq"
-  (title := "Inner real-part identity: collapsing to $T_1$")
-  (statement := /-- For every $s \in \mathbb{C}$ with $\Re s > 1$,
-  $$ \Re \Bigl( \sum_{n \geq 1} \frac{\Lambda(n)}{n^s} - \frac{1}{s - 1}
-                + \sum_{\rho \in Z(\zeta)} \Bigl( \frac{1}{\rho} + \frac{1}{s - \rho} \Bigr) \Bigr)
-     - \sum_{\rho \in Z(\zeta)} \Re \frac{1}{\rho}
-   = -\tfrac{1}{2} \log \pi
-     + \tfrac{1}{2} \Re \tfrac{\Gamma'}{\Gamma}\!\left(\tfrac{s}{2}+1\right). $$
-  The zero block is the absolutely convergent Hadamard pairing of
-  \ref{kadiri-hadamard-identity}, and the $\Re(1/\rho)$ correction is absolutely
-  convergent; the standalone $\sum_\rho 1/(s - \rho)$ does not converge
-  unconditionally. This is the identity that turns the $f(0)$-coefficient of
-  equation (16) into the $T_1$ form of \ref{kadiri-prop-2-1}. -/)
-  (proof := /-- For $\Re s > 1$ the Dirichlet series gives
-  $\sum \Lambda(n)/n^s = -\zeta'/\zeta(s)$; substitute \ref{kadiri-hadamard-identity}
-  (treating the equation as one in $\mathbb{C}$, not yet taking $\Re$). The $1/(s-1)$
-  terms and the paired zero blocks cancel exactly, leaving
-  $-B - \tfrac{1}{2}\log\pi + \tfrac{1}{2}\Gamma'/\Gamma(s/2+1)$. Taking real parts and
-  applying \ref{kadiri-re-hadamardB-eq} cancels $\Re B$ against the
-  $\sum_\rho \Re(1/\rho)$ correction, leaving the claim. -/)
-  (latexEnv := "lemma")
-  (discussion := 1478)]
-theorem re_inner_eq {s : ℂ} (hs : 1 < s.re) :
-    ((∑' n : ℕ, (Λ n : ℂ) / (n : ℂ) ^ s) - 1 / (s - 1) +
-       ∑' ρ : riemannZeta.zeroes_rect (.Ioo 0 1) (.univ : Set ℝ),
-         (1 / (ρ.val : ℂ) + 1 / (s - ρ.val))).re -
-      ∑' ρ : riemannZeta.zeroes_rect (.Ioo 0 1) (.univ : Set ℝ),
-        (1 / (ρ.val : ℂ)).re =
-    -(1 / 2 : ℝ) * Real.log Real.pi +
-      (1 / 2 : ℝ) * (digamma (s / 2 + 1)).re := by
-  have hs1 : s ≠ 1 := by
-    intro hs_eq
-    rw [hs_eq] at hs
-    norm_num at hs
-  have hsZ : s ∉ riemannZeta.zeroes_rect (.Ioo 0 1) (.univ : Set ℝ) := by
-    intro hz
-    exact (not_lt_of_gt hs) hz.1.2
-  rw [tsum_vonMangoldt_eq hs, hadamard_identity s hs1 hsZ]
-  ring_nf
-  simp only [Complex.add_re, Complex.neg_re, Complex.mul_re, Complex.ofReal_re,
-    Complex.ofReal_im, zero_mul, sub_zero]
-  rw [re_hadamardB_eq]
-  norm_num
-  ring_nf
-
 /-! ## Proposition 2.1 of `Kadiri2005` (the explicit formula)
 
 Assembled from \ref{kadiri-identity-16}, \ref{kadiri-re-inner-eq}, and
 \ref{kadiri-summable-lap-at-zeros}. -/
-
-@[blueprint
-  "kadiri-prop-2-1"
-  (title := "Explicit formula (Kadiri 2005, Prop.~2.1)")
-  (statement := /-- Let $d > 0$ and let $f \colon [0, d] \to \mathbb{R}$ be a non-negative
-  function of class $C^2$ on $[0, d]$, compactly supported in $[0, d)$, satisfying the boundary
-  conditions $f(d) = f'(0) = f'(d) = f''(d) = 0$ (hypothesis $(H_1)$ of \cite{Kadiri2005}).
-  Let $F$ denote its Laplace transform $F(s) = \int_0^d e^{-s t} f(t)\, dt$, and let $F_2$
-  denote the Laplace transform of $f''$. Then for every $s \in \mathbb{C}$ with $\Re s > 1$,
-  the sum $\sum_{\rho \in Z(\zeta)} \Re F(s - \rho)$ over the non-trivial zeros is convergent,
-  and
-  $$ \Re \sum_{n \geq 1} \frac{\Lambda(n)}{n^s} f(\log n)
-    = f(0) \left( -\tfrac{1}{2} \log \pi
-        + \tfrac{1}{2} \Re \tfrac{\Gamma'}{\Gamma}\!\left(\tfrac{s}{2} + 1\right) \right)
-    + \Re F(s - 1) - \sum_{\rho \in Z(\zeta)} \Re F(s - \rho)
-    + \Re \left( \frac{1}{2 \pi i} \int_{1/2 - i \infty}^{1/2 + i \infty}
-        \Re \tfrac{\Gamma'}{\Gamma}\!\left(\tfrac{z}{2}\right) \frac{F_2(s - z)}{(s - z)^2}\, dz
-        + \frac{F_2(s)}{s^2} \right), $$
-  where $Z(\zeta)$ is the set of non-trivial zeros of $\zeta$ (those in the open critical strip
-  $0 < \Re \rho < 1$). The half-plane $\Re s > 1$ is the range used in Kadiri's downstream
-  zero-free region argument; the harmonic-extension step that would lift the identity to all
-  of $\mathbb{C}$ is not needed for that application. -/)
-  (proof := /-- The `Summable` conjunct is \ref{kadiri-summable-lap-at-zeros}.
-  For the identity, combine \ref{kadiri-identity-16} (the (16)-form on $\Re s > 1$) with
-  \ref{kadiri-re-inner-eq} (which substitutes the $T_1$ form for the $f(0)$-coefficient
-  $\Re$-expression, also on $\Re s > 1$). The result is a two-line `rw` chain. -/)
-  (latexEnv := "proposition")]
-theorem prop_2_1 {d : ℝ} (hd : 0 < d) {f : ℝ → ℝ}
-    (hf_nonneg : ∀ t, 0 ≤ f t)
-    (hf_C2 : ContDiffOn ℝ 2 f (.Icc 0 d))
-    (hf_supp : tsupport f ⊆ .Ico 0 d)
-    (hf_d : f d = 0)
-    (hf_deriv_0 : derivWithin f (Set.Icc 0 d) 0 = 0)
-    (hf_deriv_d : derivWithin f (Set.Icc 0 d) d = 0)
-    (hf_deriv2_d : derivWithin (fun x => derivWithin f (Set.Icc 0 d) x) (Set.Icc 0 d) d = 0)
-    {s : ℂ} (hs : 1 < s.re) :
-    Summable (fun ρ : riemannZeta.zeroes_rect (.Ioo 0 1) (.univ : Set ℝ) ↦
-                (laplaceTransform f (s - ρ.val)).re) ∧
-    (∑' n : ℕ, (Λ n : ℂ) / (n : ℂ) ^ s * ((f (Real.log n) : ℝ) : ℂ)).re =
-      f 0 * (-(1 / 2 : ℝ) * Real.log Real.pi
-              + (1 / 2 : ℝ) * (digamma (s / 2 + 1)).re)
-        + (laplaceTransform f (s - 1)).re
-        - ∑' ρ : riemannZeta.zeroes_rect (.Ioo 0 1) .univ,
-            (laplaceTransform f (s - ρ.val)).re
-        + ((1 / (2 * (Real.pi : ℂ))) *
-            (∫ t : ℝ,
-              ((digamma ((1 / 2 + (t : ℂ) * I) / 2)).re : ℂ) *
-                laplaceTransform (fun u ↦ deriv (deriv f) u)
-                  (s - (1 / 2 + (t : ℂ) * I))
-                / (s - (1 / 2 + (t : ℂ) * I)) ^ 2)
-            + laplaceTransform (fun u ↦ deriv (deriv f) u) s / s ^ 2).re := by
-  refine ⟨summable_lap_re_at_zeros hd hf_nonneg hf_C2 hf_supp hf_d hf_deriv_0 hf_deriv_d
-      hf_deriv2_d s, ?_⟩
-  rw [identity_16 hd hf_nonneg hf_C2 hf_supp hf_d hf_deriv_0 hf_deriv_d hf_deriv2_d hs,
-      re_inner_eq hs]
 
 /-! ## Definitions for equation (5) of `Kadiri2005`
 
@@ -3549,84 +2749,5 @@ noncomputable def Δ2 (f : ℝ → ℝ) (κ δ : ℝ) (s : ℂ) : ℝ :=
   T2 f s - κ * T2 f (s + (δ : ℂ))
 
 /-! ## Equation (5) of `Kadiri2005`: the "damped" explicit formula -/
-
-@[blueprint
-  "kadiri-eq-5"
-  (title := "Damped explicit formula (Kadiri 2005, eq.~(5))")
-  (statement := /-- For $f$ as in \ref{kadiri-prop-2-1}, real parameters $\kappa, \delta$, and
-  $s \in \mathbb{C}$, set
-  $$ \Delta_1(s) := T_1(s) - \kappa T_1(s + \delta), \qquad
-     \Delta_2(s) := T_2(s) - \kappa T_2(s + \delta), \qquad
-     D(s) := \Re F(s) - \kappa \Re F(s + \delta), $$
-  where $T_1, T_2$ are the "gamma" and "remainder" contributions to the RHS of
-  \ref{kadiri-prop-2-1}. Then
-  $$ \Re \sum_{n \geq 1} \frac{\Lambda(n)}{n^s} f(\log n) \left( 1 - \frac{\kappa}{n^\delta} \right)
-       = f(0) \Delta_1(s) + D(s - 1) - \sum_{\rho \in Z(\zeta)} D(s - \rho) + \Delta_2(s). $$
-  -/)
-  (proof := /-- Direct substitution: apply \ref{kadiri-prop-2-1} at $s$ and at $s + \delta$,
-  multiply the latter by $\kappa$, subtract, and use the identity
-  $n^{-s} - \kappa n^{-(s + \delta)} = n^{-s} (1 - \kappa n^{-\delta})$ to combine the LHS,
-  while the definitions of $\Delta_1, \Delta_2, D$ combine the corresponding RHS terms. -/)
-  (latexEnv := "lemma")]
-theorem eq_5 {d : ℝ} (hd : 0 < d) {f : ℝ → ℝ} (hf_nonneg : ∀ t, 0 ≤ f t)
-    (hf_C2 : ContDiffOn ℝ 2 f (.Icc 0 d)) (hf_supp : tsupport f ⊆ .Ico 0 d)
-    (hf_d : f d = 0) (hf_deriv_0 : derivWithin f (Set.Icc 0 d) 0 = 0) (hf_deriv_d : derivWithin f (Set.Icc 0 d) d = 0)
-    (hf_deriv2_d : derivWithin (fun x => derivWithin f (Set.Icc 0 d) x) (Set.Icc 0 d) d = 0) (κ : ℝ) {δ : ℝ} (hδ : 0 ≤ δ)
-    {s : ℂ} (hs : 1 < s.re) :
-    (∑' n : ℕ, Λ n / n ^ s * f (Real.log n) * ((1 : ℂ) - κ / n ^ (δ : ℂ))).re =
-      f 0 * Δ1 κ δ s + D f κ δ (s - 1)
-        - ∑' ρ : riemannZeta.zeroes_rect (.Ioo 0 1) .univ, D f κ δ (s - ρ.val) + Δ2 f κ δ s := by
-  have hsδ : 1 < (s + δ).re := by
-    simp only [Complex.add_re, Complex.ofReal_re]; linarith
-  have h1 := prop_2_1 hd hf_nonneg hf_C2 hf_supp hf_d hf_deriv_0 hf_deriv_d hf_deriv2_d hs
-  have h2 := prop_2_1 hd hf_nonneg hf_C2 hf_supp hf_d hf_deriv_0 hf_deriv_d hf_deriv2_d hsδ
-  have hLHS :
-      (∑' n : ℕ, Λ n / n ^ s * f (Real.log n) * ((1 : ℂ) - κ / n ^ (δ : ℂ))).re =
-      (∑' n : ℕ, Λ n / (n : ℂ) ^ s * f (Real.log n)).re
-        - κ * (∑' n : ℕ, Λ n / (n : ℂ) ^ (s + δ) * f (Real.log n)).re := by
-    have hpoint (n : ℕ) :
-        Λ n / n ^ s * f (Real.log n) * ((1 : ℂ) - κ / n ^ (δ : ℂ)) =
-        Λ n / n ^ s * f (Real.log n) - κ * (Λ n / n ^ (s + δ) * f (Real.log n)) := by
-      rcases eq_or_ne n 0 with rfl | hn
-      · simp
-      · rw [cpow_add s (δ : ℂ) (Nat.cast_ne_zero.mpr hn)]
-        field_simp
-    have h_complex :
-        (∑' n : ℕ, Λ n / n ^ s * f (Real.log n) * ((1 : ℂ) - κ / n ^ (δ : ℂ))) =
-        (∑' n : ℕ, Λ n / (n : ℂ) ^ s * f (Real.log n)) -
-        (κ : ℂ) * (∑' n : ℕ, Λ n/ (n : ℂ) ^ (s + δ) * f (Real.log n)) := by
-      simp_rw [hpoint]
-      rw [((summable_f_log hf_supp _).hasSum.sub ((summable_f_log hf_supp _).mul_left
-        (κ : ℂ)).hasSum).tsum_eq, tsum_mul_left]
-    rw [h_complex, Complex.sub_re, Complex.re_ofReal_mul]
-  have hZeros :
-      (∑' ρ : riemannZeta.zeroes_rect (.Ioo 0 1) .univ, D f κ δ (s - ρ.val)) =
-      (∑' ρ : riemannZeta.zeroes_rect (.Ioo 0 1) .univ,
-          (laplaceTransform f (s - ρ.val)).re)
-        - κ * (∑' ρ : riemannZeta.zeroes_rect (.Ioo 0 1) .univ,
-                 (laplaceTransform f ((s + δ) - ρ.val)).re) := by
-    have harg : ∀ ρ : riemannZeta.zeroes_rect (.Ioo 0 1) (.univ : Set ℝ),
-        (s - ρ.val) + δ = s + δ - ρ.val := fun _ ↦ by ring
-    simp_rw [D, harg, (h1.1.hasSum.sub (h2.1.mul_left κ).hasSum).tsum_eq, tsum_mul_left]
-  have hT1s : -(1 / 2 : ℝ) * Real.log Real.pi +
-      (1 / 2 : ℝ) * (digamma (s / 2 + 1)).re = T1 s := rfl
-  have hT1sd : -(1 / 2 : ℝ) * Real.log Real.pi +
-      (1 / 2 : ℝ) * (digamma ((s + (δ : ℂ)) / 2 + 1)).re = T1 (s + (δ : ℂ)) := rfl
-  have hT2s : ((1 / (2 * (Real.pi : ℂ))) *
-      (∫ t : ℝ,
-        ((digamma ((1 / 2 + (t : ℂ) * I) / 2)).re : ℂ) *
-          laplaceTransform (fun u ↦ deriv (deriv f) u) (s - (1 / 2 + (t : ℂ) * I))
-          / (s - (1 / 2 + (t : ℂ) * I)) ^ 2)
-      + laplaceTransform (fun u ↦ deriv (deriv f) u) s / s ^ 2).re = T2 f s := rfl
-  have hT2sd : ((1 / (2 * (Real.pi : ℂ))) *
-      (∫ t : ℝ,
-        ((digamma ((1 / 2 + (t : ℂ) * I) / 2)).re : ℂ) *
-          laplaceTransform (fun u ↦ deriv (deriv f) u) (s + (δ : ℂ) - (1 / 2 + (t : ℂ) * I))
-          / (s + (δ : ℂ) - (1 / 2 + (t : ℂ) * I)) ^ 2)
-      + laplaceTransform (fun u ↦ deriv (deriv f) u) (s + (δ : ℂ)) / (s + (δ : ℂ)) ^ 2).re =
-      T2 f (s + (δ : ℂ)) := rfl
-  rw [hLHS, h1.2, h2.2, hZeros, hT1s, hT1sd, hT2s, hT2sd]
-  simp only [Δ1, Δ2, D]
-  ring_nf
 
 end Kadiri

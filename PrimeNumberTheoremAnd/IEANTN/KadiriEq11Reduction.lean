@@ -1,7 +1,11 @@
-import Mathlib.Analysis.Normed.Group.Tannery
-import PrimeNumberTheoremAnd.LaplaceInversion
-import PrimeNumberTheoremAnd.IEANTN.KadiriEq11Base
-import PrimeNumberTheoremAnd.IEANTN.KadiriSupport
+module
+
+public import Mathlib.Analysis.Normed.Group.Tannery
+public import PrimeNumberTheoremAnd.LaplaceInversion
+public import PrimeNumberTheoremAnd.IEANTN.KadiriEq11Base
+public import PrimeNumberTheoremAnd.IEANTN.KadiriSupport
+
+@[expose] public section
 
 namespace Kadiri
 

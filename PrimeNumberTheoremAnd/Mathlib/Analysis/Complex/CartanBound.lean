@@ -9,7 +9,6 @@ public import Mathlib.MeasureTheory.Integral.Average
 public import Mathlib.Analysis.SpecialFunctions.Pow.Integral
 public import PrimeNumberTheoremAnd.Mathlib.Analysis.SpecialFunctions.Log.PosLog
 
-
 /-!
 # Cartan bounds for Hadamard factorization
 
@@ -28,7 +27,6 @@ which majorizes the logarithmic singularity on dyadic intervals.
 -/
 
 @[expose] public section
-
 
 namespace Complex
 namespace CartanBound

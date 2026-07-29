@@ -17,9 +17,10 @@ We restate mathlib's completedRiemannZeta_one_sub as an equality of
 the form used by the ξ functional equation derivation.
 -/
 
+@[expose] public section
+
 noncomputable section
 
-@[expose] public section
 
 open Complex
 

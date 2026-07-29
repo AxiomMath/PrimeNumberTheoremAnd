@@ -8,7 +8,6 @@ module
 public import PrimeNumberTheoremAnd.Mathlib.Analysis.Complex.DivisorConvergence
 public import PrimeNumberTheoremAnd.Mathlib.Analysis.Complex.DivisorFiber
 
-
 /-!
 # Fiber/complement splitting for divisor-indexed partial products
 

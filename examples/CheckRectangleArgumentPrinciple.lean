@@ -1,4 +1,8 @@
-import PrimeNumberTheoremAnd.RectangleArgumentPrinciple
+module
+
+public import PrimeNumberTheoremAnd.RectangleArgumentPrinciple
+
+@[expose] public section
 
 #check logDeriv_residue_eq_meromorphicOrderAt
 #check rectangleIntegral_logDeriv_eq_sum_meromorphicOrderAt

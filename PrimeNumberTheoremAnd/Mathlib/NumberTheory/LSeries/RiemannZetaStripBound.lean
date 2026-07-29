@@ -23,3 +23,5 @@ Summary of strip bounds on `riemannZeta` used in `ZetaFiniteOrder` (finite order
 * `norm_riemannZeta_ratio_le_on_verticalLine`, `norm_riemannZeta_ratio_le_on_vertical_line` :
   vertical-line lower bounds via Euler products (see also `RiemannZeta`)
 -/
+
+@[expose] public section

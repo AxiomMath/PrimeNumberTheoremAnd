@@ -17,7 +17,6 @@ public import Mathlib.NumberTheory.LSeries.HurwitzZetaValues
 public import Mathlib.Analysis.Real.Pi.Bounds
 public import PrimeNumberTheoremAnd.Mathlib.NumberTheory.LSeries.RiemannZetaStripBound
 
-
 /-!
 # Analytic continuation and finite order for the Riemann zeta function
 

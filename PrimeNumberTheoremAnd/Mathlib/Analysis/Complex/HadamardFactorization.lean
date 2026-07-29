@@ -10,8 +10,6 @@ public import Mathlib.Analysis.Convex.Contractible
 public import Mathlib.Analysis.Meromorphic.NormalForm
 public import PrimeNumberTheoremAnd.Mathlib.Topology.MetricSpace.Annulus
 
-
-
 /-!
 # The Hadamard quotient
 

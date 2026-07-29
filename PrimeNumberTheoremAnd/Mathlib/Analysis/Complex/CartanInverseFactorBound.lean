@@ -8,7 +8,6 @@ module
 public import PrimeNumberTheoremAnd.Mathlib.Analysis.Complex.CartanBound
 public import PrimeNumberTheoremAnd.Mathlib.Analysis.Complex.WeierstrassFactor
 
-
 /-!
 ## Pointwise inverse bounds for Weierstrass factors in Cartan-type arguments
 

@@ -1,7 +1,11 @@
-import Architect
-import Mathlib.MeasureTheory.Integral.ExpDecay
-import Mathlib.NumberTheory.LSeries.Dirichlet
-import Mathlib.NumberTheory.LSeries.RiemannZeta
+module
+
+public import Architect
+public import Mathlib.MeasureTheory.Integral.ExpDecay
+public import Mathlib.NumberTheory.LSeries.Dirichlet
+public import Mathlib.NumberTheory.LSeries.RiemannZeta
+
+@[expose] public section
 
 namespace Kadiri
 

@@ -3,8 +3,10 @@ Copyright (c) 2022 Abby J. Goldberg. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Abby J. Goldberg, Mario Carneiro, Heather Macbeth
 -/
-import Mathlib.Tactic.Abel
-import Mathlib.Tactic.LinearCombinationPrime
+module
+
+public import Mathlib.Tactic.Abel
+public import Mathlib.Tactic.LinearCombinationPrime
 
 /-!
 # additive_combination Tactic
@@ -30,6 +32,8 @@ Lastly, calls a normalization tactic on this target.
 * <https://leanprover.zulipchat.com/#narrow/stream/239415-metaprogramming-.2F.20tactics/topic/Linear.20algebra.20tactic/near/213928196>
 
 -/
+
+public meta section
 
 namespace Mathlib.Tactic.LinearCombinationPrime
 open Lean

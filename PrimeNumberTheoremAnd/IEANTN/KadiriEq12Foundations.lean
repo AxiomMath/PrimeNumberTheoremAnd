@@ -1,11 +1,13 @@
-import Architect
-import PrimeNumberTheoremAnd.ResidueCalcOnRectangles
-import Mathlib.Analysis.Calculus.LogDeriv
-import Mathlib.Analysis.Calculus.ParametricIntegral
-import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
-import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
-import Mathlib.Analysis.Meromorphic.Order
-import Mathlib.MeasureTheory.Integral.Asymptotics
+module
+
+public import Architect
+public import PrimeNumberTheoremAnd.ResidueCalcOnRectangles
+public import Mathlib.Analysis.Calculus.LogDeriv
+public import Mathlib.Analysis.Calculus.ParametricIntegral
+public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
+public import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
+public import Mathlib.Analysis.Meromorphic.Order
+public import Mathlib.MeasureTheory.Integral.Asymptotics
 
 /-!
 # Generic residue, order, and logarithmic-derivative atoms for the Kadiri eq.(12) bridge
@@ -22,6 +24,8 @@ function) and depends only on Mathlib together with
 `PrimeNumberTheoremAnd.ResidueCalcOnRectangles`. The zeta-specific specialisations
 and the equation-(12) statement itself build on these lemmas.
 -/
+
+@[expose] public section
 
 namespace Kadiri
 

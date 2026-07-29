@@ -14,7 +14,6 @@ public import PrimeNumberTheoremAnd.Mathlib.Analysis.SpecialFunctions.CompletedX
 public import PrimeNumberTheoremAnd.Mathlib.NumberTheory.LSeries.ZetaFiniteOrder
 public import PrimeNumberTheoremAnd.Mathlib.NumberTheory.LSeries.RiemannZetaValues
 
-
 /-!
 # Hadamard factorization for the completed Riemann zeta function
 

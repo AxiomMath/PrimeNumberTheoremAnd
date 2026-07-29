@@ -3,11 +3,13 @@ Copyright (c) 2023 Arend Mellendijk. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Author: Arend Mellendijk
 -/
+module
 
-import Mathlib.NumberTheory.Primorial
-import Mathlib.Analysis.Asymptotics.Lemmas
-import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
-import PrimeNumberTheoremAnd.Mathlib.NumberTheory.Sieve.Selberg
+public import Mathlib.NumberTheory.Primorial
+public import Mathlib.Analysis.Asymptotics.Lemmas
+public import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+public import PrimeNumberTheoremAnd.Mathlib.NumberTheory.Sieve.Selberg
+
 /-!
 # Bounds for the Selberg sieve
 This file proves a number of results to help bound `Sieve.selbergSum`
@@ -17,6 +19,8 @@ This file proves a number of results to help bound `Sieve.selbergSum`
 * `boundingSum_ge_log`: If `ν n = 1 / n` then `S ≥ log y / 2`
 * `rem_sum_le_of_const`: If `R_d ≤ C` then the error term is at most `C * y * (1 + log y)^3`
 -/
+
+@[expose] public section
 
 set_option lang.lemmaCmd true
 

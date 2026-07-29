@@ -37,7 +37,7 @@ properties and estimates
   bound for `log ‖E_m(z)‖` used in minimum-modulus arguments
 -/
 
-public section
+@[expose] public section
 
 noncomputable section
 

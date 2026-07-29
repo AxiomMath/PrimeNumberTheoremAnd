@@ -1,19 +1,23 @@
-import Mathlib.Algebra.Order.Field.Pointwise
-import Mathlib.Algebra.Order.Ring.Star
-import Mathlib.Analysis.Complex.PhragmenLindelof
-import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Complex
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Meromorphic
-import Mathlib.Data.Int.Star
-import Mathlib.Data.PNat.Interval
-import Mathlib.Data.Real.Sign
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.SimpleRing.Principal
-import PrimeNumberTheoremAnd.IEANTN.PrimaryDefinitions
-import PrimeNumberTheoremAnd.Wiener
-import PrimeNumberTheoremAnd.ResidueCalcOnRectangles
+module
+
+public import Mathlib.Algebra.Order.Field.Pointwise
+public import Mathlib.Algebra.Order.Ring.Star
+public import Mathlib.Analysis.Complex.PhragmenLindelof
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Complex
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Meromorphic
+public import Mathlib.Data.Int.Star
+public import Mathlib.Data.PNat.Interval
+public import Mathlib.Data.Real.Sign
+public import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import PrimeNumberTheoremAnd.IEANTN.PrimaryDefinitions
+public import PrimeNumberTheoremAnd.Wiener
+public import PrimeNumberTheoremAnd.ResidueCalcOnRectangles
+
+@[expose] public section
 
 open Real
 
@@ -22,7 +26,6 @@ blueprint_comment /--
 
 We record some estimates from \cite{CH2} for summing non-negative functions, with a particular interest in estimating $\psi$.
 -/
-
 
 namespace CH2
 
@@ -659,7 +662,6 @@ theorem prop_2_3 {a : ℕ → ℂ} {T β : ℝ} (hT : 0 < T) (hβ : 1 < β)
   have h_RHS_tendsto := Filter.Tendsto.add h_RHS_first_tendsto h_RHS_second_tendsto
   exact tendsto_nhds_unique h_LHS_tendsto (h_RHS_tendsto.congr' h_LHS_eq_RHS.symm)
 
-
 @[blueprint
   "ch2-S-def"
   (title := "CH2 Definition of $S$, (2.8)")
@@ -1133,7 +1135,6 @@ theorem prop_2_4_minus {a : ℕ → ℝ} (ha_pos : ∀ n, a n ≥ 0) {T β σ : 
       gcongr; norm_cast
       rw [Complex.re_ofReal_mul]
 
-
 blueprint_comment /--
 \subsection{Extremal approximants to the truncated exponential}\label{ch2-trunc-sec}
 
@@ -1234,7 +1235,6 @@ lemma sinh_ne_zero_of_im {z : ℂ} (hz : ∀ k : ℤ, z.im ≠ (k : ℝ) * π) :
   rintro ⟨k, hk⟩
   apply hz k
   simpa using congr_arg Complex.im hk
-
 
 lemma cosh_ne_zero_of_re_ne_zero {z : ℂ} (hz : z.re ≠ 0) : Complex.cosh z ≠ 0 := by
   rw [ne_eq, cosh_zero_iff]
@@ -1682,7 +1682,6 @@ theorem analyticAt_B (ε : ℝ) (z₀ : ℂ) (h_not_pole : ∀ n : ℤ, n ≠ 0 
       · subst hn0; simp at this; contradiction
       · exact h_not_pole n hn0 this
 
-
 @[blueprint
   "Phi-star-mero"
   (title := "$\\Phi^{\\pm,\\ast}_\\nu$ meromorphic")
@@ -1959,7 +1958,6 @@ theorem Phi_cancel (ν ε σ : ℝ) (hν : ν > 0) (hσ : |σ| = 1) :
   norm_cast at h_tendsto_zero
   omega
 
-
 @[blueprint
   "phi-pm-def"
   (title := "Definition of $\\varphi^{\\pm}$")
@@ -2000,11 +1998,10 @@ lemma h_B_rational (ε : ℝ) : ∀ w : ℂ, w ≠ 0 → B ε w = w * (Complex.c
 
 lemma h_comp (ε ν : ℝ) (hlam : ν ≠ 0) : ContDiff ℝ 2 (fun t : ℝ => (-2 * Real.pi * Complex.I * t + ν) * (Complex.cosh ((-2 * Real.pi * Complex.I * t + ν) / 2) / Complex.sinh ((-2 * Real.pi * Complex.I * t + ν) / 2) + ε) / 2) := by
   apply_rules [ContDiff.div, ContDiff.mul, ContDiff.add, contDiff_const, contDiff_id] <;> try fun_prop
-  · exact Complex.conjCLE.contDiff.comp (by fun_prop)
-  · refine Complex.ofRealCLM.contDiff.comp ?_
-    refine ContDiff.inv (by fun_prop) ?_
-    intro x; rw [ne_eq, Complex.normSq_eq_zero]
-    exact sinh_ne_zero_of_re_ne_zero (by simp [hlam])
+  · refine ContDiff.inv ?_ ?_
+    · fun_prop
+    · intro x
+      exact sinh_ne_zero_of_re_ne_zero (by simp [hlam])
 
 theorem Phi_star.contDiff_real (ν ε : ℝ) (hlam : ν ≠ 0) :
     ContDiff ℝ 2 (fun (t : ℝ) ↦ Phi_star ν ε (t : ℂ)) := by
@@ -2155,7 +2152,6 @@ theorem Phi_star.analyticAt_of_not_pole_nz (ν ε : ℝ) (z : ℂ) (h_not_pole :
 theorem Phi_star.analyticAt_of_not_pole (ν ε : ℝ) (z : ℂ) (h_not_pole : ∀ n : ℤ, z ≠ n - I * ν / (2 * π)) :
     AnalyticAt ℂ (Phi_star ν ε) z :=
   Phi_star.analyticAt_of_not_pole_nz ν ε z (fun n _ ↦ h_not_pole n)
-
 
 theorem Phi_star.analyticAt_of_im_ne_pole (ν ε : ℝ) (z : ℂ) (h_not_pole : z.im ≠ -ν / (2 * π)) :
     AnalyticAt ℂ (Phi_star ν ε) z :=
@@ -2397,7 +2393,7 @@ theorem ϕ_circ_bound_right (ν₀ ν₁ ε c : ℝ) (hc : c > -ν₀ / (2 * π)
         _ ≤ ‖Complex.tanh u‖ := by
             rw [← Real.sqrt_sq (div_nonneg (Real.sinh_nonneg_iff.mpr
               (hκ.le.trans hu)) (Real.cosh_pos _ |>.le))]
-            exact Real.sqrt_le_sqrt (by rw [Complex.sq_norm] at htanh_sq; exact htanh_sq)
+            exact (Real.sqrt_le_sqrt htanh_sq).trans_eq (Real.sqrt_sq (norm_nonneg _))
   use (1 / 2) * ((Real.tanh κ)⁻¹ + |ε|)
   intros ν hν z hz
   have h_w : ‖(Complex.tanh ((-2 * Real.pi * Complex.I * z + ν) / 2))⁻¹‖ ≤
@@ -2612,7 +2608,6 @@ theorem ϕ_star_bound_left (ν₀ ν₁ ε c : ℝ) (hν₀ : 0 < ν₀) (hν₁
           apply mul_nonneg (le_trans (norm_nonneg _) (hM ν hν))
           positivity
       ])⟩
-
 
 @[blueprint
   "B-plus-mono"
@@ -3225,7 +3220,6 @@ theorem phi_bound_downwards (ν ε : ℝ) (hν : ν > 0) :
     linarith [hz])
   rwa [h_abs] at hC
 
-
 theorem phi_fourier_ray_bound (ν ε σ x : ℝ) (hν : ν > 0) (hsigma : σ ∈ Set.Icc (-1 : ℝ) 1)
     (f : ℂ → ℂ) (hf : ∀ z, ‖f z‖ ≤ (‖Phi_circ ν ε z‖ + ‖Phi_star ν ε z‖) * ‖E (-z * x)‖) :
     ∃ C, ∀ (y : ℝ), y ≥ 1 →
@@ -3253,7 +3247,6 @@ lemma pole_im (ν : ℝ) : (-(I * ν) / (2 * π)).im = -ν / (2 * π) := by
   simp [Complex.neg_im, Complex.mul_im, Complex.div_im, Complex.I_im, Complex.I_re,
         Complex.ofReal_im, Complex.ofReal_re]
   field_simp
-
 
 theorem Phi_circ.analyticAt_of_re_ne_int (ν ε : ℝ) (z : ℂ) (hz_re : ¬ ∃ n : ℤ, z.re = n) :
     AnalyticAt ℂ (Phi_circ ν ε) z :=
@@ -3310,7 +3303,6 @@ lemma integrableOn_Phi_star_p12 (ν ε x T : ℝ) :
       intro ⟨n, hn⟩; replace hn := congr_arg (· * 2) hn; norm_num at hn; norm_cast at hn; omega
     exact ContinuousAt.comp (f := fun a : ℝ ↦ (1 / 2 : ℂ) - I * ↑a) h_ana.continuousAt (by fun_prop)
   · exact Continuous.continuousOn (by fun_prop)
-
 
 theorem integrable_phi_fourier_ray (ν ε σ x : ℝ) (hν : ν > 0) (hsigma : σ ∈ Set.Icc (-1 : ℝ) 1) (hx : x < 0)
     (f : ℂ → ℂ)
@@ -5040,7 +5032,6 @@ theorem fourier_real (ν ε : ℝ) (hlam : ν ≠ 0) (x : ℝ) : (𝓕 (ϕ_pm ν
   have hstar_im : (starRingEnd ℂ I_pos).im = -I_pos.im := by rw [Complex.conj_im]
   linarith [h_conj ▸ hstar_im]
 
-
 @[blueprint
   "varphi-integ"
   (title := "$\\varphi$ integrable")
@@ -5612,26 +5603,6 @@ theorem varphi_deriv_tv (ν ε : ℝ) (hlam : ν ≠ 0) : BoundedVariationOn (de
   exact ENNReal.add_ne_top.mpr
     ⟨ϕ_pm_deriv_Iic_finite ν ε, ENNReal.add_ne_top.mpr ⟨hBV_Icc, ϕ_pm_deriv_Ici_finite ν ε⟩⟩
 
-@[blueprint
-  "varphi-fourier-decay"
-  (title := "$\\varphi$ Fourier decay")
-  (statement := /-- For $|x| \to \infty$, $\widehat{\varphi_\nu^\pm}(x) = O(1/x^2)$. -/)
-  (proof := /-- For $f$ absolutely continuous with $f, f' \in L^1(\mathbb{R})$, integration by parts gives us that $\hat{f}(x) = \widehat{f'}(x)/(2\pi i x)$. If $f' \in L^1(\mathbb{R})$ with $\|f'\|_{\mathrm{TV}} < \infty$, then, again by integration by parts, $|\widehat{f'}(x)| \leq |f'|_{\mathrm{TV}}/(2\pi x)$. We are done by the preceding lemmas. -/)
-  (latexEnv := "corollary")
-  (discussion := 1230)]
-theorem varphi_fourier_decay (ν ε : ℝ) (hlam : ν ≠ 0) : IsBigO Filter.atTop (fun x:ℝ ↦ (𝓕 (ϕ_pm ν ε) x).re) (fun x:ℝ ↦ 1 / x ^ 2)  := by
-  let C := (eVariationOn (deriv (ϕ_pm ν ε)) Set.univ).toReal / (2 * π) ^ 2
-  have h_bound : ∀ x > 0, ‖𝓕 (ϕ_pm ν ε) x‖ ≤ C * ‖1 / x ^ 2‖ := by
-    intro x hx
-    have h_pd := prelim_decay_3 (ϕ_pm ν ε) (varphi_integ ν ε hlam) (varphi_abs ν ε hlam) (varphi_deriv_tv ν ε hlam) x (ne_of_gt hx)
-    rw [mul_pow, ← div_div, norm_of_nonneg hx.le] at h_pd
-    rw [Real.norm_eq_abs, abs_of_pos (by positivity), one_div]
-    exact h_pd
-  apply Asymptotics.IsBigO.of_bound C
-  filter_upwards [Filter.eventually_gt_atTop (0 : ℝ)] with x hx
-  have h_re_le_norm : ‖(𝓕 (ϕ_pm ν ε) x).re‖ ≤ ‖𝓕 (ϕ_pm ν ε) x‖ := Complex.abs_re_le_norm _
-  exact h_re_le_norm.trans (h_bound x hx)
-
 private lemma Inu_integral (ν : ℝ) (hν : ν > 0) : ∫ x : ℝ, Inu ν x = 1 / ν := by
   unfold Inu
   have h_indicator : (fun x ↦ if 0 ≤ x then rexp (-ν * x) else 0) =
@@ -5648,99 +5619,12 @@ private lemma Inu_integrable (ν : ℝ) (hν : ν > 0) : Integrable (Inu ν) := 
   rw [integrable_indicator_iff measurableSet_Ici, integrableOn_Ici_iff_integrableOn_Ioi]
   apply exp_neg_integrableOn_Ioi 0 hν
 
-private lemma varphi_hat_integrable (ν ε : ℝ) (hlam : ν ≠ 0) :
-    Integrable (𝓕 (ϕ_pm ν ε)) := by
-  set f := ϕ_pm ν ε
-  have hf : Integrable f := varphi_integ ν ε hlam
-  have h_decay := decay_alt f hf (varphi_abs ν ε hlam) (varphi_deriv_tv ν ε hlam)
-  let C := (∫ t, ‖f t‖) + (eVariationOn (deriv f) Set.univ).toReal / (2 * π) ^ 2
-  apply Integrable.mono' (integrable_inv_one_add_sq.const_mul C)
-  · exact VectorFourier.fourierIntegral_continuous Real.continuous_fourierChar
-      (by fun_prop) hf |>.aestronglyMeasurable
-  · filter_upwards with x
-    refine (h_decay x).trans_eq ?_
-    rw [div_eq_mul_inv, Real.norm_eq_abs, sq_abs]
-
 private lemma varphi_fourier_inversion_re (ν ε : ℝ) (hlam : ν ≠ 0)
     (hf_hat_int : Integrable (𝓕 (ϕ_pm ν ε))) :
     ∫ x : ℝ, (𝓕 (ϕ_pm ν ε) x).re = (ϕ_pm ν ε 0).re := by
   have h_inv := (varphi_integ ν ε hlam).fourierInv_fourier_eq hf_hat_int (ϕ_continuous ν ε hlam).continuousAt (v := 0)
   erw [integral_re hf_hat_int, show ∫ x, 𝓕 (ϕ_pm ν ε) x = 𝓕⁻ (𝓕 (ϕ_pm ν ε)) 0 by rw [fourierInv_eq]; simp, h_inv]
   rfl
-
-
-@[blueprint
-  "varphi-fourier-minus-error"
-  (title := "$L^1$ error bound for Fourier transform of $\\varphi^-$")
-  (statement := /--
-\[
-\int_{-\infty}^{\infty} (I_\nu(x) - \hat{\varphi_\nu^-}(x))\, dx = \frac{1}{\nu} - \frac{1}{e^\nu - 1}.
-\]
-  -/)
-  (proof := /--
-  We know that $\varphi_\nu^\pm$ is continuous and in $L^1(\mathbb{R})$; by Corollary \ref{varphi-fourier-decay}, $\widehat{\varphi_\nu^\pm}$ is in $L^1(\mathbb{R})$. Hence, Fourier inversion holds everywhere, and in particular for $t = 0$:
-\[
-\varphi_\nu^\pm(0) = \int_{-\infty}^{\infty} \widehat{\varphi_\nu^\pm}(x)\, dx.
-\]
-By definition, $\varphi_\nu^\pm(0) = \Phi_\nu^{\pm,\circ}(0)$, and, by definition, $\Phi_\nu^{-,\circ}(0) = \frac{1}{e^\nu - 1}$ and $\Phi_\nu^{+,\circ}(0) = \frac{1}{1 - e^{-\nu}}$. Thus,
-\[
-\int_{-\infty}^{\infty} (I_\nu(x) - \widehat{\varphi_\nu^-}(x))\, dx = \frac{1}{\nu} - \frac{1}{e^\nu - 1},
-\]
-\[
-\int_{-\infty}^{\infty} (\widehat{\varphi_\nu^+}(x) - I_\nu(x))\, dx = \frac{1}{1 - e^{-\nu}} - \frac{1}{\nu},
-\]
-since $\int_{-\infty}^{\infty} I_\nu(x)\, dx = 1/\nu$. We are done by Corollary \ref{Inu_bounds}.
--/)
-  (latexEnv := "proposition")
-  (discussion := 1231)]
-theorem varphi_fourier_minus_error (ν : ℝ) (hν : ν > 0) :
-    ∫ x in Set.univ, (Inu ν x - (𝓕 (ϕ_pm ν (-1)) x).re) = 1 / ν - 1 / (Real.exp ν - 1) := by
-  let hf_hat_int := varphi_hat_integrable ν (-1) hν.ne'
-  have h_phi_zero : (ϕ_pm ν (-1) 0).re = 1 / (rexp ν - 1) := by
-    simp only [ϕ_pm, Real.sign_zero, ofReal_zero, zero_mul, add_zero, Phi_circ]
-    norm_num [coth, Complex.tanh_eq_sinh_div_cosh, Complex.sinh, Complex.cosh]
-    simp only [← ofReal_div, ← ofReal_neg, ← ofReal_ofNat, ← ofReal_sub, ← ofReal_add, ← ofReal_exp, ofReal_re]
-    rw [Real.exp_neg]
-    field_simp [Real.exp_ne_zero, (Real.exp_eq_one_iff ν).not.mpr hν.ne']
-    rw [pow_two, ← Real.exp_add]; ring_nf
-    field_simp [show -1 + rexp ν ≠ 0 by rw [add_comm]; exact sub_ne_zero.mpr ((Real.exp_eq_one_iff ν).not.mpr hν.ne')]
-    ring
-  simp only [MeasureTheory.setIntegral_univ]
-  erw [integral_sub (Inu_integrable ν hν) hf_hat_int.re, Inu_integral ν hν,
-    varphi_fourier_inversion_re ν (-1) hν.ne' hf_hat_int, h_phi_zero]
-
-@[blueprint
-  "varphi-fourier-plus-error"
-  (title := "$L^1$ error bound for Fourier transform of $\\varphi^+$")
-  (statement := /--
-\[
-\int_{-\infty}^{\infty} (\hat{\varphi_\nu^+}(x) - I_\nu(x))\, dx = \frac{1}{1 - e^{-\nu}} - \frac{1}{\nu}.
-\]
-  -/)
-  (proof := /-- See previous. -/)
-  (latexEnv := "proposition")
-  (discussion := 1232)]
-theorem varphi_fourier_plus_error (ν : ℝ) (hν : ν > 0) :
-    ∫ x in Set.univ, ((𝓕 (ϕ_pm ν 1) x).re - Inu ν x) = 1 / (1 - Real.exp (-ν)) - 1 / ν := by
-  let hf_hat_int := varphi_hat_integrable ν 1 hν.ne'
-  have h_phi_zero : (ϕ_pm ν 1 0).re = 1 / (1 - Real.exp (-ν)) := by
-    simp only [ϕ_pm, Real.sign_zero, ofReal_zero, zero_mul, add_zero, Phi_circ]
-    norm_num [coth, Complex.tanh_eq_sinh_div_cosh, Complex.sinh, Complex.cosh]
-    simp only [← ofReal_div, ← ofReal_neg, ← ofReal_ofNat, ← ofReal_sub, ← ofReal_add, ← ofReal_exp, ofReal_re]
-    rw [Real.exp_neg]
-    have h_sinh_nz : rexp (ν / 2) - rexp (- (ν / 2)) ≠ 0 := by
-      refine sub_ne_zero.mpr (Real.exp_lt_exp.mpr ?_).ne'; linarith
-    field_simp [Real.exp_ne_zero, h_sinh_nz]
-    ring_nf; simp only [pow_two, ← Real.exp_add]
-    rw [show ν * (1 / 2) + ν * (1 / 2) = ν by ring]; simp only [Real.exp_neg]
-    field_simp [Real.exp_ne_zero, h_sinh_nz,
-      show rexp ν - 1 ≠ 0 from sub_ne_zero.mpr ((Real.exp_eq_one_iff ν).not.mpr hν.ne'),
-      show -1 + rexp ν ≠ 0 by rw [add_comm]; exact sub_ne_zero.mpr ((Real.exp_eq_one_iff ν).not.mpr hν.ne'),
-      show 1 - rexp (-ν) ≠ 0 from sub_ne_zero.mpr (Real.exp_lt_one_iff.mpr (neg_lt_zero.mpr hν)).ne.symm]
-    ring
-  simp only [MeasureTheory.setIntegral_univ]
-  erw [integral_sub hf_hat_int.re (Inu_integrable ν hν), Inu_integral ν hν,
-    varphi_fourier_inversion_re ν 1 hν.ne' hf_hat_int, h_phi_zero]
 
 private lemma differentiableAt_coth (z : ℂ) (hz_sn : Complex.sinh z ≠ 0) :
     DifferentiableAt ℂ (fun w ↦ coth w) z := by
@@ -5807,7 +5691,6 @@ private lemma sinh_two_mul_div_two_sub_z (z : ℂ) :
       Complex.sinh_add, Complex.sinh_mul_I, Complex.cosh_mul_I]
   norm_cast
   apply Complex.ext <;> simp <;> ring
-
 
 private lemma normSq_coth_eq (z : ℂ) (hz_sn : Complex.sinh z ≠ 0) :
     ‖coth z‖ ^ 2 = 1 + Real.cos (2 * z.im) / (Real.sinh z.re ^ 2 + Real.sin z.im ^ 2) := by
@@ -6067,7 +5950,6 @@ private lemma tendsto_z_div_sinh_sq_atTop_horizontalStrip (c : ℝ) :
   refine Filter.Tendsto.squeeze' (h := fun z ↦ (|z.re| + c) / Real.sinh z.re ^ 2) tendsto_const_nhds h_lim_upper ?_ h_le
   · filter_upwards with z; apply norm_nonneg
 
-
 private lemma analyticOn_deriv_z_coth_z {s : Set ℂ} (hs : s ⊆ {z | |z.im| < π}) :
     AnalyticOn ℂ (fun w ↦ deriv (fun z ↦ z * coth z) w) s := by
   rw [deriv_z_coth_z_eq_deriv_B]
@@ -6158,7 +6040,6 @@ private lemma HorizontalStrip.exists_norm_deriv_z_coth_z_le (c : ℝ) (hc_lt : c
     rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)] at h_norm
     exact h_norm.trans ((le_max_right C_core C_tail).trans (le_max_left _ _))
 
-
 private lemma deriv_z_coth_z_growth_bound :
     ∃ c < π / (π / 4 - -(π / 4)), ∃ B,
       Asymptotics.IsBigO (Filter.comap (abs ∘ re) Filter.atTop ⊓ Filter.principal (im ⁻¹' Set.Ioo (-(π / 4)) (π / 4)))
@@ -6174,7 +6055,6 @@ private lemma deriv_z_coth_z_growth_bound :
     refine (hC z (by rw [abs_le]; constructor <;> linarith)).trans ?_
     rw [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
     exact le_trans (mul_one C).symm.le (mul_le_mul_of_nonneg_left (Real.one_le_exp_iff.mpr (by positivity)) hC_pos.le)
-
 
 private lemma deriv_z_coth_z_le_one (w : ℂ) (hw : |w.im| ≤ π / 4) :
     ‖deriv (fun z ↦ z * coth z) w‖ ≤ 1 := by

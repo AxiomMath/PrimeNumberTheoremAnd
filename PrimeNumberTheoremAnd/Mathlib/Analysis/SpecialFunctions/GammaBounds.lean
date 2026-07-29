@@ -5,7 +5,6 @@ Authors: Matteo Cipollina
 -/
 module
 
-
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Complex.RemovableSingularity
 public import Mathlib.Analysis.Real.Pi.Bounds

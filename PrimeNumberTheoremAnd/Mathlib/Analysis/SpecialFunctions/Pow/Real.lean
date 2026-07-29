@@ -7,6 +7,7 @@ public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 Elementary logarithmic and real-power inequalities used in decay and growth estimates.
 -/
+
 @[expose] public section
 
 namespace Real

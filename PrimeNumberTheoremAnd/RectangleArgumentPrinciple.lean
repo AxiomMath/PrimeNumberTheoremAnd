@@ -1,7 +1,9 @@
-import Mathlib.Analysis.Calculus.LogDeriv
-import Mathlib.Analysis.Meromorphic.Divisor
-import PrimeNumberTheoremAnd.Mathlib.Analysis.Meromorphic.DivisorSupport
-import PrimeNumberTheoremAnd.ResidueCalcOnRectangles
+module
+
+public import Mathlib.Analysis.Calculus.LogDeriv
+public import Mathlib.Analysis.Meromorphic.Divisor
+public import PrimeNumberTheoremAnd.Mathlib.Analysis.Meromorphic.DivisorSupport
+public import PrimeNumberTheoremAnd.ResidueCalcOnRectangles
 
 /-!
 # Rectangle argument-principle infrastructure
@@ -9,6 +11,8 @@ import PrimeNumberTheoremAnd.ResidueCalcOnRectangles
 This file isolates the local logarithmic-derivative residue calculation and the
 rectangle-facing finite divisor sum used by the Kadiri contour lanes.
 -/
+
+@[expose] public section
 
 open Complex Filter Topology Set BigOperators Asymptotics
 

@@ -8,7 +8,6 @@ module
 public import PrimeNumberTheoremAnd.Mathlib.Analysis.Complex.DivisorQuotientConvergence
 public import Mathlib.Analysis.Complex.RemovableSingularity
 
-
 /-!
 # Removable singularities and multiplicities for divisor-indexed canonical products
 

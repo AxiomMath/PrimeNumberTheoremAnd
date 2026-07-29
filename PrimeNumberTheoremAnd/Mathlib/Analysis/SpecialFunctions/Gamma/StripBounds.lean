@@ -5,14 +5,11 @@ Authors: Matteo Cipollina
 -/
 module
 
-
 public import Mathlib.Analysis.SpecialFunctions.Gamma.Deligne
 public import Mathlib.Analysis.SpecialFunctions.Stirling
 public import PrimeNumberTheoremAnd.Mathlib.Analysis.SpecialFunctions.Gamma.IntegralBounds
 public import PrimeNumberTheoremAnd.Mathlib.Analysis.SpecialFunctions.GammaBounds
 public import PrimeNumberTheoremAnd.Mathlib.Analysis.SpecialFunctions.Gamma.GammaStirlingAux
-
-
 
 /-!
 # Gamma bounds in half-planes

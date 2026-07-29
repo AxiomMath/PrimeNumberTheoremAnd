@@ -9,8 +9,6 @@ public import PrimeNumberTheoremAnd.Mathlib.Analysis.Complex.Norm
 public import Mathlib.Analysis.SpecialFunctions.Exp
 public import Mathlib.Topology.Algebra.InfiniteSum.Order
 
-
-
 /-!
 ## Reusable product bounds by exponentials
 
