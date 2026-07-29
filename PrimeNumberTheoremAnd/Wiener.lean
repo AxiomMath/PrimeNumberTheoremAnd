@@ -188,8 +188,11 @@ lemma second_fourier_integrable_aux1 (hcont : Measurable ψ) (hsupp : Integrable
   constructor
   · apply Measurable.aestronglyMeasurable
     -- TODO: find out why fun_prop does not play well with Multiplicative.ofAdd
+    -- `Multiplicative.ofAdd` is the identity on `ℝ`, but `fun_prop` cannot see through it
+    change Measurable (Function.uncurry fun (u a : ℝ) ↦ ((rexp (-u * (σ' - 1))) : ℂ) •
+      (𝐞 (-(a * (u / (2 * π)))) : ℂ) • ψ a)
     simp only [neg_mul, ofReal_exp, ofReal_neg, ofReal_mul, ofReal_sub, ofReal_one,
-      Multiplicative.ofAdd, Equiv.coe_fn_mk, smul_eq_mul]
+      Real.fourierChar_apply, smul_eq_mul]
     fun_prop
   · let f1 : ℝ → ENNReal := fun a1 ↦ ‖cexp (-(↑a1 * (↑σ' - 1)))‖ₑ
     let f2 : ℝ → ENNReal := fun a2 ↦ ‖ψ a2‖ₑ
@@ -1348,7 +1351,8 @@ theorem sum_le_integral {x₀ : ℝ} {f : ℝ → ℝ} {n : ℕ} (hf : AntitoneO
     rw [← l6] ; apply intervalIntegral.integral_mono_ae_restrict (by linarith) (by simp) l4
     apply eventually_of_mem _ l5
     have : (Ioc x₀ (x₀ + 1))ᶜ ∩ Icc x₀ (x₀ + 1) = {x₀} := by simp [← sdiff_eq_compl_inter]
-    simp [ae, this]
+    rw [mem_ae_iff, Measure.restrict_apply measurableSet_Ioc.compl, this]
+    exact measure_singleton x₀
 
   have l2 : AntitoneOn (fun x ↦ f (x₀ + x)) (Icc 1 ↑(n + 1)) := by
     intro u ⟨hu1, _⟩ v ⟨_, hv2⟩ huv ; push_cast at hv2
@@ -2352,7 +2356,7 @@ theorem WeakPNT : Tendsto (fun N ↦ cumsum Λ N / N) atTop (𝓝 1) := by
     simp only [F, this, vonMangoldt.residueClass, Nat.totient_one, Nat.cast_one, inv_one, one_div, sub_left_inj]
     apply LSeries_congr
     intro n _
-    simp only [ofReal_inj, indicator_apply_eq_self, mem_setOf_eq]
+    simp only [ofReal_inj, indicator_apply_eq_self, mem_ofPred_eq]
     exact fun hn ↦ absurd (Subsingleton.eq_one _) hn
   have l3 : ContinuousOn F {s | 1 ≤ s.re} := vonMangoldt.continuousOn_LFunctionResidueClassAux 1
   have l4 : cheby Λ := vonMangoldt_cheby

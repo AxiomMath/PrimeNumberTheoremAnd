@@ -78,7 +78,7 @@ theorem borelCaratheodory' {M r R : ℝ} {f : ℂ → ℂ} {z : ℂ}
   have h_borelCaratheodory : ∀ ε > 0, ‖f z‖ ≤ (2 * (M + ε) * ‖z‖) / (R - ‖z‖) := by
     intro ε εpos;
     apply Complex.borelCaratheodory_zero;
-    exacts [by linarith, analytic.differentiableOn, fun z hz => by rw [Set.mem_setOf_eq]; linarith [realPartBounded z hz], Rpos, by exact Metric.mem_ball.mpr ( lt_of_le_of_lt ( Metric.mem_closedBall.mp hyp_z ) hyp_r ), zeroAtZero]
+    exacts [by linarith, analytic.differentiableOn, fun z hz => by rw [Set.mem_ofPred_eq]; linarith [realPartBounded z hz], Rpos, by exact Metric.mem_ball.mpr ( lt_of_le_of_lt ( Metric.mem_closedBall.mp hyp_z ) hyp_r ), zeroAtZero]
   have h_limit : ‖f z‖ ≤ (2 * M * ‖z‖) / (R - ‖z‖) := by
     have h_limit : Filter.Tendsto (fun ε => (2 * (M + ε) * ‖z‖) / (R - ‖z‖)) (nhdsWithin 0 (Set.Ioi 0)) (nhds ((2 * M * ‖z‖) / (R - ‖z‖))) := by
       refine tendsto_nhdsWithin_of_tendsto_nhds (Continuous.tendsto' ?_ _ _ (by ring_nf))
@@ -327,7 +327,7 @@ lemma finiteSetOfZeros_mono {r : ℝ} {f : ℂ → ℂ}
     (SetOfZeros r f).Finite := by
   apply Set.Finite.subset finiteZeros
   unfold SetOfZeros
-  refine setOf_subset_setOf.mpr ?_
+  refine ofPred_subset_ofPred.mpr ?_
   intro z hz
   exact ⟨by linarith, hz.2⟩
 
@@ -561,7 +561,7 @@ lemma BlaschkeOfZero {r R : ℝ} {f : ℂ → ℂ}
     ‖BlaschkeB r R f 0‖ =
       ‖f 0‖ * (∏ ρ ∈ (finiteSetOfZeros_mono r_lt_one finiteZeros).toFinset, (R / ‖ρ‖) ^ (analyticOrderNatAt f ρ)) := by
   have zero_not_zero : ¬(0 ∈ SetOfZeros r f) := by
-    apply notMem_setOf_iff.mpr
+    apply notMem_ofPred_iff.mpr
     simp only [norm_zero, not_and]
     intro r
     exact mem_support.mp hf_neq_zero_at_zero
@@ -601,7 +601,7 @@ lemma norm_fOfZero_le_norm_BlaschkeOfZero {r R : ℝ} {f : ℂ → ℂ}
   · intro ρ hρ
     exact zero_le_one
   · intro ρ hρ
-    simp only [SetOfZeros, Finite.mem_toFinset, mem_setOf_eq] at hρ
+    simp only [SetOfZeros, Finite.mem_toFinset, mem_ofPred_eq] at hρ
     apply one_le_pow₀
     rw[one_le_div]
     · linarith
@@ -645,7 +645,7 @@ lemma DiskBound {B r R : ℝ} {f : ℂ → ℂ} {z : ℂ}
   intro w hw
   rw[mem_sphere_iff_norm, sub_zero] at hw
   have hw_not_in : ¬(w ∈ SetOfZeros r f) := by
-    apply notMem_setOf_iff.mpr
+    apply notMem_ofPred_iff.mpr
     intro le_r
     linarith
   have Bf_eq_f_at_w : ‖BlaschkeB r R f w‖ = ‖f w‖ := by
@@ -740,7 +740,7 @@ lemma BlaschkeNonzero {r R : ℝ} {f : ℂ → ℂ}
     intro ρ hρ
     apply pow_ne_zero
     norm_num [ sub_eq_zero, Complex.ext_iff ];
-    simp only [SetOfZeros, Finite.mem_toFinset, mem_setOf_eq] at hρ
+    simp only [SetOfZeros, Finite.mem_toFinset, mem_ofPred_eq] at hρ
     rw [ eq_div_iff ] <;> norm_num [ Complex.normSq, Complex.norm_def ] at *;
     · rw [Real.sqrt_lt' (by linarith)] at hz_norm_lt_R
       rw [ Real.sqrt_le_iff ] at hρ
@@ -975,7 +975,7 @@ theorem FinalBound {B r' r R' R : ℝ} {f : ℂ → ℂ} {z : ℂ}
     apply (norm_sum_le _ _).trans (Finset.sum_le_sum (fun ρ hρ => ?_))
     rw [norm_div, RCLike.norm_natCast]
     apply div_le_div_of_nonneg_left (Nat.cast_nonneg _) hpos
-    simp only [Set.mem_sdiff, Metric.mem_closedBall, dist_zero_right, SetOfZeros, Finite.mem_toFinset, mem_setOf_eq] at hρ hz
+    simp only [Set.mem_sdiff, Metric.mem_closedBall, dist_zero_right, SetOfZeros, Finite.mem_toFinset, mem_ofPred_eq] at hρ hz
     rw [norm_sub_rev]
     calc R ^ 2 / R' - R'
         ≤ ‖↑R ^ 2 / conj ρ‖ - ‖z‖ := by
@@ -1214,7 +1214,7 @@ theorem GlobalBound
     ‖ζ (s + 3 / 2 + I * t)‖ ≤ 7 + 2 * |t| := by
   have sReLB : -1 ≤ s.re := by linarith [abs_le.mp ((Complex.abs_re_le_norm s).trans hs)]
   have hz : s + 3 / 2 + I * ↑t ∈ {s | 0 < s.re ∧ s ≠ 1} := by
-    simp only [ne_eq, Complex.ext_iff, one_re, one_im, not_and, mem_setOf_eq, add_re, div_ofNat_re,
+    simp only [ne_eq, Complex.ext_iff, one_re, one_im, not_and, mem_ofPred_eq, add_re, div_ofNat_re,
       re_ofNat, mul_re, I_re, ofReal_re, zero_mul, I_im, ofReal_im, mul_zero, sub_self, add_zero,
       add_im, div_ofNat_im, im_ofNat, zero_div, mul_im, one_mul, zero_add]
     refine ⟨by linarith, fun hs => ?_⟩
