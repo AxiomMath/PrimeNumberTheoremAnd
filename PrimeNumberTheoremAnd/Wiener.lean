@@ -2934,7 +2934,7 @@ lemma limiting_fourier_variant
     ∫ t : ℝ, G (σ' + t * I) * ψ.toFun t * (x : ℂ) ^ (t * I)
 
   have haux :
-    (fun σ' ↦
+    (fun σ' : ℝ ↦
         ∑' (n : ℕ),
           term (fun n ↦ (f n : ℂ)) (σ' : ℂ) n *
             𝓕 ψ.toFun (π⁻¹ * 2⁻¹ * Real.log ((n : ℝ) / x))

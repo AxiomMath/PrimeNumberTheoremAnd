@@ -2094,7 +2094,7 @@ lemma lambda_eq_sum_sq_dvd_mu (n : ℕ) (hn : n ≠ 0) :
       rw [ Finset.prod_pow_eq_pow_sum ];
       rw [ ArithmeticFunction.cardFactors_apply ];
       rw [ ← Multiset.coe_card, ← Multiset.toFinset_sum_count_eq ];
-      norm_num +zetaDelta
+      norm_num +zetaDelta [Nat.primeFactorsList_count_eq]
 
 lemma sum_lambda_eq_sum_mu_div_sq (N : ℕ) :
     ∑ n ∈ Finset.Icc 1 N, ((-1 : ℝ) ^ (Ω n)) =
