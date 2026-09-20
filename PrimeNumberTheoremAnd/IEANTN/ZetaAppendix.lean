@@ -670,7 +670,7 @@ theorem lemma_IBP_bound_C1 {a b : ℝ} (hab : a < b) (g : ℝ → ℝ) (F : ℝ 
             hcont.integrableOn_Icc.mono_set Ioo_subset_Icc_self
           exact hintg''.congr_fun (fun x hx ↦
             by simp only [derivWithin_of_mem_nhds (Icc_mem_nhds hx.1 hx.2)]) measurableSet_Ioo
-        rwa [IntegrableOn, Measure.restrict_congr_set Ioo_ae_eq_Ioc] at *
+        rw [IntegrableOn, Measure.restrict_congr_set Ioo_ae_eq_Ioc] at *; assumption
       have hintFg : IntegrableOn (fun x ↦ F x * deriv g x) (Ioc a b) := by
         have hbdd : ∃ C, ∀ x ∈ Ioc a b, ‖F x‖ ≤ C :=
           IsCompact.exists_bound_of_continuousOn isCompact_Icc hF.continuousOn |>
