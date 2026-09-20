@@ -131,7 +131,7 @@ theorem logDeriv_finiteCenteredHadamardOrbitProduct (w₀ w : ℂ) (A : Finset �
       finiteCenteredHadamardOrbitLogDerivSum A w := by
   classical
   unfold finiteCenteredHadamardOrbitProduct finiteCenteredHadamardOrbitLogDerivSum
-  rw [logDeriv_prod]
+  rw [logDeriv_fun_prod]
   · exact Finset.sum_congr rfl fun α hα =>
       logDeriv_centeredHadamardOrbitBlock w₀ α w (hden α hα) (hw α hα)
   · exact fun α hα => centeredHadamardOrbitBlock_ne_zero (hden α hα) (hw α hα)
@@ -211,9 +211,9 @@ theorem logDeriv_completedZetaFactor (s : ℂ)
   have hzeta_diff : DifferentiableAt ℂ riemannZeta s :=
     differentiableAt_riemannZeta hs1
   unfold completedZetaFactor
-  rw [logDeriv_mul]
-  · rw [logDeriv_mul]
-    · rw [logDeriv_mul]
+  rw [logDeriv_fun_mul]
+  · rw [logDeriv_fun_mul]
+    · rw [logDeriv_fun_mul]
       · rw [logDeriv_zetaPoleFactor, logDeriv_zetaPiFactor,
           logDeriv_zetaGammaFactor s hΓdiff, logDeriv_apply]
         ring
