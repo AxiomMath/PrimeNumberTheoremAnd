@@ -2067,7 +2067,7 @@ theorem kadiriTestFn_laplaceTransform {d : ℝ} (_hd : 0 < d) {f : ℝ → ℝ}
       congr 1
       rw [hw]
       ring
-    simp only [kadiriTestFn, if_pos hy0]
+    simp only [kadiriTestFn, ite_eq_left hy0]
     calc ((f 0 : ℂ) - (f y : ℂ)) * exp (-s * (y : ℂ)) * exp (-z * (y : ℂ))
         = ((f 0 : ℂ) - (f y : ℂ)) * (exp (-s * (y : ℂ)) * exp (-z * (y : ℂ))) := by ring
       _ = ((f 0 : ℂ) - (f y : ℂ)) * exp (-w * (y : ℂ)) := by rw [hmerge]

@@ -143,7 +143,7 @@ lemma sum_sq_div_moebius_eq_squarefree (n : ℕ) (hn : n > 0) :
         Nat.one_lt_ofNat, ↓reduceIte, left_eq_ite_iff, one_ne_zero, imp_false, Decidable.not_not]
       · simp_all
       · exact hp.squarefree
-      · rw [if_neg (by grind), if_neg (by rw [Nat.squarefree_pow_iff] <;> aesop)]
+      · rw [ite_eq_right (by grind), ite_eq_right (by rw [Nat.squarefree_pow_iff] <;> aesop)]
     · assumption
   · obtain ⟨m, n', hm, hn', h_coprime⟩ : ∃ m n' : ℕ, 1 < m ∧ 1 < n' ∧ m.Coprime n' ∧ n = m * n' := by
       obtain ⟨p, hp⟩ : ∃ p, p.Prime ∧ p ∣ n :=
@@ -278,13 +278,13 @@ theorem integral_M_sqrt_div (x : ℝ) (hx : 0 < x) :
       rw [tsum_eq_sum (s := Ioc 0 ⌊Real.sqrt (x / u)⌋₊)]
       · simp only [M, Int.cast_sum]
         refine sum_congr rfl fun i hi ↦ ?_
-        rw [mul_ite, mul_one, mul_zero, if_pos]
+        rw [mul_ite, mul_one, mul_zero, ite_eq_left]
         exact le_trans (Nat.cast_le.mpr (mem_Ioc.mp hi).2) (Nat.floor_le (sqrt_nonneg _))
       · intro n hn
         simp only [mul_ite, mul_one, mul_zero]
         by_cases hn0 : n = 0
         · simp [hn0, moebius]
-        · rw [if_neg]; intro hle; apply hn; rw [mem_Ioc]
+        · rw [ite_eq_right]; intro hle; apply hn; rw [mem_Ioc]
           exact ⟨Nat.pos_of_ne_zero hn0, Nat.le_floor hle⟩
     rw [h_rewrite, intervalIntegral.integral_of_le hx.le, integral_tsum]
     · exact tsum_congr fun n ↦ by rw [intervalIntegral.integral_of_le hx.le, integral_const_mul]

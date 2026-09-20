@@ -420,7 +420,7 @@ theorem isMultiplicative_powR {ν : ℂ} : IsMultiplicative (powR ν) := by
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp only [mul_zero, ↓reduceIte]
   have hmn_pos : m * n ≠ 0 := Nat.mul_ne_zero hm.ne' hn.ne'
-  simp only [hm.ne', hn.ne', hmn_pos, if_false]
+  simp only [hm.ne', hn.ne', hmn_pos, ite_false]
   push_cast
   exact Complex.natCast_mul_natCast_cpow m n ν
 

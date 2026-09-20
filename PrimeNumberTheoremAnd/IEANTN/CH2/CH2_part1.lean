@@ -697,7 +697,7 @@ theorem S_eq_I (a : ℕ → ℝ) (s x T : ℝ) (hs : s ≠ 1) (hT : 0 < T) (hx :
   have lambda_mul_u {s T : ℝ} (hT : 0 < T) (u : ℝ) :
       2 * π * (s - 1) / T * (T / (2 * π) * u) = (s - 1) * u := by field_simp [pi_ne_zero]
   by_cases hs_lt : s < 1
-  · have hS_def : S a s x = ∑ n ∈ Finset.Icc 1 ⌊x⌋₊, a n / (n ^ s : ℝ) := if_pos hs_lt
+  · have hS_def : S a s x = ∑ n ∈ Finset.Icc 1 ⌊x⌋₊, a n / (n ^ s : ℝ) := ite_eq_left hs_lt
     have h_tsum_eq : x ^ (-s : ℝ) * ∑' n : ℕ+,
         a n * (x / n) * I' (2 * π * (s - 1) / T) ((T / (2 * π)) * log (n / x)) =
         x ^ (-s : ℝ) * ∑ n ∈ Finset.Icc 1 ⌊x⌋₊, a n * (x / n) * (x / n) ^ (s - 1) := by
@@ -771,7 +771,7 @@ private lemma I'_eq_exp_of_neg {lambda u0 : ℝ} (hlambda : lambda < 0) (hu0 : u
     Set.EqOn (I' lambda) (fun y ↦ Real.exp (-lambda * y)) (Set.Iic u0) := by
   intro y hy
   unfold I'
-  rw [if_pos (mul_nonneg_of_nonpos_of_nonpos hlambda.le (hy.trans hu0))]
+  rw [ite_eq_left (mul_nonneg_of_nonpos_of_nonpos hlambda.le (hy.trans hu0))]
 
 private lemma I'_ae_zero_of_pos {lambda u0 : ℝ} (hlambda : 0 < lambda) (hu0 : u0 ≤ 0) :
     I' lambda =ᵐ[volume.restrict (Set.Iic u0)] 0 := by
@@ -780,7 +780,7 @@ private lemma I'_ae_zero_of_pos {lambda u0 : ℝ} (hlambda : 0 < lambda) (hu0 : 
     rw [show {a : ℝ | ¬a ≠ 0} = {0} by ext a; simp]; exact Real.volume_singleton
   filter_upwards [ae_restrict_mem measurableSet_Iic, h_ae_ne_zero] with y hy hy_ne_zero
   unfold I'
-  rw [if_neg (not_le.mpr (mul_neg_of_pos_of_neg hlambda (lt_of_le_of_ne (hy.trans hu0) hy_ne_zero)))]
+  rw [ite_eq_right (not_le.mpr (mul_neg_of_pos_of_neg hlambda (lt_of_le_of_ne (hy.trans hu0) hy_ne_zero)))]
   simp
 
 private lemma integrableOn_I'_Iic {lambda u0 : ℝ} (hlambda : lambda ≠ 0) (hu0 : u0 ≤ 0) :
@@ -2229,7 +2229,7 @@ theorem ϕ_c2_right (ν ε : ℝ) (hlam : ν ≠ 0) : ContDiffOn ℝ 2 (ϕ_pm ν
   have hcirc : ContDiffOn ℝ 2 (fun t : ℝ => Phi_circ ν ε (t : ℂ)) (Set.Icc 0 1) := (Phi_circ.contDiff_real ν ε hlam).contDiffOn
   exact (hcirc.add hs).congr fun t ht => by
     simp only [ϕ_pm]
-    rw [if_pos ⟨by linarith [ht.1], ht.2⟩]
+    rw [ite_eq_left ⟨by linarith [ht.1], ht.2⟩]
     rcases eq_or_lt_of_le ht.1 with rfl | hpos
     · simp [Real.sign_zero, Phi_star_zero]
     · simp [Real.sign_of_pos hpos]
@@ -2248,7 +2248,7 @@ lemma varphi_differentiableAt_out (ν ε : ℝ) {x : ℝ} (hx : x ∈ (Set.Icc (
     DifferentiableAt ℝ (ϕ_pm ν ε) x := by
   have h_zero : ϕ_pm ν ε =ᶠ[nhds x] 0 := by
     filter_upwards [isClosed_Icc.isOpen_compl.mem_nhds hx] with y hy
-    unfold ϕ_pm; exact if_neg hy
+    unfold ϕ_pm; exact ite_eq_right hy
   exact Filter.EventuallyEq.differentiableAt_iff h_zero |>.mpr (differentiableAt_const 0)
 
 @[blueprint
@@ -3006,7 +3006,7 @@ private lemma ϕ_pm_mul_E_integrableOn_Icc (ν ε : ℝ) (hlam : ν ≠ 0) (x a 
 private lemma ϕ_pm_eq_on_Icc_neg (ν ε : ℝ) {t : ℝ} (ht : t ∈ Set.Icc (-1 : ℝ) 0) :
     ϕ_pm ν ε t = Phi_circ ν ε t - Phi_star ν ε t := by
   dsimp [ϕ_pm]
-  rw [if_pos ⟨ht.1, by linarith [ht.2]⟩]
+  rw [ite_eq_left ⟨ht.1, by linarith [ht.2]⟩]
   rcases ht.2.lt_or_eq with h | rfl
   · simp [Real.sign_of_neg h, sub_eq_add_neg]
   · simp [Phi_star_zero]
@@ -3015,7 +3015,7 @@ private lemma ϕ_pm_eq_on_Icc_neg (ν ε : ℝ) {t : ℝ} (ht : t ∈ Set.Icc (-
 private lemma ϕ_pm_eq_on_Icc_pos (ν ε : ℝ) {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) 1) :
     ϕ_pm ν ε t = Phi_circ ν ε t + Phi_star ν ε t := by
   dsimp [ϕ_pm]
-  rw [if_pos ⟨by linarith [ht.1], ht.2⟩]
+  rw [ite_eq_left ⟨by linarith [ht.1], ht.2⟩]
   rcases ht.1.lt_or_eq with h | rfl
   · simp [Real.sign_of_pos h]
   · simp [Phi_star_zero]
@@ -4006,7 +4006,7 @@ private lemma analyticAt_removable_sing_mul_E (x : ℝ) {f_base : ℂ → ℂ} {
     filter_upwards [nhdsWithin_le_nhds hV_nhds, self_mem_nhdsWithin] with w hwV hw_ne
     have h_eq : (fun z ↦ if z = z_pole then c_base * E (-z_pole * x) else f_base z * E (-z * x)) =ᶠ[nhds w]
                 (fun z ↦ f_base z * E (-z * x)) :=
-      (eventually_ne_nhds hw_ne).mono (fun z hz ↦ by simp [if_neg hz])
+      (eventually_ne_nhds hw_ne).mono (fun z hz ↦ by simp [ite_eq_right hz])
     refine DifferentiableAt.congr_of_eventuallyEq ?_ h_eq
     rcases hV_anal with ⟨b, hb, h_set_eq⟩
     have hw_f_anal : AnalyticAt ℂ f_base w := by
@@ -4018,7 +4018,7 @@ private lemma analyticAt_removable_sing_mul_E (x : ℝ) {f_base : ℂ → ℂ} {
     have h_cont_E : ContinuousAt (fun z ↦ E (-z * x)) z_pole := by unfold E; fun_prop
     refine (h_tendsto.mul (h_cont_E.tendsto.mono_left nhdsWithin_le_nhds)).congr' ?_
     filter_upwards [self_mem_nhdsWithin] with w (hw : w ≠ z_pole)
-    simp [if_neg hw]
+    simp [ite_eq_right hw]
 
 lemma Phi_diff_bounded_near_pole (ν ε : ℝ) (hν : ν > 0) :
     ∃ U ∈ nhds (z₀_pole ν), BddAbove (norm ∘ (fun z ↦ Phi_circ ν ε z - Phi_star ν ε z) '' (U \ {z₀_pole ν})) := by
@@ -4073,14 +4073,14 @@ lemma Phi_fourier_holo_left (ν ε x : ℝ) (hν : ν > 0) :
       have h_anal_z : AnalyticAt ℂ g z := by
         have h_eq : g =ᶠ[nhds z] f := by
           filter_upwards [eventually_ne_nhds hz₀] with w hw
-          dsimp [g]; rw [if_neg hw]
+          dsimp [g]; rw [ite_eq_right hw]
         rw [analyticAt_congr h_eq]
         apply AnalyticAt.mul
         · exact (Phi_circ.analyticAt_of_not_pole ν ε z h_not_pole).sub
             (Phi_star.analyticAt_of_not_pole ν ε z h_not_pole)
         · unfold E; fun_prop
       exact h_anal_z.differentiableAt.differentiableWithinAt
-  · intro z hz; dsimp [g]; rw [if_neg hz]
+  · intro z hz; dsimp [g]; rw [ite_eq_right hz]
 
 lemma Phi_add_bounded_near_pole (ν ε : ℝ) (hν : ν > 0) :
     ∃ U ∈ nhds (z₁_pole ν), BddAbove (norm ∘ (fun z ↦ Phi_circ ν ε z + Phi_star ν ε z) '' (U \ {z₁_pole ν})) := by
@@ -4137,12 +4137,12 @@ lemma Phi_fourier_holo_right (ν ε x : ℝ) (hν : ν > 0) :
       have h_anal_z : AnalyticAt ℂ g z := by
         have h_eq : g =ᶠ[nhds z] f := by
           filter_upwards [eventually_ne_nhds hz₁] with w hw
-          dsimp [g]; rw [if_neg hw]
+          dsimp [g]; rw [ite_eq_right hw]
         rw [analyticAt_congr h_eq]
         exact ((Phi_circ.analyticAt_of_not_pole ν ε z h_not_pole).add
           (Phi_star.analyticAt_of_not_pole ν ε z h_not_pole)).mul (by unfold E; fun_prop)
       exact h_anal_z.differentiableAt.differentiableWithinAt
-  · intro z hz; dsimp [g]; rw [if_neg hz]
+  · intro z hz; dsimp [g]; rw [ite_eq_right hz]
 
 @[blueprint
   "shift-downwards"
@@ -4548,7 +4548,7 @@ theorem first_contour_limit (ν ε : ℝ) (hν : ν > 0) (x : ℝ) (hx : x > 0) 
             convert (h_res z₀ hz₀).congr' ?_
             · exact (by simp [g])
             · filter_upwards [self_mem_nhdsWithin] with z (hz : z ≠ z₀)
-              simp only [g, if_neg hz]
+              simp only [g, ite_eq_right hz]
         have h_g_val : g z₀ = A := by simp [g]
         have h_lim : Filter.Tendsto (fun z ↦ f z - A / (z - z₀)) (nhdsWithin z₀ {z₀}ᶜ) (nhds (deriv g z₀)) := by
           have h_g_deriv : HasDerivAt g (deriv g z₀) z₀ := (AnalyticAt.differentiableAt h_g_an).hasDerivAt
@@ -4557,7 +4557,7 @@ theorem first_contour_limit (ν ε : ℝ) (hν : ν > 0) (x : ℝ) (hx : x > 0) 
           filter_upwards [self_mem_nhdsWithin] with z h_ne
           simp only [slope, smul_eq_mul, vsub_eq_sub, h_g_val]
           have hne : z ≠ z₀ := h_ne
-          simp only [g, if_neg hne]
+          simp only [g, ite_eq_right hne]
           have : z - z₀ ≠ 0 := sub_ne_zero.mpr h_ne
           field_simp
         exact h_lim.isBigO_one ℂ
@@ -5044,7 +5044,7 @@ theorem fourier_real (ν ε : ℝ) (hlam : ν ≠ 0) (x : ℝ) : (𝓕 (ϕ_pm ν
 theorem varphi_integ (ν ε : ℝ) (hlam : ν ≠ 0) : Integrable (ϕ_pm ν ε) := by
   rw [← integrableOn_univ, ← Set.union_compl_self (Set.Icc (-1 : ℝ) 1)]
   refine IntegrableOn.union ((ϕ_continuous ν ε hlam).continuousOn.integrableOn_compact isCompact_Icc) ?_
-  exact (integrable_zero ℝ ℂ volume).integrableOn.congr_fun (fun t ht ↦ (if_neg ht).symm) measurableSet_Icc.compl
+  exact (integrable_zero ℝ ℂ volume).integrableOn.congr_fun (fun t ht ↦ (ite_eq_right ht).symm) measurableSet_Icc.compl
 
 @[blueprint
   "Inu_def"
@@ -5100,7 +5100,7 @@ private lemma integral_B_diff_mul_exp_nonpos {T ε ν u : ℝ} (f : ℝ → ℂ)
 
 lemma Inu_bounds_neg (ν x : ℝ) (hν : ν > 0) (hx : x < 0) :
     (𝓕 (ϕ_pm ν (-1)) x).re ≤ Inu ν x ∧ Inu ν x ≤ (𝓕 (ϕ_pm ν 1) x).re := by
-  have hI : Inu ν x = 0 := if_neg (not_le.mpr hx)
+  have hI : Inu ν x = 0 := ite_eq_right (not_le.mpr hx)
   rw [hI]
   refine ⟨?_, ?_⟩
   · apply le_of_tendsto ((continuous_re.tendsto _).comp (fourier_formula_neg ν (-1) hν x hx))
@@ -5124,7 +5124,7 @@ lemma Inu_bounds_neg (ν x : ℝ) (hν : ν > 0) (hx : x < 0) :
 
 lemma Inu_bounds_pos (ν x : ℝ) (hν : ν > 0) (hx : x > 0) :
     (𝓕 (ϕ_pm ν (-1)) x).re ≤ Inu ν x ∧ Inu ν x ≤ (𝓕 (ϕ_pm ν 1) x).re := by
-  have hI : Inu ν x = Real.exp (-ν * x) := if_pos (le_of_lt hx)
+  have hI : Inu ν x = Real.exp (-ν * x) := ite_eq_left (le_of_lt hx)
   have h_tendsto_plus := (continuous_re.tendsto _).comp (fourier_formula_pos ν 1 hν x hx)
   have h_tendsto_minus := (continuous_re.tendsto _).comp (fourier_formula_pos ν (-1) hν x hx)
   have h_re_eq (ε : ℝ) : (𝓕 (ϕ_pm ν ε) x - Complex.exp (-ν * x)).re = (𝓕 (ϕ_pm ν ε) x).re - Inu ν x := by
@@ -5163,7 +5163,7 @@ lemma Inu_bounds_zero (ν : ℝ) (hν : ν > 0) :
   have hbot : Filter.NeBot (nhdsWithin 0 (Set.Ioi (0 : ℝ))) := nhdsWithin_Ioi_neBot le_rfl
   have h_I_rcts : Filter.Tendsto (fun x : ℝ ↦ Inu ν x) (nhdsWithin 0 (Set.Ioi (0 : ℝ))) (nhds 1) := by
     have h_eq : (fun x : ℝ ↦ Inu ν x) =ᶠ[nhdsWithin 0 (Set.Ioi (0 : ℝ))] (fun x ↦ Real.exp (-ν * x)) :=
-      eventually_nhdsWithin_of_forall fun _ hx ↦ if_pos (le_of_lt hx)
+      eventually_nhdsWithin_of_forall fun _ hx ↦ ite_eq_left (le_of_lt hx)
     have h_tendsto_exp : Filter.Tendsto (fun x ↦ Real.exp (-ν * x)) (nhds 0) (nhds 1) := by
       simpa using Continuous.tendsto (by fun_prop : Continuous fun x ↦ Real.exp (-ν * x)) 0
     exact Filter.Tendsto.congr' h_eq.symm (Filter.Tendsto.mono_left h_tendsto_exp nhdsWithin_le_nhds)
@@ -5221,7 +5221,7 @@ theorem varphi_deriv_integ (ν ε : ℝ) (hlam : ν ≠ 0) : Integrable (deriv (
       intro t ht
       have h_eq : ϕ_pm ν ε =ᶠ[nhds t] (fun _ ↦ (0 : ℂ)) := by
         filter_upwards [isClosed_Icc.isOpen_compl.mem_nhds ht] with x hx
-        unfold ϕ_pm; exact if_neg hx
+        unfold ϕ_pm; exact ite_eq_right hx
       exact (h_eq.deriv_eq.trans (deriv_const _ _)).symm) measurableSet_Icc.compl
 
 private lemma varphi_ftc_aux (ν ε : ℝ) (hlam : ν ≠ 0) {a b x y : ℝ}
@@ -5261,7 +5261,7 @@ lemma varphi_ftc_out (ν ε : ℝ) (hlam : ν ≠ 0) {x y : ℝ}
     have h_eq : f =ᶠ[nhds t] (fun _ ↦ (0 : ℂ)) := by
       filter_upwards [isClosed_Icc.isOpen_compl.mem_nhds (show t ∉ Set.Icc (-1) 1 from by
         intro h; simp only [Set.mem_Icc] at h; rcases ht with ht | ht <;> linarith)] with z hz
-      unfold f ϕ_pm; exact if_neg hz
+      unfold f ϕ_pm; exact ite_eq_right hz
     exact h_eq.deriv_eq.trans (deriv_const _ _)
   rw [hf_const (h.elim (fun h' ↦ Or.inl h'.2) (fun h' ↦ Or.inr h'.2)),
       hf_const (h.elim (fun h' ↦ Or.inl h'.1) (fun h' ↦ Or.inr h'.1)), sub_zero]
@@ -5354,7 +5354,7 @@ lemma ϕ_pm_deriv_zero_outside (ν ε : ℝ) {t : ℝ} (ht : t < -1 ∨ t > 1) :
   have h_eq : ϕ_pm ν ε =ᶠ[nhds t] (fun _ ↦ (0 : ℂ)) := by
     filter_upwards [isClosed_Icc.isOpen_compl.mem_nhds (show t ∉ Set.Icc (-1) 1 from by
       intro h; simp only [Set.mem_Icc] at h; rcases ht with ht | ht <;> linarith)] with x hx
-    unfold ϕ_pm; exact if_neg hx
+    unfold ϕ_pm; exact ite_eq_right hx
   exact h_eq.deriv_eq.trans (deriv_const _ _)
 
 lemma ϕ_pm_deriv_Iic_finite (ν ε : ℝ) :

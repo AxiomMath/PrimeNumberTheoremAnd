@@ -2057,7 +2057,7 @@ lemma lemma_abadsumas_sum_fourier (s : ℂ) {a b : ℝ} (ha : 0 < a)
           exact ⟨hy.1, hy.2⟩
         have h_f_val : f y = (y ^ (-s.re) : ℝ) * e (-(s.im / (2 * π)) * Real.log y) := by
           dsimp [f]
-          rw [if_pos h_bounds]
+          rw [ite_eq_left h_bounds]
         dsimp only
         rw [h_f_val, e]
         calc cexp (↑(-2 * π * y * ↑n) * I) • (↑(y ^ (-s.re)) * cexp (2 * ↑π * I * ↑(-(s.im / (2 * π)) * Real.log y)))
@@ -4475,7 +4475,7 @@ private lemma lemma_abadsumas_sum_main_term_a (ϑ : ℝ) (hϑ_lt : |ϑ| < 1)
                 rw [← Equiv.tsum_eq Equiv.pnatEquivNat.symm]
                 simp only [one_div, Equiv.pnatEquivNat_symm_apply, Nat.succPNat_coe,
                   Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one]
-    rw [h_sum_shift, show g ϑ = 1 / Complex.sin (↑π * ↑ϑ) - 1 / (↑π * ↑ϑ) by dsimp [g]; rw [if_pos hϑ]]
+    rw [h_sum_shift, show g ϑ = 1 / Complex.sin (↑π * ↑ϑ) - 1 / (↑π * ↑ϑ) by dsimp [g]; rw [ite_eq_left hϑ]]
     rw [show ↑π * (1 / Complex.sin (↑π * ↑ϑ) - 1 / (↑π * ↑ϑ)) = ↑π / Complex.sin (↑π * ↑ϑ) - 1 / ↑ϑ by field_simp]
     rw [lemma_abadeuleulmit1 h_not_int]
     ring_nf
@@ -4494,7 +4494,7 @@ private lemma lemma_abadsumas_sum_main_term_b (ϑ_minus : ℝ)
   · have hϑ_minus_mem : (ϑ_minus : ℂ) ∈ integerComplement :=
       lemma_abadsumas_not_in_integerComplement hϑ_minus_lt hθ
     rw [show (π : ℂ) * g ϑ_minus = ↑π / Complex.sin (↑π * ↑ϑ_minus) - 1 / (ϑ_minus : ℂ) by
-      dsimp [g]; rw [if_pos hθ, mul_sub, mul_one_div, mul_one_div]; congr 1
+      dsimp [g]; rw [ite_eq_left hθ, mul_sub, mul_one_div, mul_one_div]; congr 1
       have hπ : (π : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr Real.pi_ne_zero
       have hϑ : (ϑ_minus : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hθ
       field_simp [hπ, hϑ],
@@ -4921,11 +4921,11 @@ theorem lemma_abadsumas {s : ℂ} (hsigma : 0 ≤ s.re) {a b : ℝ} (ha : 0 < a)
           rw [tsum_mul_left, hsplit, tsum_mul_left, tsum_mul_left]
         rw [hfactor]
         rcases eq_or_ne ϑ 0 with hϑ0 | hϑ0
-        · simp only [hϑ0, abs_zero, add_zero, ne_eq, not_true, if_false]
+        · simp only [hϑ0, abs_zero, add_zero, ne_eq, not_true, ite_false]
           rw [show 0 = ϑ from hϑ0.symm]
           simp only [neg_add_rev, hϑ0, sub_zero, one_div, zero_mul, add_zero, ge_iff_le]
           have hq : ∑' (n : ℕ), (1 / (↑n + 1 : ℝ) ^ 2 + 1 / (↑n + 1 : ℝ) ^ 2) = π ^ 2 / 3 := by
-            simp only [hϑ0, sub_zero, add_zero, if_true] at hquad
+            simp only [hϑ0, sub_zero, add_zero, ite_true] at hquad
             exact hquad
           have hq' : ∑' (n : ℕ), (((↑n + 1 : ℝ) ^ 2)⁻¹ + ((↑n + 1 : ℝ) ^ 2)⁻¹) = π ^ 2 / 3 := by
             convert hq using 3
@@ -4942,7 +4942,7 @@ theorem lemma_abadsumas {s : ℂ} (hsigma : 0 ≤ s.re) {a b : ℝ} (ha : 0 < a)
               π^2 / Real.sin (π * ϑ)^2 - 1/ϑ^2 := by
             rw [hquad]; simp [hϑ0]
           rw [hquad']
-          simp only [hϑ0, ne_eq, not_false_eq_true, if_true]
+          simp only [hϑ0, ne_eq, not_false_eq_true, ite_true]
           have hre2 : (1 / ((π : ℂ) * (ϑ : ℂ)) ^ 2).re = 1 / (π * ϑ) ^ 2 := by
             have h : ((1 : ℂ) / ((π : ℂ) * (ϑ : ℂ)) ^ 2) = ((1 / (π * ϑ) ^ 2 : ℝ) : ℂ) := by
               push_cast; ring

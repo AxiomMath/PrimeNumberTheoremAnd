@@ -387,7 +387,7 @@ lemma integral_log_inv' (a b : ℝ) (ha : 2 ≤ a) (hb : a ≤ b) :
     ((log b)⁻¹ * b) - ((log a)⁻¹ * a) +
       ∫ t in Set.Icc a b, ((log t)^2)⁻¹ := by
   have := integral_log_inv a b ha hb
-  simp only [intervalIntegral.intervalIntegral_eq_integral_uIoc, if_pos hb, Set.uIoc_of_le hb,
+  simp only [intervalIntegral.intervalIntegral_eq_integral_uIoc, ite_eq_left hb, Set.uIoc_of_le hb,
     smul_eq_mul, one_mul] at this
   rw [integral_Icc_eq_integral_Ioc, integral_Icc_eq_integral_Ioc]
   rw [this]

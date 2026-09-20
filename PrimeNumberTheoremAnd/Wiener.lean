@@ -2596,7 +2596,7 @@ lemma limiting_fourier_variant_lim1_aux
   · simp [base, hn]
   · have hnpos : 0 < (n : ℝ) := Nat.cast_pos.mpr (Nat.pos_of_ne_zero hn)
     have hbase_nonneg : 0 ≤ base n := by
-      simp only [base, hn, if_false]
+      simp only [base, hn, ite_false]
       exact div_nonneg (hpos n) (Real.rpow_pos_of_pos hnpos σ).le
     calc |base n * W n| = base n * W n := abs_of_nonneg (mul_nonneg hbase_nonneg (hW_nonneg n))
       _ ≤ base n * C := mul_le_mul_of_nonneg_left (hW_le_C n) hbase_nonneg
