@@ -512,7 +512,7 @@ theorem card_range_filter_isPrimePow_le :
   convert_to (fun N ↦ ((Finset.range N).filter IsPrimePow).card : ℕ → ℝ) =O[⊤]
       (fun N ↦ (N / Real.log N))
   · simp only [isBigO_top, RCLike.norm_natCast, norm_div, Real.norm_eq_abs]
-    peel with C N
+    refine exists_congr fun C ↦ forall_congr' fun N ↦ ?_
     by_cases hN : N = 0
     · simp [hN]
     rw [abs_of_nonneg]

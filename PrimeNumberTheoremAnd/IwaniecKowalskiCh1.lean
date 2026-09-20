@@ -547,7 +547,7 @@ theorem LSeries_sigma_eq_riemannZeta_mul (ν : ℂ) {s : ℂ} (hs : 1 < s.re) (h
 lemma two_pow_omega_le_sigma_zero {n : ℕ} (hn : n ≠ 0) :
     2 ^ (ω n) ≤ σ 0 n := by
   rw [show ω n = (Nat.primeFactors n).card from rfl, ArithmeticFunction.sigma_zero_apply, Nat.card_divisors hn, ← Finset.prod_const]
-  apply Finset.prod_le_prod'
+  apply Finset.prod_le_prod
   intro p hp
   simpa [two_mul] using
   (Nat.Prime.dvd_iff_one_le_factorization (prime_of_mem_primeFactors hp) hn).mp

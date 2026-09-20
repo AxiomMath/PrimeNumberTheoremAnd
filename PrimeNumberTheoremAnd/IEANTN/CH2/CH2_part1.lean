@@ -10,7 +10,7 @@ public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Complex
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Meromorphic
 public import Mathlib.Data.Int.Star
 public import Mathlib.Data.PNat.Interval
-public import Mathlib.Data.Real.Sign
+public import Mathlib.Basic.Real.Sign
 public import Mathlib.Algebra.Order.Star.Real
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import PrimeNumberTheoremAnd.IEANTN.PrimaryDefinitions

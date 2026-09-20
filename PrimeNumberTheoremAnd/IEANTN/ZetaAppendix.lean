@@ -4293,7 +4293,7 @@ lemma lemma_abadimpseri (ϑ : ℝ) (hϑ : |ϑ| < 1) :
           · exact_mod_cast summable_nat_add_iff 2 |>.2 <| summable_nat_pow_inv.2 <| by omega
         convert h_sum_zeta.le using 2
         erw [zeta_eq_tsum_one_div_nat_add_one_cpow] <;> norm_num
-        · convert ofReal_re _; simp [Complex.ofReal_tsum]
+        · convert ofReal_re _; simp only [← Complex.ofReal_natCast, ← Complex.ofReal_one, ← Complex.ofReal_add, ← Complex.ofReal_pow, ← Complex.ofReal_inv, ← Complex.ofReal_tsum, Complex.ofReal_re]
     rw [Summable.tsum_eq_zero_add]
     · norm_num [add_assoc, add_left_comm, add_comm, div_eq_mul_inv, mul_add, mul_comm,
         mul_left_comm, tsum_mul_left] at *
