@@ -56,10 +56,3 @@ jobs:
           website-directory: ./home_page
           project-name: PrimeNumberTheoremAnd
           include-drafts: true
-
-      - name: Compile blueprint and documentation
-        uses: leanprover-community/docgen-action@main
-        with:
-          blueprint: true
-          homepage: home_page
-          references: 'blueprint/src/references.bib'

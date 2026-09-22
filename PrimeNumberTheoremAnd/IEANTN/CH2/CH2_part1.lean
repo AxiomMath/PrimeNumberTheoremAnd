@@ -5160,7 +5160,7 @@ lemma Inu_bounds_zero (ν : ℝ) (hν : ν > 0) :
   have h_cont : ∀ ε : ℝ, Continuous (fun x : ℝ ↦ (𝓕 (ϕ_pm ν ε) x).re) := fun ε ↦
     continuous_re.comp <| VectorFourier.fourierIntegral_continuous Real.continuous_fourierChar
       (by fun_prop) (varphi_integ ν ε hν.ne')
-  haveI hbot : Filter.NeBot (nhdsWithin 0 (Set.Ioi (0 : ℝ))) := nhdsWithin_Ioi_neBot le_rfl
+  have hbot : Filter.NeBot (nhdsWithin 0 (Set.Ioi (0 : ℝ))) := nhdsWithin_Ioi_neBot le_rfl
   have h_I_rcts : Filter.Tendsto (fun x : ℝ ↦ Inu ν x) (nhdsWithin 0 (Set.Ioi (0 : ℝ))) (nhds 1) := by
     have h_eq : (fun x : ℝ ↦ Inu ν x) =ᶠ[nhdsWithin 0 (Set.Ioi (0 : ℝ))] (fun x ↦ Real.exp (-ν * x)) :=
       eventually_nhdsWithin_of_forall fun _ hx ↦ if_pos (le_of_lt hx)
@@ -6083,7 +6083,7 @@ private lemma deriv_z_coth_z_le_one (w : ℂ) (hw : |w.im| ≤ π / 4) :
 
 private lemma isPreconnected_im_preimage_Ioo (a b : ℝ) :
     IsPreconnected (Complex.im ⁻¹' Set.Ioo a b) := by
-  haveI : IsBoundedSMul ℝ ℂ := NormedSpace.toIsBoundedSMul -- this line can be removed once we upgrade to mathlib 4.30
+  have : IsBoundedSMul ℝ ℂ := NormedSpace.toIsBoundedSMul -- this line can be removed once we upgrade to mathlib 4.30
   apply Convex.isPreconnected
   change Convex ℝ ({c : ℂ | a < c.im} ∩ {c : ℂ | c.im < b})
   exact Convex.inter (convex_halfSpace_im_gt _) (convex_halfSpace_im_lt _)
