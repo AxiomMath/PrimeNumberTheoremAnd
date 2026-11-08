@@ -1,17 +1,5 @@
 name = "PrimeNumberTheoremAnd"
-defaultTargets = ["PrimeNumberTheoremAnd"]
-
-[leanOptions]
-pp.unicode.fun = true
-pp.proofs.withType = false
-autoImplicit = false
-relaxedAutoImplicit = false
-linter.mathlibStandardSet = true
-linter.style.header = false
-linter.style.openClassical = false
-linter.style.longLine = false
-linter.style.emptyLine = false
-linter.flexible = true
+defaultTargets = ["PrimeNumberTheoremAnd.Wiener", "PrimeNumberTheoremAndZetaFive"]
 
 [[require]]
 name = "LeanArchitect"
@@ -39,3 +27,24 @@ rev = "v4.34.0"
 
 [[lean_lib]]
 name = "PrimeNumberTheoremAnd"
+leanOptions = { autoImplicit = false }
+
+[[lean_lib]]
+name = "PrimeNumberTheoremAndZetaFive"
+roots = ["PrimeNumberTheoremAnd.ZetaFive"]
+globs = ["PrimeNumberTheoremAnd.ZetaFive.*"]
+
+[[lean_lib]]
+name = "PrimeNumberTheoremAndCatalan"
+roots = ["PrimeNumberTheoremAnd.Catalan"]
+globs = ["PrimeNumberTheoremAnd.Catalan.*"]
+
+[[lean_lib]]
+name = "PrimeNumberTheoremAndSiegelZeros"
+roots = ["PrimeNumberTheoremAnd.SiegelZeros.HadamardSupport"]
+globs = ["PrimeNumberTheoremAnd.SiegelZeros.*"]
+
+[[lean_lib]]
+name = "PrimeNumberTheoremAndErdos970"
+roots = ["PrimeNumberTheoremAnd.Erdos970"]
+globs = ["PrimeNumberTheoremAnd.Erdos970.*"]

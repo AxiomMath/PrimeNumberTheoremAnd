@@ -1,4 +1,10 @@
+/-
+Adapted from PrimeNumberTheoremAnd by Alex Kontorovich and contributors.
+Licensed under the Apache License, Version 2.0; see the upstream LICENSE.
+This compatibility port retains the proven declarations used by this project.
+-/
 import Mathlib.Analysis.Calculus.Deriv.Support
+import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 import Mathlib.Analysis.Distribution.SchwartzSpace.Deriv
 import Mathlib.Order.Filter.ZeroAndBoundedAtFilter
 
@@ -7,16 +13,26 @@ open scoped ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {n : ℕ}
 
-@[ext] structure CS (n : ℕ) (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] where
+structure CS (n : ℕ) (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] where
+
   toFun : ℝ → E
   h1 : ContDiff ℝ n toFun
   h2 : HasCompactSupport toFun
+
+@[ext] protected theorem CS.ext {n : ℕ} {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] {x y : CS n E}
+    (h : x.toFun = y.toFun) : x = y := by
+  cases x
+  cases y
+  cases h
+  rfl
 
 structure trunc extends (CS 2 ℝ) where
   h3 : (Set.Icc (-1) (1)).indicator 1 ≤ toFun
   h4 : toFun ≤ Set.indicator (Set.Ioo (-2) (2)) 1
 
 structure W1 (n : ℕ) (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] where
+
   toFun : ℝ → E
   smooth : ContDiff ℝ n toFun
   integrable : ∀ ⦃k⦄, k ≤ n → Integrable (iteratedDeriv k toFun)
@@ -27,14 +43,10 @@ section lemmas
 
 noncomputable def funscale {E : Type*} (g : ℝ → E) (R x : ℝ) : E := g (R⁻¹ • x)
 
-lemma contDiff_ofReal : ContDiff ℝ ∞ ofReal := by
-  have key x : HasDerivAt ofReal 1 x := hasDerivAt_id x |>.ofReal_comp
-  have key' : deriv ofReal = fun _ => 1 := by ext x ; exact (key x).deriv
-  refine contDiff_infty_iff_deriv.mpr ⟨fun x => (key x).differentiableAt, ?_⟩
-  simpa [key'] using contDiff_const
+theorem contDiff_ofReal : ContDiff ℝ ∞ ofReal := Complex.ofRealCLM.contDiff
 
 omit [NormedSpace ℝ E] in
-lemma tendsto_funscale {f : ℝ → E} (hf : ContinuousAt f 0) (x : ℝ) :
+theorem tendsto_funscale {f : ℝ → E} (hf : ContinuousAt f 0) (x : ℝ) :
     Tendsto (fun R => funscale f R x) atTop (𝓝 (f 0)) :=
   hf.tendsto.comp (by simpa using tendsto_inv_atTop_zero.mul_const x)
 
@@ -52,31 +64,31 @@ instance : Coe (CS n ℝ) (CS n ℂ) where coe f := ⟨fun x => f x,
 def neg (f : CS n E) : CS n E where
   toFun := -f
   h1 := f.h1.neg
-  h2 := by simpa [HasCompactSupport, tsupport] using f.h2
+  h2 := f.h2.neg
 
 instance : Neg (CS n E) where neg := neg
 
-@[simp] lemma neg_apply {x : ℝ} : (-f) x = - (f x) := rfl
+@[simp] theorem neg_apply {x : ℝ} : (-f) x = - (f x) := rfl
 
 def smul (R : ℝ) (f : CS n E) : CS n E := ⟨R • f, f.h1.const_smul R, f.h2.smul_left⟩
 
 instance : HSMul ℝ (CS n E) (CS n E) where hSMul := smul
 
-@[simp] lemma smul_apply : (R • f) x = R • f x := rfl
+@[simp] theorem smul_apply : (R • f) x = R • f x := rfl
 
-lemma continuous (f : CS n E) : Continuous f := f.h1.continuous
+theorem continuous (f : CS n E) : Continuous f := f.h1.continuous
 
 noncomputable def deriv (f : CS (n + 1) E) : CS n E where
   toFun := _root_.deriv f
   h1 := (contDiff_succ_iff_deriv.mp f.h1).2.2
   h2 := f.h2.deriv
 
-lemma hasDerivAt (f : CS (n + 1) E) (x : ℝ) : HasDerivAt f (f.deriv x) x :=
+theorem hasDerivAt (f : CS (n + 1) E) (x : ℝ) : HasDerivAt f (f.deriv x) x :=
   (f.h1.differentiable (by simp)).differentiableAt.hasDerivAt
 
-lemma deriv_apply {f : CS (n + 1) E} {x : ℝ} : f.deriv x = _root_.deriv f x := rfl
+theorem deriv_apply {f : CS (n + 1) E} {x : ℝ} : f.deriv x = _root_.deriv f x := rfl
 
-lemma deriv_smul {f : CS (n + 1) E} : (R • f).deriv = R • f.deriv := by
+theorem deriv_smul {f : CS (n + 1) E} : (R • f).deriv = R • f.deriv := by
   ext x ; exact (f.hasDerivAt x |>.const_smul R).deriv
 
 noncomputable def scale (g : CS n E) (R : ℝ) : CS n E := by
@@ -86,27 +98,27 @@ noncomputable def scale (g : CS n E) (R : ℝ) : CS n E := by
     · exact g.h1.comp (contDiff_const_smul R⁻¹)
     · exact g.h2.comp_smul (inv_ne_zero h)
 
-lemma deriv_scale {f : CS (n + 1) E} : (f.scale R).deriv = R⁻¹ • f.deriv.scale R := by
+theorem deriv_scale {f : CS (n + 1) E} : (f.scale R).deriv = R⁻¹ • f.deriv.scale R := by
   ext v ; by_cases hR : R = 0
   · simp [hR, scale, deriv]
   · simp only [scale, hR, ↓reduceDIte, smul_apply]
     exact ((f.hasDerivAt (R⁻¹ • v)).scomp v
-      (by simpa using! (hasDerivAt_id v).const_smul R⁻¹)).deriv
+      (by convert (hasDerivAt_const_mul (x := v) R⁻¹) using 1)).deriv
 
-lemma deriv_scale' {f : CS (n + 1) E} :
+theorem deriv_scale' {f : CS (n + 1) E} :
     (f.scale R).deriv v = R⁻¹ • f.deriv (R⁻¹ • v) := by
   rw [deriv_scale, smul_apply]
   by_cases hR : R = 0 <;> simp [hR, scale, funscale]
 
-lemma hasDerivAt_scale (f : CS (n + 1) E) (R x : ℝ) :
+theorem hasDerivAt_scale (f : CS (n + 1) E) (R x : ℝ) :
     HasDerivAt (f.scale R) (R⁻¹ • _root_.deriv f (R⁻¹ • x)) x := by
   convert hasDerivAt (f.scale R) x ; rw [deriv_scale'] ; rfl
 
-lemma tendsto_scale (f : CS n E) (x : ℝ) : Tendsto (fun R => f.scale R x) atTop (𝓝 (f 0)) := by
+theorem tendsto_scale (f : CS n E) (x : ℝ) : Tendsto (fun R => f.scale R x) atTop (𝓝 (f 0)) := by
   apply (tendsto_funscale f.continuous.continuousAt x).congr'
   filter_upwards [eventually_ne_atTop 0] with R hR ; simp [scale, hR]
 
-lemma bounded : ∃ C, ∀ v, ‖f v‖ ≤ C := by
+theorem bounded : ∃ C, ∀ v, ‖f v‖ ≤ C := by
   obtain ⟨x, hx⟩ :=
     (continuous_norm.comp f.continuous).exists_forall_ge_of_hasCompactSupport f.h2.norm
   exact ⟨_, hx⟩
@@ -119,16 +131,16 @@ instance : CoeFun trunc (fun _ => ℝ → ℝ) where coe f := f.toFun
 
 instance : Coe trunc (CS 2 ℝ) where coe := trunc.toCS
 
-lemma nonneg (g : trunc) (x : ℝ) : 0 ≤ g x := (Set.indicator_nonneg (by simp) x).trans (g.h3 x)
+theorem nonneg (g : trunc) (x : ℝ) : 0 ≤ g x := (Set.indicator_nonneg (by simp) x).trans (g.h3 x)
 
-lemma le_one (g : trunc) (x : ℝ) : g x ≤ 1 :=
+theorem le_one (g : trunc) (x : ℝ) : g x ≤ 1 :=
   (g.h4 x).trans <| Set.indicator_le_self' (by simp) x
 
-lemma zero (g : trunc) : g =ᶠ[𝓝 0] 1 := by
+theorem zero (g : trunc) : g =ᶠ[𝓝 0] 1 := by
   have : Set.Icc (-1) 1 ∈ 𝓝 (0 : ℝ) := by apply Icc_mem_nhds <;> linarith
   exact eventually_of_mem this (fun x hx => le_antisymm (g.le_one x) (by simpa [hx] using g.h3 x))
 
-@[simp] lemma zero_at {g : trunc} : g 0 = 1 := g.zero.eq_of_nhds
+@[simp] theorem zero_at {g : trunc} : g 0 = 1 := g.zero.eq_of_nhds
 
 end trunc
 
@@ -136,23 +148,15 @@ namespace W1
 
 instance : CoeFun (W1 n E) (fun _ => ℝ → E) where coe := W1.toFun
 
-lemma continuous (f : W1 n E) : Continuous f := f.smooth.continuous
+theorem continuous (f : W1 n E) : Continuous f := f.smooth.continuous
 
-lemma differentiable (f : W1 (n + 1) E) : Differentiable ℝ f :=
+theorem differentiable (f : W1 (n + 1) E) : Differentiable ℝ f :=
   f.smooth.differentiable (by simp)
 
-lemma iteratedDeriv_sub {f g : ℝ → E} (hf : ContDiff ℝ n f) (hg : ContDiff ℝ n g) :
+theorem iteratedDeriv_sub {f g : ℝ → E} (hf : ContDiff ℝ n f) (hg : ContDiff ℝ n g) :
     iteratedDeriv n (f - g) = iteratedDeriv n f - iteratedDeriv n g := by
-  induction n generalizing f g with
-  | zero => rfl
-  | succ n ih =>
-    have hf' : ContDiff ℝ n (deriv f) := hf.iterate_deriv' n 1
-    have hg' : ContDiff ℝ n (deriv g) := hg.iterate_deriv' n 1
-    have hfg : deriv (f - g) = deriv f - deriv g := by
-      ext x ; apply deriv_sub
-      · exact (hf.differentiable (by simp)).differentiableAt
-      · exact (hg.differentiable (by simp)).differentiableAt
-    simp_rw [iteratedDeriv_succ', ← ih hf' hg', hfg]
+  funext x
+  exact _root_.iteratedDeriv_sub hf.contDiffAt hg.contDiffAt
 
 noncomputable def deriv (f : W1 (n + 1) E) : W1 n E where
   toFun := _root_.deriv f
@@ -160,7 +164,7 @@ noncomputable def deriv (f : W1 (n + 1) E) : W1 n E where
   integrable k hk := by
     simpa [iteratedDeriv_succ'] using f.integrable (Nat.succ_le_succ hk)
 
-lemma hasDerivAt (f : W1 (n + 1) E) (x : ℝ) : HasDerivAt f (f.deriv x) x :=
+theorem hasDerivAt (f : W1 (n + 1) E) (x : ℝ) : HasDerivAt f (f.deriv x) x :=
   f.differentiable.differentiableAt.hasDerivAt
 
 def sub (f g : W1 n E) : W1 n E where
@@ -173,12 +177,18 @@ def sub (f g : W1 n E) : W1 n E where
 
 instance : Sub (W1 n E) where sub := sub
 
-lemma integrable_iteratedDeriv_Schwarz {f : 𝓢(ℝ, ℂ)} : Integrable (iteratedDeriv n f) := by
+theorem integrable_iteratedDeriv_Schwarz {f : 𝓢(ℝ, ℂ)} : Integrable (iteratedDeriv n f) := by
   induction n generalizing f with
   | zero => exact f.integrable
-  | succ n ih => simpa [iteratedDeriv_succ'] using! ih (f := SchwartzMap.derivCLM ℝ ℂ f)
+  | succ n ih =>
+    rw [iteratedDeriv_succ']
+    have hd : (SchwartzMap.derivCLM ℝ ℂ f : ℝ → ℂ) = _root_.deriv f := by
+      funext x
+      exact SchwartzMap.derivCLM_apply ℝ f x
+    rw [← hd]
+    exact ih (f := SchwartzMap.derivCLM ℝ ℂ f)
 
-noncomputable def of_Schwartz (f : 𝓢(ℝ, ℂ)) : W1 n ℂ where
+noncomputable def ofSchwartz (f : 𝓢(ℝ, ℂ)) : W1 n ℂ where
   toFun := f
   smooth := f.smooth n
   integrable _ _ := integrable_iteratedDeriv_Schwarz
@@ -192,20 +202,29 @@ variable {f : W21}
 noncomputable def norm (f : ℝ → ℂ) : ℝ :=
     (∫ v, ‖f v‖) + (4 * π ^ 2)⁻¹ * (∫ v, ‖deriv (deriv f) v‖)
 
-lemma norm_nonneg {f : ℝ → ℂ} : 0 ≤ norm f :=
+theorem norm_nonneg {f : ℝ → ℂ} : 0 ≤ norm f :=
   add_nonneg (integral_nonneg (fun t => by simp))
     (mul_nonneg (by positivity) (integral_nonneg (fun t => by simp)))
 
 noncomputable instance : Norm W21 where norm := norm ∘ W1.toFun
 
-noncomputable instance : Coe 𝓢(ℝ, ℂ) W21 where coe := W1.of_Schwartz
+noncomputable instance : Coe 𝓢(ℝ, ℂ) W21 where coe := W1.ofSchwartz
 
 def ofCS2 (f : CS 2 ℂ) : W21 := by
-  refine ⟨f, f.h1, fun k hk => ?_⟩ ; match k with
-  | 0 => exact f.h1.continuous.integrable_of_hasCompactSupport f.h2
-  | 1 => simpa using (f.h1.continuous_deriv one_le_two).integrable_of_hasCompactSupport f.h2.deriv
-  | 2 => simpa [iteratedDeriv_succ] using
-    (f.h1.iterate_deriv' 0 2).continuous.integrable_of_hasCompactSupport f.h2.deriv.deriv
+  refine ⟨f, f.h1, ?_⟩
+  intro k hk
+  cases k with
+  | zero => exact f.h1.continuous.integrable_of_hasCompactSupport f.h2
+  | succ k =>
+    cases k with
+    | zero =>
+      simpa using (f.h1.continuous_deriv one_le_two).integrable_of_hasCompactSupport f.h2.deriv
+    | succ k =>
+      have hk0 : k = 0 :=
+        Nat.eq_zero_of_le_zero (Nat.le_of_succ_le_succ (Nat.le_of_succ_le_succ hk))
+      subst k
+      simpa [iteratedDeriv_succ] using
+        (f.h1.iterate_deriv' 0 2).continuous.integrable_of_hasCompactSupport f.h2.deriv.deriv
 
 instance : Coe (CS 2 ℂ) W21 where coe := ofCS2
 
@@ -214,12 +233,12 @@ instance : HMul (CS 2 ℂ) W21 (CS 2 ℂ) where
 
 instance : HMul (CS 2 ℝ) W21 (CS 2 ℂ) where hMul g f := (g : CS 2 ℂ) * f
 
-lemma hf (f : W21) : Integrable f := f.integrable zero_le_two
+theorem hf (f : W21) : Integrable f := f.integrable zero_le_two
 
-lemma hf' (f : W21) : Integrable (deriv f) := by
+theorem hf' (f : W21) : Integrable (deriv f) := by
   simpa [iteratedDeriv_succ] using f.integrable one_le_two
 
-lemma hf'' (f : W21) : Integrable (deriv (deriv f))  := by
+theorem hf'' (f : W21) : Integrable (deriv (deriv f))  := by
   simpa [iteratedDeriv_succ] using f.integrable le_rfl
 
 end W21
@@ -227,7 +246,6 @@ end W21
 theorem W21_approximation (f : W21) (g : trunc) :
     Tendsto (fun R => ‖f - (g.scale R * f : W21)‖) atTop (𝓝 0) := by
 
-  -- Definitions
   let f' := f.deriv
   let f'' := f'.deriv
   let g' := (g : CS 2 ℝ).deriv
@@ -236,13 +254,12 @@ theorem W21_approximation (f : W21) (g : trunc) :
   let h' R := - (g.scale R).deriv
   let h'' R := - (g.scale R).deriv.deriv
 
-  -- Properties of h
   have ch {R} : Continuous (fun v => (h R v : ℂ)) :=
     continuous_ofReal.comp <| continuous_const.sub (CS.continuous _)
   have ch' {R} : Continuous (fun v => (h' R v : ℂ)) := continuous_ofReal.comp (CS.continuous _)
   have ch'' {R} : Continuous (fun v => (h'' R v : ℂ)) := continuous_ofReal.comp (CS.continuous _)
   have dh R v : HasDerivAt (h R) (h' R v) v := by
-    convert! CS.hasDerivAt_scale (g : CS 2 ℝ) R v |>.const_sub 1 using 1
+    convert CS.hasDerivAt_scale (g : CS 2 ℝ) R v |>.const_sub 1 using 1
     simp [h', CS.deriv_scale', show g.deriv.toFun = deriv g.toFun from rfl]
   have dh' R v : HasDerivAt (h' R) (h'' R v) v := ((g.scale R).deriv.hasDerivAt v).neg
   have hh1 R v : |h R v| ≤ 1 := by
@@ -254,12 +271,10 @@ theorem W21_approximation (f : W21) (g : trunc) :
   have vR v : Tendsto (fun R : ℝ => v * R⁻¹) atTop (𝓝 0) := by
     simpa using tendsto_inv_atTop_zero.const_mul v
 
-  -- Proof
   convert_to Tendsto (fun R => W21.norm (fun v => h R v * f v)) atTop (𝓝 0)
   · ext R ; change W21.norm _ = _ ; congr ; ext v ; simp [h, sub_mul] ; rfl
   rw [show (0 : ℝ) = 0 + ((4 * π ^ 2)⁻¹ : ℝ) * 0 by simp]
   refine Tendsto.add ?_ (Tendsto.const_mul _ ?_)
-
   · let F R v := ‖h R v * f v‖
     have eh v : ∀ᶠ R in atTop, h R v = 0 := by
       filter_upwards [(vR v).eventually g.zero, eventually_ne_atTop 0] with R hR hR'
@@ -275,7 +290,6 @@ theorem W21_approximation (f : W21) (g : trunc) :
       apply Eventually.of_forall ; intro v
       apply tendsto_nhds_of_eventually_eq ; filter_upwards [eh v] with R hR ; simp [F, hR]
     simpa [F] using tendsto_integral_filter_of_dominated_convergence _ e1 e2 f.hf.norm e4
-
   · let F R v := ‖h'' R v * f v + 2 * h' R v * f' v + h R v * f'' v‖
     convert_to Tendsto (fun R ↦ ∫ (v : ℝ), F R v) atTop (𝓝 0)
     · have this R v :
@@ -291,9 +305,8 @@ theorem W21_approximation (f : W21) (g : trunc) :
           (dh R v).ofReal_comp.mul (df' v)
         have d1 : deriv (fun v => h R v * f v) = fun v => h' R v * f v + h R v * f' v :=
           funext (fun v => (l3 v).deriv)
-        rw [d1] ; convert! (l5.add l7).deriv using 1 ; ring
+        rw [d1] ; convert (l5.add l7).deriv using 1 ; ring
       simp_rw [this, F]
-
     obtain ⟨c1, mg'⟩ := g'.bounded
     obtain ⟨c2, mg''⟩ := g''.bounded
     let bound v := c2 * ‖f v‖ + 2 * c1 * ‖f' v‖ + ‖f'' v‖
@@ -338,8 +351,13 @@ theorem W21_approximation (f : W21) (g : trunc) :
       (((f.hf.norm).const_mul _).add ((f.hf'.norm).const_mul _)).add f.hf''.norm
     have e4 : ∀ᵐ (a : ℝ), Tendsto (fun n ↦ F n a) atTop (𝓝 0) := by
       apply Eventually.of_forall ; intro v
-      have evg' : g' =ᶠ[𝓝 0] 0 := by convert! ← g.zero.deriv ; exact deriv_const' _
-      have evg'' : g'' =ᶠ[𝓝 0] 0 := by convert! ← evg'.deriv ; exact deriv_const' _
+      have evg' : (g' : ℝ → ℝ) =ᶠ[𝓝 (0 : ℝ)] (fun _ : ℝ => 0) := by
+        have hzero : (g : ℝ → ℝ) =ᶠ[𝓝 (0 : ℝ)] (fun _ : ℝ => 1) := g.zero
+        change _root_.deriv (g : ℝ → ℝ) =ᶠ[𝓝 (0 : ℝ)] (fun _ : ℝ => 0)
+        simpa only [deriv_const'] using hzero.deriv
+      have evg'' : (g'' : ℝ → ℝ) =ᶠ[𝓝 (0 : ℝ)] (fun _ : ℝ => 0) := by
+        change _root_.deriv (g' : ℝ → ℝ) =ᶠ[𝓝 (0 : ℝ)] (fun _ : ℝ => 0)
+        simpa only [deriv_const'] using evg'.deriv
       refine tendsto_norm_zero.comp <| (ZeroAtFilter.add ?_ ?_).add ?_
       · have eh'' v : ∀ᶠ R in atTop, h'' R v = 0 := by
           filter_upwards [(vR v).eventually evg'', eventually_ne_atTop 0] with R hR hR'
@@ -355,5 +373,6 @@ theorem W21_approximation (f : W21) (g : trunc) :
           simp [h', CS.deriv_scale', mul_comm R⁻¹, hR]
         apply tendsto_nhds_of_eventually_eq
         filter_upwards [eh' v] with R hR ; simp [hR]
-      · simpa [h] using! ((g.tendsto_scale v).const_sub 1).ofReal.mul tendsto_const_nhds
+      · simpa [h, Filter.ZeroAtFilter] using
+          ((g.tendsto_scale v).const_sub 1).ofReal.mul tendsto_const_nhds
     simpa [F] using tendsto_integral_filter_of_dominated_convergence bound e1 e2 e3 e4
